@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35219.272
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{C9F33C2D-6932-40C6-A681-CCF707ED1F04}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{E3F65D41-73CF-483B-9B6C-3C4D3D31583C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{D7CB528F-B160-4E98-9B0C-AA3CB5FC869D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CegCRMAPI.Application", "Core\CegCRMAPI.Application\CegCRMAPI.Application.csproj", "{97FA88D8-6F8D-4BAB-A592-8EBE2D26F316}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CegCRMAPI.Domain", "Core\CegCRMAPI.Domain\CegCRMAPI.Domain.csproj", "{CCF6A73E-FD77-462E-873D-D56A33107849}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CegCRMAPI.Infrastructure", "Infrastructure\CegCRMAPI.Infrastructure\CegCRMAPI.Infrastructure.csproj", "{62C59C10-66AD-49B0-8B9A-93F809DA3092}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CegCRMAPI.Persistence", "Infrastructure\CegCRMAPI.Persistence\CegCRMAPI.Persistence.csproj", "{AEFBE088-7795-4A71-B4AD-FAACD4FFDA0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CegCRMAPI.API", "Presentation\CegCRMAPI.API\CegCRMAPI.API.csproj", "{2B7566B5-A628-4B32-93B6-4AB0BB2B9357}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{97FA88D8-6F8D-4BAB-A592-8EBE2D26F316}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97FA88D8-6F8D-4BAB-A592-8EBE2D26F316}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97FA88D8-6F8D-4BAB-A592-8EBE2D26F316}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97FA88D8-6F8D-4BAB-A592-8EBE2D26F316}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCF6A73E-FD77-462E-873D-D56A33107849}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCF6A73E-FD77-462E-873D-D56A33107849}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCF6A73E-FD77-462E-873D-D56A33107849}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCF6A73E-FD77-462E-873D-D56A33107849}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62C59C10-66AD-49B0-8B9A-93F809DA3092}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62C59C10-66AD-49B0-8B9A-93F809DA3092}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62C59C10-66AD-49B0-8B9A-93F809DA3092}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62C59C10-66AD-49B0-8B9A-93F809DA3092}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEFBE088-7795-4A71-B4AD-FAACD4FFDA0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEFBE088-7795-4A71-B4AD-FAACD4FFDA0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEFBE088-7795-4A71-B4AD-FAACD4FFDA0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEFBE088-7795-4A71-B4AD-FAACD4FFDA0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B7566B5-A628-4B32-93B6-4AB0BB2B9357}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B7566B5-A628-4B32-93B6-4AB0BB2B9357}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B7566B5-A628-4B32-93B6-4AB0BB2B9357}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B7566B5-A628-4B32-93B6-4AB0BB2B9357}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{97FA88D8-6F8D-4BAB-A592-8EBE2D26F316} = {C9F33C2D-6932-40C6-A681-CCF707ED1F04}
+		{CCF6A73E-FD77-462E-873D-D56A33107849} = {C9F33C2D-6932-40C6-A681-CCF707ED1F04}
+		{62C59C10-66AD-49B0-8B9A-93F809DA3092} = {E3F65D41-73CF-483B-9B6C-3C4D3D31583C}
+		{AEFBE088-7795-4A71-B4AD-FAACD4FFDA0D} = {E3F65D41-73CF-483B-9B6C-3C4D3D31583C}
+		{2B7566B5-A628-4B32-93B6-4AB0BB2B9357} = {D7CB528F-B160-4E98-9B0C-AA3CB5FC869D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {748F02E4-75F4-4DFD-9DE2-28484BEBA692}
+	EndGlobalSection
+EndGlobal

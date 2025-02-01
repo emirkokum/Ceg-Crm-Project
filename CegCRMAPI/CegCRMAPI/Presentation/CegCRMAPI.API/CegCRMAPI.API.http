@@ -1,0 +1,6 @@
+@CegCRMAPI.API_HostAddress = http://localhost:5260
+
+GET {{CegCRMAPI.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
