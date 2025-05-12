@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CegCRMAPI.Persistence.Repositories
 {
-    public class CustomerRepository : GenericRepository<Customer>, ICustomerRepository
+    public class CustomerRepository : Repository<Customer>, ICustomerRepository
     {
         public CustomerRepository(CegCrmDbContext context) : base(context)
         {

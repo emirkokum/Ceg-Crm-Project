@@ -6,12 +6,12 @@ using System.Linq.Expressions;
 
 namespace CegCRMAPI.Persistence.Repositories
 {
-    public class GenericRepository<T> : IRepository<T> where T : BaseEntity
+    public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         protected readonly CegCrmDbContext _context;
         protected readonly DbSet<T> _dbSet;
 
-        public GenericRepository(CegCrmDbContext context)
+        public Repository(CegCrmDbContext context)
         {
             _context = context;
             _dbSet = context.Set<T>();
