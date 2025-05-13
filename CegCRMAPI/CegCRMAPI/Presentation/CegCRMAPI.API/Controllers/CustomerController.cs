@@ -1,117 +1,65 @@
-﻿using CegCRMAPI.Domain.Entities;
+using CegCRMAPI.Domain.Entities;
 using CegCRMAPI.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CegCRMAPI.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class CustomerController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ICustomerRepository _customerRepository;
 
-        public CustomerController(IUnitOfWork unitOfWork)
+        public CustomerController(ICustomerRepository customerRepository)
         {
-            _unitOfWork = unitOfWork;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var customers = await _unitOfWork.CustomerRepository.GetAllAsync();
-            return Ok(customers);
+            _customerRepository = customerRepository;
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<ActionResult<Customer>> GetById(Guid id)
         {
-            var customer = await _unitOfWork.CustomerRepository.GetByIdAsync(id);
+            var customer = await _customerRepository.GetByIdAsync(id);
             if (customer == null)
                 return NotFound();
 
             return Ok(customer);
         }
 
-        [HttpGet("segment/{segment}")]
-        public async Task<IActionResult> GetBySegment(string segment)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Customer>>> GetAllCustomers()
         {
-            var customers = await _unitOfWork.CustomerRepository.GetCustomersBySegmentAsync(segment);
-            return Ok(customers);
-        }
-
-        [HttpGet("with-interactions")]
-        public async Task<IActionResult> GetWithInteractions()
-        {
-            var customers = await _unitOfWork.CustomerRepository.GetCustomersWithInteractionsAsync();
+            var customers = await _customerRepository.GetAllCustomersAsync();
             return Ok(customers);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Customer customer)
+        public async Task<ActionResult<Customer>> Create(Customer customer)
         {
-            try
-            {
-                await _unitOfWork.BeginTransactionAsync();
-                await _unitOfWork.CustomerRepository.AddAsync(customer);
-                await _unitOfWork.SaveChangesAsync();
-                await _unitOfWork.CommitTransactionAsync();
-
-                return CreatedAtAction(nameof(GetById), new { id = customer.Id }, customer);
-            }
-            catch (Exception)
-            {
-                await _unitOfWork.RollbackTransactionAsync();
-                throw;
-            }
+            var createdCustomer = await _customerRepository.CreateAsync(customer);
+            return CreatedAtAction(nameof(GetById), new { id = createdCustomer.Id }, createdCustomer);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] Customer customer)
+        public async Task<IActionResult> Update(Guid id, Customer customer)
         {
             if (id != customer.Id)
                 return BadRequest();
 
-            var existingCustomer = await _unitOfWork.CustomerRepository.GetByIdAsync(id);
-            if (existingCustomer == null)
-                return NotFound();
-
-            try
-            {
-                await _unitOfWork.BeginTransactionAsync();
-                _unitOfWork.CustomerRepository.Update(customer);
-                await _unitOfWork.SaveChangesAsync();
-                await _unitOfWork.CommitTransactionAsync();
-
-                return NoContent();
-            }
-            catch (Exception)
-            {
-                await _unitOfWork.RollbackTransactionAsync();
-                throw;
-            }
+            var updatedCustomer = await _customerRepository.UpdateAsync(customer);
+            return Ok(updatedCustomer);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var customer = await _unitOfWork.CustomerRepository.GetByIdAsync(id);
-            if (customer == null)
+            var result = await _customerRepository.DeleteAsync(id);
+            if (!result)
                 return NotFound();
 
-            try
-            {
-                await _unitOfWork.BeginTransactionAsync();
-                _unitOfWork.CustomerRepository.Remove(customer);
-                await _unitOfWork.SaveChangesAsync();
-                await _unitOfWork.CommitTransactionAsync();
-
-                return NoContent();
-            }
-            catch (Exception)
-            {
-                await _unitOfWork.RollbackTransactionAsync();
-                throw;
-            }
+            return NoContent();
         }
     }
-}
+} 

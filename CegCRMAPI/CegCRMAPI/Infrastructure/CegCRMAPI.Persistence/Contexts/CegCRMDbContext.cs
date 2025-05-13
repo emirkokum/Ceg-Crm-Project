@@ -23,6 +23,7 @@ namespace CegCRMAPI.Persistence.Context
         public DbSet<Lead> Leads { get; set; }
         public DbSet<TaskItem> Tasks { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Employee> Employees { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,6 +41,7 @@ namespace CegCRMAPI.Persistence.Context
             modelBuilder.Entity<TaskItem>().Property(t => t.Priority).HasMaxLength(20);
             modelBuilder.Entity<TaskItem>().Property(t => t.Type).HasMaxLength(50);
             modelBuilder.Entity<Product>().Property(p => p.Name).HasMaxLength(100);
+            modelBuilder.Entity<Employee>().HasIndex(e => e.Email).IsUnique();
         }
     }
 }

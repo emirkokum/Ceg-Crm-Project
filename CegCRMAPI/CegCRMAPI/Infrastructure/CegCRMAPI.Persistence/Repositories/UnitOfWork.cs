@@ -13,12 +13,9 @@ namespace CegCRMAPI.Persistence.Repositories
         private IDbContextTransaction? _transaction;
         private bool _disposed;
 
-        public ICustomerRepository CustomerRepository { get; }
-
-        public UnitOfWork(CegCrmDbContext context, ICustomerRepository customerRepository)
+        public UnitOfWork(CegCrmDbContext context)
         {
             _context = context;
-            CustomerRepository = customerRepository;
         }
 
         public async Task<int> SaveChangesAsync()
