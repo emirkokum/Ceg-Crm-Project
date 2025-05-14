@@ -5,13 +5,7 @@ using System.Threading.Tasks;
 
 namespace CegCRMAPI.Domain.Repositories
 {
-    public interface IInteractionRepository
+    public interface IInteractionRepository:IRepository<Interaction>
     {
-        Task<Interaction> GetByIdAsync(Guid id);
-        Task<IEnumerable<Interaction>> GetAllInteractionsAsync();
-        Task<IEnumerable<Interaction>> GetInteractionsByCustomerIdAsync(Guid customerId);
-        Task<Interaction> CreateAsync(Interaction interaction);
-        Task<Interaction> UpdateAsync(Interaction interaction);
-        Task<bool> DeleteAsync(Guid id);
     }
 } 

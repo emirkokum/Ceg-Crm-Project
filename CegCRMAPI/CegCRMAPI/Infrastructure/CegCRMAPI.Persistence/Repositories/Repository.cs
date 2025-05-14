@@ -19,17 +19,17 @@ namespace CegCRMAPI.Persistence.Repositories
 
         public async Task<T?> GetByIdAsync(Guid id)
         {
-            return await _dbSet.FindAsync(id);
+            return await _dbSet.Where(x => x.Id == id && x.DeletedDate == null).FirstOrDefaultAsync();  
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.Where(x => x.DeletedDate == null).ToListAsync();
         }
 
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression)
         {
-            return await _dbSet.Where(expression).ToListAsync();
+            return await _dbSet.Where(x => x.DeletedDate == null).Where(expression).ToListAsync();
         }
 
         public async Task AddAsync(T entity)
@@ -40,6 +40,10 @@ namespace CegCRMAPI.Persistence.Repositories
 
         public async Task AddRangeAsync(IEnumerable<T> entities)
         {
+            foreach (var entity in entities)
+            {
+                entity.CreatedDate = DateTime.UtcNow;;
+            }
             await _dbSet.AddRangeAsync(entities);
         }
 
@@ -52,22 +56,22 @@ namespace CegCRMAPI.Persistence.Repositories
         public void Remove(T entity)
         {
             entity.DeletedDate = DateTime.UtcNow;
-            _dbSet.Remove(entity);
+            _dbSet.Update(entity);
         }
 
         public void RemoveRange(IEnumerable<T> entities)
         {
-            _dbSet.RemoveRange(entities);
+            _dbSet.UpdateRange(entities);
         }
 
         public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
         {
-            return await _dbSet.AnyAsync(expression);
+            return await _dbSet.Where(x => x.DeletedDate == null).AnyAsync(expression);
         }
 
         public async Task<int> CountAsync(Expression<Func<T, bool>> expression)
         {
-            return await _dbSet.CountAsync(expression);
+            return await _dbSet.Where(x => x.DeletedDate == null).CountAsync(expression);
         }
     }
 } 

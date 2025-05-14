@@ -1,6 +1,6 @@
 ﻿using CegCRMAPI.Application.Abstractions;
 using CegCRMAPI.Domain.Repositories;
-using CegCRMAPI.Persistence.Concretes;
+using CegCRMAPI.Infrastructure.Repositories;
 using CegCRMAPI.Persistence.Context;
 using CegCRMAPI.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks;   
 
 namespace CegCRMAPI.Persistence
 {

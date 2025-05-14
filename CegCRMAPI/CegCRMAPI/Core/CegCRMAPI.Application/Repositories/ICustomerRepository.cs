@@ -5,12 +5,7 @@ using System.Threading.Tasks;
 
 namespace CegCRMAPI.Domain.Repositories
 {
-    public interface ICustomerRepository
+    public interface ICustomerRepository:IRepository<Customer>
     {
-        Task<Customer> GetByIdAsync(Guid id);
-        Task<IEnumerable<Customer>> GetAllCustomersAsync();
-        Task<Customer> CreateAsync(Customer customer);
-        Task<Customer> UpdateAsync(Customer customer);
-        Task<bool> DeleteAsync(Guid id);
     }
 } 
