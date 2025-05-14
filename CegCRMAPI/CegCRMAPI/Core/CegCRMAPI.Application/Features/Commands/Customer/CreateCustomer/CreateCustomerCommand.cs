@@ -1,10 +1,12 @@
+using AutoMapper;
+using CegCRMAPI.Application.DTOs.Customer;
 using CegCRMAPI.Domain.Entities;
 using CegCRMAPI.Domain.Repositories;
 using MediatR;
 
 namespace CegCRMAPI.Application.Features.Commands.Customers.CreateCustomer;
 
-public record CreateCustomerCommand : IRequest<Customer>
+public record CreateCustomerCommand : IRequest<CustomerDto>
 {
     public string FirstName { get; init; } = string.Empty;
     public string LastName { get; init; } = string.Empty;
@@ -14,33 +16,29 @@ public record CreateCustomerCommand : IRequest<Customer>
     public string Segment { get; init; } = string.Empty;
 }
 
-public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Customer>
+public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, CustomerDto>
 {
     private readonly ICustomerRepository _customerRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
 
     public CreateCustomerCommandHandler(
         ICustomerRepository customerRepository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IMapper mapper)
     {
         _customerRepository = customerRepository;
         _unitOfWork = unitOfWork;
+        _mapper = mapper;
     }
 
-    public async Task<Customer> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
+    public async Task<CustomerDto> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
     {
-        var customer = new Customer
-        {
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            Email = request.Email,
-            Phone = request.Phone,
-            Address = request.Address,
-            Segment = request.Segment
-        };
+        var customer = _mapper.Map<Customer>(request);
 
         await _customerRepository.AddAsync(customer, cancellationToken);
         await _unitOfWork.SaveChangesAsync();
-        return customer;
+
+        return _mapper.Map<CustomerDto>(customer);
     }
 }
