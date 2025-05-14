@@ -1,65 +1,40 @@
+using CegCRMAPI.Application.Features.Commands.Customers.CreateCustomer;
+using CegCRMAPI.Application.Features.Queries.Customers.GetCustomerById;
 using CegCRMAPI.Domain.Entities;
 using CegCRMAPI.Domain.Repositories;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CegCRMAPI.Application.DTOs.Customer;
 
 namespace CegCRMAPI.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CustomerController : ControllerBase
+    public class CustomersController : ControllerBase
     {
-        private readonly ICustomerRepository _customerRepository;
+        private readonly IMediator _mediator;
 
-        public CustomerController(ICustomerRepository customerRepository)
+        public CustomersController(IMediator mediator)
         {
-            _customerRepository = customerRepository;
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetById(Guid id)
-        {
-            var customer = await _customerRepository.GetByIdAsync(id);
-            if (customer == null)
-                return NotFound();
-
-            return Ok(customer);
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetAllCustomers()
-        {
-            var customers = await _customerRepository.GetAllCustomersAsync();
-            return Ok(customers);
+            _mediator = mediator;
         }
 
         [HttpPost]
-        public async Task<ActionResult<Customer>> Create(Customer customer)
+        public async Task<ActionResult<Customer>> Create(CreateCustomerCommand command)
         {
-            var createdCustomer = await _customerRepository.CreateAsync(customer);
-            return CreatedAtAction(nameof(GetById), new { id = createdCustomer.Id }, createdCustomer);
+            var result = await _mediator.Send(command);
+            return Ok(result);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, Customer customer)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<CustomerDto>> GetById(Guid id)
         {
-            if (id != customer.Id)
-                return BadRequest();
-
-            var updatedCustomer = await _customerRepository.UpdateAsync(customer);
-            return Ok(updatedCustomer);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            var result = await _customerRepository.DeleteAsync(id);
-            if (!result)
-                return NotFound();
-
-            return NoContent();
+            var query = new GetCustomerByIdQuery { Id = id };
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
     }
 } 

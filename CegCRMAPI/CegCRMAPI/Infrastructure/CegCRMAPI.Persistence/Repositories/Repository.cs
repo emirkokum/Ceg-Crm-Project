@@ -17,34 +17,34 @@ namespace CegCRMAPI.Persistence.Repositories
             _dbSet = context.Set<T>();
         }
 
-        public async Task<T?> GetByIdAsync(Guid id)
+        public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.Where(x => x.Id == id && x.DeletedDate == null).FirstOrDefaultAsync();  
+            return await _dbSet.Where(x => x.Id == id && x.DeletedDate == null).FirstOrDefaultAsync(cancellationToken);  
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return await _dbSet.Where(x => x.DeletedDate == null).ToListAsync();
+            return await _dbSet.Where(x => x.DeletedDate == null).ToListAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression)
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.Where(x => x.DeletedDate == null).Where(expression).ToListAsync();
+            return await _dbSet.Where(x => x.DeletedDate == null).Where(expression).ToListAsync(cancellationToken);
         }
 
-        public async Task AddAsync(T entity)
+        public async Task AddAsync(T entity, CancellationToken cancellationToken = default)
         {
             entity.CreatedDate = DateTime.UtcNow;
-            await _dbSet.AddAsync(entity);
+            await _dbSet.AddAsync(entity, cancellationToken);
         }
 
-        public async Task AddRangeAsync(IEnumerable<T> entities)
+        public async Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
         {
             foreach (var entity in entities)
             {
                 entity.CreatedDate = DateTime.UtcNow;;
             }
-            await _dbSet.AddRangeAsync(entities);
+            await _dbSet.AddRangeAsync(entities, cancellationToken);
         }
 
         public void Update(T entity)
@@ -53,25 +53,30 @@ namespace CegCRMAPI.Persistence.Repositories
             _dbSet.Update(entity);
         }
 
-        public void Remove(T entity)
+        public void Remove(T entity)    
         {
             entity.DeletedDate = DateTime.UtcNow;
             _dbSet.Update(entity);
         }
 
-        public void RemoveRange(IEnumerable<T> entities)
+        public void RemoveRange(IEnumerable<T> entities)    
         {
-            _dbSet.UpdateRange(entities);
+            _dbSet.RemoveRange(entities);
         }
 
-        public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.Where(x => x.DeletedDate == null).AnyAsync(expression);
+            return await _dbSet.AnyAsync(expression, cancellationToken);
         }
 
-        public async Task<int> CountAsync(Expression<Func<T, bool>> expression)
+        public async Task<int> CountAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.Where(x => x.DeletedDate == null).CountAsync(expression);
+            return await _dbSet.CountAsync(expression, cancellationToken);
+        }
+
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            return await _context.SaveChangesAsync(cancellationToken);
         }
     }
 } 
