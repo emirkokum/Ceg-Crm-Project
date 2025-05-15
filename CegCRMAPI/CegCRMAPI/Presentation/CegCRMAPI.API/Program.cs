@@ -1,6 +1,7 @@
 using CegCRMAPI.Application;
 using CegCRMAPI.Persistence;
 using CegCRMAPI.Application.Mappings;
+using CegCRMAPI.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Add global exception handling middleware
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 app.UseAuthorization();
 
