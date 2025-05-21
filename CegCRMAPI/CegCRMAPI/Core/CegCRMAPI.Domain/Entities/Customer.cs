@@ -16,11 +16,17 @@ namespace CegCRMAPI.Domain.Entities
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Address { get; set; }
-        public string Segment { get; set; } 
+        public CustomerType Type { get; set; }
 
         // Navigation
         public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
         public ICollection<Interaction> Interactions { get; set; } = new List<Interaction>();
         public ICollection<Sale> Sales { get; set; } = new List<Sale>();
+    }
+
+    public enum CustomerType
+    {
+        Person = 1,
+        Business = 2
     }
 }

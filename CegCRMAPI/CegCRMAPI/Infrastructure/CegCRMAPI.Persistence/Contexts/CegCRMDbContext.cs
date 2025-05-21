@@ -1,4 +1,6 @@
 ﻿using CegCRMAPI.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,13 +11,12 @@ using System.Threading.Tasks;
 
 namespace CegCRMAPI.Persistence.Context
 {
-    public class CegCrmDbContext : DbContext
+    public class CegCrmDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         public CegCrmDbContext(DbContextOptions<CegCrmDbContext> options): base(options)
         {
         }
 
-        public DbSet<User> Users { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Interaction> Interactions { get; set; }
@@ -29,8 +30,18 @@ namespace CegCRMAPI.Persistence.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
-            modelBuilder.Entity<Customer>().Property(c => c.Segment).HasMaxLength(50);
+            // Configure User entity
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("Users");
+                entity.Property(u => u.FirstName).IsRequired().HasMaxLength(50);
+                entity.Property(u => u.LastName).IsRequired().HasMaxLength(50);
+                entity.Property(u => u.PhoneNumber).HasMaxLength(20);
+                entity.Property(u => u.Department).HasMaxLength(50);
+                entity.Property(u => u.Position).HasMaxLength(50);
+            });
+
+            // Configure other entities
             modelBuilder.Entity<Ticket>().Property(t => t.Status).HasMaxLength(30);
             modelBuilder.Entity<Interaction>().Property(i => i.Type).HasMaxLength(50);
             modelBuilder.Entity<Sale>().Property(s => s.Status).HasMaxLength(30);

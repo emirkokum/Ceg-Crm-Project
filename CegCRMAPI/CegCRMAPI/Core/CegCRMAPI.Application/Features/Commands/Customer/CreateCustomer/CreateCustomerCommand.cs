@@ -13,7 +13,7 @@ public record CreateCustomerCommand : IRequest<CustomerDto>
     public string Email { get; init; } = string.Empty;
     public string Phone { get; init; } = string.Empty;
     public string Address { get; init; } = string.Empty;
-    public string Segment { get; init; } = string.Empty;
+    public CustomerType Type { get; init; }
 }
 
 public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, CustomerDto>

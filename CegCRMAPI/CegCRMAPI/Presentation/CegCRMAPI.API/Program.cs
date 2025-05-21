@@ -1,7 +1,13 @@
+using CegCRMAPI.API.Authorization;
 using CegCRMAPI.Application;
 using CegCRMAPI.Persistence;
 using CegCRMAPI.Application.Mappings;
 using CegCRMAPI.API.Middleware;
+using CegCRMAPI.Domain.Entities;
+using CegCRMAPI.Persistence.Context;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +38,8 @@ app.UseHttpsRedirection();
 // Add global exception handling middleware
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
+// Add authentication and authorization middleware
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
