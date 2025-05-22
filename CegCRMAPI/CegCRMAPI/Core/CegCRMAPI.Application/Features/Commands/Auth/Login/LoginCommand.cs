@@ -1,20 +1,22 @@
 using AutoMapper;
 using CegCRMAPI.Application.DTOs;
 using CegCRMAPI.Application.DTOs.Auth;
+using CegCRMAPI.Application.Exceptions;
 using CegCRMAPI.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace CegCRMAPI.Application.Features.Commands.Auth.Login;
 
-public record LoginCommand : IRequest<AuthResponseDto>
+public record LoginCommand : IRequest<UserDto>
 {
     public string Email { get; init; } = string.Empty;
     public string Password { get; init; } = string.Empty;
 }
 
-public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto>
+public class LoginCommandHandler : IRequestHandler<LoginCommand, UserDto>
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
@@ -30,40 +32,31 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
         _mapper = mapper;
     }
 
-    public async Task<AuthResponseDto> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<UserDto> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user == null)
         {
-            return new AuthResponseDto
+            throw new ValidationException(new Dictionary<string, string[]>
             {
-                Success = false,
-                Message = "Invalid email or password",
-                User = null
-            };
+                { "Login", new[] { "Invalid email or password" } }
+            });
         }
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
 
-        if (result.Succeeded)
+        if (!result.Succeeded)
         {
-            var roles = await _userManager.GetRolesAsync(user);
-            var userDto = _mapper.Map<UserDto>(user);
-            userDto.Role = roles.FirstOrDefault();
-
-            return new AuthResponseDto
+            throw new ValidationException(new Dictionary<string, string[]>
             {
-                Success = true,
-                Message = "Login successful",
-                User = userDto
-            };
+                { "Login", new[] { "Invalid email or password" } }
+            });
         }
 
-        return new AuthResponseDto
-        {
-            Success = false,
-            Message = "Invalid email or password",
-            User = null
-        };
+        var roles = await _userManager.GetRolesAsync(user);
+        var userDto = _mapper.Map<UserDto>(user);
+        userDto.Role = roles.FirstOrDefault();
+
+        return userDto;
     }
 } 

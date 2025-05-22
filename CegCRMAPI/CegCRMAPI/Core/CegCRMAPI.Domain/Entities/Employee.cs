@@ -1,17 +1,38 @@
 using CegCRMAPI.Domain.Entities.Common;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CegCRMAPI.Domain.Entities
 {
     public class Employee : BaseEntity
     {
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string PhoneNumber { get; set; } = string.Empty;
-        public string Department { get; set; } = string.Empty;
-        public string Position { get; set; } = string.Empty;
+        public Guid UserId { get; set; }  // Identity User
+        [ForeignKey("UserId")]
+        public User User { get; set; }
+        
+        // İş süreçleri için gerekli alanlar
+        public string EmployeeNumber { get; set; }
         public DateTime HireDate { get; set; }
-        public bool IsActive { get; set; } = true;
+        public decimal Salary { get; set; }
+        public string WorkPhone { get; set; }
+        public string WorkEmail { get; set; }
+
+        
+        public ICollection<Customer> AssignedCustomers { get; set; } = new List<Customer>();
+        public ICollection<TaskItem> AssignedTasks { get; set; } = new List<TaskItem>();
+
+
+        
+        // Performans ve izin bilgileri
+        public int AnnualLeaveDays { get; set; }
+        public int UsedLeaveDays { get; set; }
+        public decimal PerformanceScore { get; set; }
+        
+        // Diğer iş süreçleri için gerekli alanlar
+        public string EmergencyContact { get; set; }
+        public string EmergencyPhone { get; set; }
+        public string BankAccount { get; set; }
+        public string TaxNumber { get; set; }
     }
 } 

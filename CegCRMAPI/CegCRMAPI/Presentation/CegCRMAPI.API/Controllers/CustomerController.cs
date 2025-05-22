@@ -1,4 +1,5 @@
 using CegCRMAPI.Application.DTOs.Customer;
+using CegCRMAPI.Application.DTOs.Common;
 using CegCRMAPI.Application.Features.Commands.Customers.CreateCustomer;
 using CegCRMAPI.Application.Features.Commands.Customers.DeleteCustomer;
 using CegCRMAPI.Application.Features.Commands.Customers.UpdateCustomer;
@@ -7,6 +8,7 @@ using CegCRMAPI.Application.Features.Queries.Customers.GetCustomerById;
 using CegCRMAPI.Domain.Entities;
 using CegCRMAPI.Domain.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -14,54 +16,58 @@ using System.Threading.Tasks;
 
 namespace CegCRMAPI.API.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class CustomersController : ControllerBase
+    [ApiController]
+    public class CustomerController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public CustomersController(IMediator mediator)
+        public CustomerController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<CustomerDto>> Create([FromBody] CreateCustomerCommand command)
-        {
-            var result = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult<CustomerDto>> Update(Guid id, [FromBody] UpdateCustomerDto dto)
-        {
-            var command = new UpdateCustomerCommand(id, dto);
-            var result = await _mediator.Send(command);
-            return Ok(result);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(Guid id)
-        {
-            var command = new DeleteCustomerCommand { Id = id };
-            await _mediator.Send(command);
-            return NoContent();
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<CustomerDto>> GetById(Guid id)
-        {
-            var query = new GetCustomerByIdQuery { Id = id };
-            var result = await _mediator.Send(query);
-            return Ok(result);
-        }
-
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAll()
+        public async Task<ActionResult<ApiResponse<List<CustomerDto>>>> GetAll()
         {
             var query = new GetAllCustomersQuery();
             var result = await _mediator.Send(query);
-            return Ok(result);
+            return Ok(ApiResponse<List<CustomerDto>>.CreateSuccess(result.ToList(), "Customers retrieved successfully"));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ApiResponse<CustomerDto>>> GetById(Guid id)
+        {
+            var query = new GetCustomerByIdQuery { Id = id };
+            var result = await _mediator.Send(query);
+            return Ok(ApiResponse<CustomerDto>.CreateSuccess(result, "Customer retrieved successfully"));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ApiResponse<CustomerDto>>> Create([FromBody] CreateCustomerCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return CreatedAtAction(
+                nameof(GetById), 
+                new { id = result.Id }, 
+                ApiResponse<CustomerDto>.CreateSuccess(result, "Customer created successfully")
+            );
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ApiResponse<CustomerDto>>> Update(Guid id, [FromBody] UpdateCustomerDto dto)
+        {
+            var command = new UpdateCustomerCommand(id, dto);
+            var result = await _mediator.Send(command);
+            return Ok(ApiResponse<CustomerDto>.CreateSuccess(result, "Customer updated successfully"));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ApiResponse<bool>>> Delete(Guid id)
+        {
+            var command = new DeleteCustomerCommand { Id = id };
+            var result = await _mediator.Send(command);
+            return Ok(ApiResponse<bool>.CreateSuccess(result, "Customer deleted successfully"));
         }
     }
 } 

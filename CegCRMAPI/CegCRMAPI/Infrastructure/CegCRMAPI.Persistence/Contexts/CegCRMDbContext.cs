@@ -41,6 +41,19 @@ namespace CegCRMAPI.Persistence.Context
                 entity.Property(u => u.Position).HasMaxLength(50);
             });
 
+            // Configure Employee entity
+            modelBuilder.Entity<Employee>(entity =>
+            {
+                entity.ToTable("Employees");
+                entity.Property(e => e.EmployeeNumber).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.WorkEmail).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.WorkPhone).HasMaxLength(20);
+                entity.Property(e => e.EmergencyContact).HasMaxLength(100);
+                entity.Property(e => e.EmergencyPhone).HasMaxLength(20);
+                entity.Property(e => e.BankAccount).HasMaxLength(50);
+                entity.Property(e => e.TaxNumber).HasMaxLength(50);
+            });
+
             // Configure other entities
             modelBuilder.Entity<Ticket>().Property(t => t.Status).HasMaxLength(30);
             modelBuilder.Entity<Interaction>().Property(i => i.Type).HasMaxLength(50);
@@ -52,7 +65,7 @@ namespace CegCRMAPI.Persistence.Context
             modelBuilder.Entity<TaskItem>().Property(t => t.Priority).HasMaxLength(20);
             modelBuilder.Entity<TaskItem>().Property(t => t.Type).HasMaxLength(50);
             modelBuilder.Entity<Product>().Property(p => p.Name).HasMaxLength(100);
-            modelBuilder.Entity<Employee>().HasIndex(e => e.Email).IsUnique();
+            modelBuilder.Entity<Employee>().HasIndex(e => e.WorkEmail).IsUnique();
         }
     }
 }

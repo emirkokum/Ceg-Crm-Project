@@ -1,36 +1,40 @@
 using AutoMapper;
-using CegCRMAPI.Application.DTOs;
 using CegCRMAPI.Application.DTOs.Auth;
+using CegCRMAPI.Application.Exceptions;
 using CegCRMAPI.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace CegCRMAPI.Application.Features.Commands.Auth.Register;
 
-public record RegisterCommand : IRequest<AuthResponseDto>
+public record RegisterCommand : IRequest<UserDto>
 {
-    public string Email { get; init; } = string.Empty;
-    public string Password { get; init; } = string.Empty;
-    public string FirstName { get; init; } = string.Empty;
-    public string LastName { get; init; } = string.Empty;
-    public string Department { get; init; } = string.Empty;
-    public string Position { get; init; } = string.Empty;
-    public string Role { get; init; } = "Employee"; // Default role
+    public string Email { get; set; }
+    public string Password { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Department { get; set; }
+    public string Position { get; set; }
+    public string Role { get; set; }
 }
 
-public class RegisterCommandHandler : IRequestHandler<RegisterCommand, AuthResponseDto>
+public class RegisterCommandHandler : IRequestHandler<RegisterCommand, UserDto>
 {
     private readonly UserManager<User> _userManager;
     private readonly IMapper _mapper;
 
-    public RegisterCommandHandler(UserManager<User> userManager, IMapper mapper)
+    public RegisterCommandHandler(
+        UserManager<User> userManager,
+        IMapper mapper)
     {
         _userManager = userManager;
         _mapper = mapper;
     }
 
-    public async Task<AuthResponseDto> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task<UserDto> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
+        // 1. User oluştur
         var user = new User
         {
             UserName = request.Email,
@@ -38,43 +42,36 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, AuthRespo
             FirstName = request.FirstName,
             LastName = request.LastName,
             Department = request.Department,
-            Position = request.Position,
-            HireDate = DateTime.UtcNow
+            Position = request.Position
         };
 
         var result = await _userManager.CreateAsync(user, request.Password);
 
-        if (result.Succeeded)
+        if (!result.Succeeded)
         {
-            var roleResult = await _userManager.AddToRoleAsync(user, request.Role);
-            
-            if (!roleResult.Succeeded)
-            {
-                return new AuthResponseDto
-                {
-                    Success = false,
-                    Message = $"User created but role assignment failed: {string.Join(", ", roleResult.Errors.Select(e => e.Description))}",
-                    User = null
-                };
-            }
-
-            var roles = await _userManager.GetRolesAsync(user);
-            var userDto = _mapper.Map<UserDto>(user);
-            userDto.Role = roles.FirstOrDefault();
-            
-            return new AuthResponseDto
-            {
-                Success = true,
-                Message = "User registered successfully",
-                User = userDto
-            };
+            var errors = result.Errors.ToDictionary(
+                e => e.Code,
+                e => new[] { e.Description }
+            );
+            throw new ValidationException(errors);
         }
 
-        return new AuthResponseDto
+        // 2. Role atama
+        var roleResult = await _userManager.AddToRoleAsync(user, request.Role);
+        if (!roleResult.Succeeded)
         {
-            Success = false,
-            Message = $"Registration failed: {string.Join(", ", result.Errors.Select(e => e.Description))}",
-            User = null
-        };
+            var errors = roleResult.Errors.ToDictionary(
+                e => e.Code,
+                e => new[] { e.Description }
+            );
+            throw new ValidationException(errors);
+        }
+
+        // 3. Response hazırla
+        var roles = await _userManager.GetRolesAsync(user);
+        var userDto = _mapper.Map<UserDto>(user);
+        userDto.Role = roles.FirstOrDefault();
+
+        return userDto;
     }
 } 

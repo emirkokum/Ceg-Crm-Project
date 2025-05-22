@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\CegCRMAPI.Domain\CegCRMAPI.Domain.csproj" />
     <ProjectReference Include="..\..\Core\CegCRMAPI.Application\CegCRMAPI.Application.csproj" />
   </ItemGroup>
 

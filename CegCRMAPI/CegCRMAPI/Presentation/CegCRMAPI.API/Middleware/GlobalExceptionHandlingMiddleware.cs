@@ -1,6 +1,6 @@
 using System.Net;
 using System.Text.Json;
-using CegCRMAPI.API.Exceptions;
+using CegCRMAPI.Application.Exceptions;
 using Microsoft.AspNetCore.Http;
 
 namespace CegCRMAPI.API.Middleware;

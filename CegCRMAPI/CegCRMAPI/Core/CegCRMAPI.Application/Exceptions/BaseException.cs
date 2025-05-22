@@ -1,4 +1,6 @@
-namespace CegCRMAPI.API.Exceptions;
+using Microsoft.AspNetCore.Http;
+
+namespace CegCRMAPI.Application.Exceptions;
 
 public abstract class BaseException : Exception
 {

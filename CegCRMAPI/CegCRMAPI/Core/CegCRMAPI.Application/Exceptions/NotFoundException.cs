@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 
-namespace CegCRMAPI.API.Exceptions;
+namespace CegCRMAPI.Application.Exceptions;
 
 public class NotFoundException : BaseException
 {
