@@ -25,6 +25,8 @@ namespace CegCRMAPI.Persistence
             services.AddScoped<ITaskRepository, TaskRepository>();
             services.AddScoped<ITicketRepository, TicketRepository>();
             services.AddScoped<ILeadRepository, LeadRepository>();
+            services.AddScoped<ISaleRepository, SaleRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             // Configure Identity

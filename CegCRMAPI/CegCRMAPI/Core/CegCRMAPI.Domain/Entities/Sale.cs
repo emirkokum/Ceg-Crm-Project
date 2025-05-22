@@ -21,7 +21,7 @@ namespace CegCRMAPI.Domain.Entities
 
         // Navigation properties
         public Customer Customer { get; set; } = null!;
-        public ICollection<Product> Products { get; set; } = new List<Product>();
-        public User SalesPerson { get; set; } = null!;
+        public Employee SalesPerson { get; set; } = null!;
+        public ICollection<SaleProduct> SaleProducts { get; set; } = new List<SaleProduct>();
     }
 }

@@ -3,6 +3,7 @@ using System;
 using CegCRMAPI.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CegCRMAPI.Persistence.Migrations
 {
     [DbContext(typeof(CegCrmDbContext))]
-    partial class CegCrmDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250522163730_ProductEntityUpdated")]
+    partial class ProductEntityUpdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -270,6 +273,9 @@ namespace CegCRMAPI.Persistence.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
+                    b.Property<Guid?>("SaleId")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("StockQuantity")
                         .HasColumnType("integer");
 
@@ -277,6 +283,8 @@ namespace CegCRMAPI.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SaleId");
 
                     b.ToTable("Products");
                 });
@@ -339,45 +347,6 @@ namespace CegCRMAPI.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Sales");
-                });
-
-            modelBuilder.Entity("CegCRMAPI.Domain.Entities.SaleProduct", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("SaleId")
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("numeric");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("SaleId");
-
-                    b.ToTable("SaleProduct");
                 });
 
             modelBuilder.Entity("CegCRMAPI.Domain.Entities.TaskItem", b =>
@@ -744,6 +713,13 @@ namespace CegCRMAPI.Persistence.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("CegCRMAPI.Domain.Entities.Product", b =>
+                {
+                    b.HasOne("CegCRMAPI.Domain.Entities.Sale", null)
+                        .WithMany("Products")
+                        .HasForeignKey("SaleId");
+                });
+
             modelBuilder.Entity("CegCRMAPI.Domain.Entities.Sale", b =>
                 {
                     b.HasOne("CegCRMAPI.Domain.Entities.Customer", "Customer")
@@ -765,25 +741,6 @@ namespace CegCRMAPI.Persistence.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("SalesPerson");
-                });
-
-            modelBuilder.Entity("CegCRMAPI.Domain.Entities.SaleProduct", b =>
-                {
-                    b.HasOne("CegCRMAPI.Domain.Entities.Product", "Product")
-                        .WithMany("SaleProducts")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CegCRMAPI.Domain.Entities.Sale", "Sale")
-                        .WithMany("SaleProducts")
-                        .HasForeignKey("SaleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Sale");
                 });
 
             modelBuilder.Entity("CegCRMAPI.Domain.Entities.TaskItem", b =>
@@ -900,14 +857,9 @@ namespace CegCRMAPI.Persistence.Migrations
                     b.Navigation("Interactions");
                 });
 
-            modelBuilder.Entity("CegCRMAPI.Domain.Entities.Product", b =>
-                {
-                    b.Navigation("SaleProducts");
-                });
-
             modelBuilder.Entity("CegCRMAPI.Domain.Entities.Sale", b =>
                 {
-                    b.Navigation("SaleProducts");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("CegCRMAPI.Domain.Entities.User", b =>
