@@ -4,6 +4,7 @@ using CegCRMAPI.Application.DTOs.Customer;
 using CegCRMAPI.Application.DTOs.Auth;
 using CegCRMAPI.Application.DTOs.Employee;
 using CegCRMAPI.Application.DTOs.Task;
+using CegCRMAPI.Application.DTOs.Ticket;
 using CegCRMAPI.Application.Features.Commands.Customers.CreateCustomer;
 using CegCRMAPI.Application.Features.Commands.Customers.UpdateCustomer;
 using CegCRMAPI.Application.Features.Commands.Auth.Register;
@@ -11,6 +12,8 @@ using CegCRMAPI.Application.Features.Commands.Auth.Login;
 using CegCRMAPI.Application.Features.Commands.Employees.CreateEmployee;
 using CegCRMAPI.Application.Features.Commands.Tasks.CreateTask;
 using CegCRMAPI.Application.Features.Commands.Tasks.UpdateTask;
+using CegCRMAPI.Application.Features.Commands.Tickets.CreateTicket;
+using CegCRMAPI.Application.Features.Commands.Tickets.UpdateTicket;
 using CegCRMAPI.Application.DTOs.Interaction;
 using CegCRMAPI.Application.Features.Commands.Interactions.CreateInteraction;
 using CegCRMAPI.Application.Features.Commands.Interactions.UpdateInteraction;
@@ -43,6 +46,11 @@ public class MappingProfile : Profile
         CreateMap<CreateTaskCommand, TaskItem>();
         CreateMap<UpdateTaskCommand, TaskItem>();
         CreateMap<DeleteTaskCommand, TaskItem>();
+
+        // Ticket mappings
+        CreateMap<Ticket, TicketDto>();
+        CreateMap<CreateTicketCommand, Ticket>();
+        CreateMap<UpdateTicketCommand, Ticket>();
 
         // Interaction mappings
         CreateMap<Interaction, InteractionDto>();
