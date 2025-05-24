@@ -16,11 +16,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCreateCustomer } from "@/features/hooks/userCustomerApi";
+import { toast } from "sonner";
+
+type FormData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+  type: "Person" | "Business";
+};
 
 export default function AddCustomerModal({ onAddCustomer }: { onAddCustomer: (customer: any) => void }) {
   const [open, setOpen] = useState(false);
+  const createCustomer = useCreateCustomer();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
     email: "",
@@ -33,18 +45,37 @@ export default function AddCustomerModal({ onAddCustomer }: { onAddCustomer: (cu
     setFormData({ ...formData, [field]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onAddCustomer({ ...formData, id: crypto.randomUUID() });
-    setOpen(false);
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      address: "",
-      type: "Person",
-    });
+    try {
+      const customerData = {
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        address: formData.address.trim(),
+        type: formData.type === "Person" ? 1 : 2,
+      };
+      
+      await createCustomer.mutateAsync(customerData);
+      toast.success("Müşteri başarıyla eklendi");
+      onAddCustomer(customerData);
+      setOpen(false);
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        address: "",
+        type: "Person",
+      });
+    } catch (error: any) {
+      if (error.response?.data) {
+        toast.error(error.response.data.message || "Müşteri eklenirken bir hata oluştu");
+      } else {
+        toast.error("Müşteri eklenirken bir hata oluştu");
+      }
+    }
   };
 
   return (

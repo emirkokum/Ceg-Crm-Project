@@ -18,6 +18,17 @@ builder.Services.AddPersistenceServices(builder.Configuration);
 // Add AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+// Add Cors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173") // veya senin Vite URL'in neyse
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -37,6 +48,9 @@ app.UseHttpsRedirection();
 
 // Add global exception handling middleware
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+
+// Use Cors
+app.UseCors("AllowFrontend");
 
 // Add authentication and authorization middleware
 app.UseAuthentication();

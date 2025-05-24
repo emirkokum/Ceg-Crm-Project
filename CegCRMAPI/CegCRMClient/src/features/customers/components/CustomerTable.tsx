@@ -18,34 +18,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ArrowUpDown } from "lucide-react";
-
-interface Customer {
-  id: string;
-  firstName: string;
-  lastName: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  address: string;
-  segment: "VIP" | "Potansiyel" | "Pasif";
-  type: "Person" | "Business";
-  createdAt: string;
-}
+import { Customer } from "@/types/customer";
 
 
 const columns: ColumnDef<Customer>[] = [
   {
-    accessorKey: "fullName",
-    header: ({ column }) => (
-      <button
-        className="flex items-center gap-2"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        İsim
-        <ArrowUpDown className="h-4 w-4" />
-      </button>
-    ),
+    accessorKey: "firstName",
+    header: "First Name",
+  },
+  {
+    accessorKey: "lastName",
+    header: "Last Name",
   },
   {
     accessorKey: "email",
@@ -54,6 +37,10 @@ const columns: ColumnDef<Customer>[] = [
   {
     accessorKey: "phone",
     header: "Telefon",
+  },
+  {
+    accessorKey: "address",
+    header: "Address",
   },
   {
     accessorKey: "segment",
