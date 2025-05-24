@@ -1,5 +1,5 @@
 import { useState } from "react";
-import customers from "../data/customers.json";
+import customersData from "../data/customers.json";
 import CustomerTable from "../components/CustomerTable";
 import { Input } from "@/components/ui/input";
 import {
@@ -9,21 +9,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import AddCustomerModal from "../components/AddCustomerModal";
+import { toast } from "sonner";
 
 export default function CustomerList() {
+  const [customers, setCustomers] = useState(customersData);
   const [searchTerm, setSearchTerm] = useState("");
   const [segmentFilter, setSegmentFilter] = useState("");
 
+  const handleAddCustomer = (newCustomer: any) => {
+    setCustomers((prev) => [...prev, newCustomer]);
+    toast.success("Yeni müşteri eklendi");
+  };
+
   const filteredCustomers = customers.filter((customer) => {
+    const name = customer.fullName ?? "";
+    const email = customer.email ?? "";
+  
     const matchesSearch =
-      customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer.email.toLowerCase().includes(searchTerm.toLowerCase());
-
+      name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      email.toLowerCase().includes(searchTerm.toLowerCase());
+  
     const matchesSegment =
-      segmentFilter === "" || customer.segment === segmentFilter;
-
+      segmentFilter === "" ||
+      customer.segment === segmentFilter ||
+      customer.type === segmentFilter;
+  
     return matchesSearch && matchesSegment;
   });
+  
 
   return (
     <div className="flex flex-col gap-4">
@@ -34,6 +48,9 @@ export default function CustomerList() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full md:w-1/2"
         />
+        <AddCustomerModal onAddCustomer={handleAddCustomer} />
+      </div>
+      <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
         <Select
           onValueChange={(val) => setSegmentFilter(val === "all" ? "" : val)}
           value={segmentFilter || "all"}

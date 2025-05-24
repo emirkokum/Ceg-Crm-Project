@@ -3,7 +3,6 @@
 
 import * as React from "react"
 import {
-  ArrowUpCircleIcon,
   BarChartIcon,
   CameraIcon,
   ClipboardListIcon,
@@ -18,6 +17,7 @@ import {
   SearchIcon,
   SettingsIcon,
   UsersIcon,
+  SquareMousePointer,
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/NavDocuments"
@@ -150,7 +150,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="/">
-                <ArrowUpCircleIcon className="h-5 w-5" />
+                <SquareMousePointer className="h-5 w-5" />
                 <span className="text-base font-semibold">CEG-CRM</span>
               </a>
             </SidebarMenuButton>

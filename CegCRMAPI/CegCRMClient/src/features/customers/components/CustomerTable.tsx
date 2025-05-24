@@ -22,16 +22,21 @@ import { ArrowUpDown } from "lucide-react";
 
 interface Customer {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
   email: string;
   phone: string;
-  segment: string;
+  address: string;
+  segment: "VIP" | "Potansiyel" | "Pasif";
+  type: "Person" | "Business";
   createdAt: string;
 }
 
+
 const columns: ColumnDef<Customer>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "fullName",
     header: ({ column }) => (
       <button
         className="flex items-center gap-2"

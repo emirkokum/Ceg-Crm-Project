@@ -133,3 +133,11 @@
     --chart-5: 340 75% 55%;
   }
 }
+
+.form-field {
+  @apply flex flex-col gap-1.5;
+}
+
+button {
+  cursor: pointer;
+}
