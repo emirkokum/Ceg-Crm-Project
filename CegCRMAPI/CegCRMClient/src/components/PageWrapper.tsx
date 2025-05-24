@@ -1,9 +1,5 @@
 import { ReactNode } from "react";
 
-export default function PageWrapper({ children }: { children: ReactNode }) {
-  return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {children}
-    </div>
-  );
+export default function PageContainer({ children }: { children: ReactNode }) {
+  return <div className="px-4 lg:px-6">{children}</div>;
 }

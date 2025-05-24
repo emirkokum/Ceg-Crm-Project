@@ -1,4 +1,5 @@
 import { MailIcon, PlusCircleIcon, type LucideIcon } from "lucide-react"
+import { Link } from "react-router-dom"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -43,9 +44,11 @@ export function NavMain({
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title}>
-                {item.icon && <item.icon />}
-                <span>{item.title}</span>
+              <SidebarMenuButton tooltip={item.title} asChild>
+                <Link to={item.url} className="flex items-center gap-2">
+                  {item.icon && <item.icon className="h-4 w-4" />}
+                  <span>{item.title}</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

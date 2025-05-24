@@ -1,3 +1,4 @@
+// src/components/AppSidebar.tsx
 "use client"
 
 import * as React from "react"
@@ -33,39 +34,45 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
+const navigationItems = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: LayoutDashboardIcon,
+  },
+  {
+    title: "Customers",
+    url: "/customers",
+    icon: UsersIcon,
+  },
+  {
+    title: "Lifecycle",
+    url: "/lifecycle",
+    icon: ListIcon,
+  },
+  {
+    title: "Analytics",
+    url: "/analytics",
+    icon: BarChartIcon,
+  },
+  {
+    title: "Projects",
+    url: "/projects",
+    icon: FolderIcon,
+  },
+  {
+    title: "Team",
+    url: "/team",
+    icon: UsersIcon,
+  },
+]
+
 const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: LayoutDashboardIcon,
-    },
-    {
-      title: "Lifecycle",
-      url: "#",
-      icon: ListIcon,
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      icon: BarChartIcon,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: FolderIcon,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: UsersIcon,
-    },
-  ],
   navClouds: [
     {
       title: "Capture",
@@ -73,14 +80,8 @@ const data = {
       isActive: true,
       url: "#",
       items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
+        { title: "Active Proposals", url: "#" },
+        { title: "Archived", url: "#" },
       ],
     },
     {
@@ -88,14 +89,8 @@ const data = {
       icon: FileTextIcon,
       url: "#",
       items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
+        { title: "Active Proposals", url: "#" },
+        { title: "Archived", url: "#" },
       ],
     },
     {
@@ -103,48 +98,42 @@ const data = {
       icon: FileCodeIcon,
       url: "#",
       items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
+        { title: "Active Proposals", url: "#" },
+        { title: "Archived", url: "#" },
       ],
     },
   ],
   navSecondary: [
     {
       title: "Settings",
-      url: "#",
+      url: "/settings",
       icon: SettingsIcon,
     },
     {
       title: "Get Help",
-      url: "#",
+      url: "/help",
       icon: HelpCircleIcon,
     },
     {
       title: "Search",
-      url: "#",
+      url: "/search",
       icon: SearchIcon,
     },
   ],
   documents: [
     {
       name: "Data Library",
-      url: "#",
+      url: "/data-library",
       icon: DatabaseIcon,
     },
     {
       name: "Reports",
-      url: "#",
+      url: "/reports",
       icon: ClipboardListIcon,
     },
     {
       name: "Word Assistant",
-      url: "#",
+      url: "/word-assistant",
       icon: FileIcon,
     },
   ],
@@ -160,16 +149,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
+              <a href="/">
                 <ArrowUpCircleIcon className="h-5 w-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">CEG-CRM</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navigationItems} />
         <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>

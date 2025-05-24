@@ -1,0 +1,19 @@
+[
+    {
+      "id": "1",
+      "name": "Ali Yılmaz",
+      "email": "ali@example.com",
+      "phone": "+90 555 123 45 67",
+      "segment": "VIP",
+      "createdAt": "2024-05-01"
+    },
+    {
+      "id": "2",
+      "name": "Zeynep Kaya",
+      "email": "zeynep@example.com",
+      "phone": "+90 542 678 90 12",
+      "segment": "Potansiyel",
+      "createdAt": "2024-04-15"
+    }
+  ]
+  
