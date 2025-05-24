@@ -1,10 +1,25 @@
 import App from "@/App";
-import { createBrowserRouter} from "react-router";
+import LoginPage from "@/features/auth/pages/LoginPage";
+import RegisterPage from "@/features/auth/pages/RegisterPage";
+import Dashboard from "@/features/dashboard/pages/Dashboard";
+import { createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <App/>
+        element: <App />,
+        children: [
+            { index: true, element: <Dashboard /> },
+            { path: "dashboard", element: <Dashboard /> },
+        ],
+    },
+    {
+        path: "/login",
+        element: <LoginPage />
+    },
+    {
+        path: "/register",
+        element: <RegisterPage />
     }
 ])
 

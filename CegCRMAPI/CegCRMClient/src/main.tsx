@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { RouterProvider } from "react-router";
+import { RouterProvider } from "react-router-dom";
 import "./index.css";
 import router from "./app/router.tsx";
 import { store } from "./app/store.ts";
