@@ -78,5 +78,15 @@ namespace CegCRMAPI.Persistence.Repositories
         {
             return await _context.SaveChangesAsync(cancellationToken);
         }
+        public IQueryable<T> Query()
+        {
+            return _dbSet.Where(x => x.DeletedDate == null).AsQueryable();
+        }
+        public async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, bool tracking = false)
+        {
+            var query = tracking ? _dbSet.Where(x => x.DeletedDate == null) : _dbSet.Where(x => x.DeletedDate == null).AsNoTracking();
+            return await query.FirstOrDefaultAsync(predicate);
+        }
+
     }
 } 

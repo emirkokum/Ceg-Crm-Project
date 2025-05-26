@@ -7,5 +7,6 @@ export interface Customer {
     address: string;
     type: "Person" | "Business";
     createdAt: string;
+    fullName?: string;
   }
   

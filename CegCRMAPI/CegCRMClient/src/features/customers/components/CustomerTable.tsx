@@ -88,10 +88,10 @@ export default function CustomerTable({ data }: CustomerTableProps) {
 
     try {
       await deleteCustomer.mutateAsync(selectedCustomer.id);
-      toast.success("Müşteri başarıyla silindi");
+      toast.success("Customer deleted successfully");
       setIsDeleteModalOpen(false);
     } catch (error) {
-      toast.error("Müşteri silinirken bir hata oluştu");
+      toast.error("Error deleting customer");
     }
   };
 
@@ -111,10 +111,10 @@ export default function CustomerTable({ data }: CustomerTableProps) {
         id: selectedCustomer.id,
         data: formData,
       });
-      toast.success("Müşteri başarıyla güncellendi");
+      toast.success("Customer updated successfully");
       setIsUpdateModalOpen(false);
     } catch (error) {
-      toast.error("Müşteri güncellenirken bir hata oluştu");
+      toast.error("Error updating customer");
     }
   };
 
@@ -129,11 +129,11 @@ export default function CustomerTable({ data }: CustomerTableProps) {
     },
     {
       accessorKey: "email",
-      header: "E-posta",
+      header: "Email",
     },
     {
       accessorKey: "phone",
-      header: "Telefon",
+      header: "Phone",
     },
     {
       accessorKey: "address",
@@ -158,14 +158,14 @@ export default function CustomerTable({ data }: CustomerTableProps) {
                 className="cursor-pointer"
               >
                 <Pencil className="mr-2 h-4 w-4" />
-                Güncelle
+                Update
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleDeleteClick(customer)}
                 className="cursor-pointer text-red-600"
               >
                 <Trash className="mr-2 h-4 w-4" />
-                Sil
+                Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -217,13 +217,13 @@ export default function CustomerTable({ data }: CustomerTableProps) {
       <Dialog open={isUpdateModalOpen} onOpenChange={setIsUpdateModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Müşteri Güncelle</DialogTitle>
+            <DialogTitle>Update Customer</DialogTitle>
           </DialogHeader>
           {selectedCustomer && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium">Ad</label>
+                  <label className="text-sm font-medium">First Name</label>
                   <input
                     type="text"
                     name="firstName"
@@ -233,7 +233,7 @@ export default function CustomerTable({ data }: CustomerTableProps) {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Soyad</label>
+                  <label className="text-sm font-medium">Last Name</label>
                   <input
                     type="text"
                     name="lastName"
@@ -243,7 +243,7 @@ export default function CustomerTable({ data }: CustomerTableProps) {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">E-posta</label>
+                  <label className="text-sm font-medium">Email</label>
                   <input
                     type="email"
                     name="email"
@@ -253,7 +253,7 @@ export default function CustomerTable({ data }: CustomerTableProps) {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Telefon</label>
+                  <label className="text-sm font-medium">Phone</label>
                   <input
                     type="tel"
                     name="phone"
@@ -263,7 +263,7 @@ export default function CustomerTable({ data }: CustomerTableProps) {
                   />
                 </div>
                 <div className="col-span-2">
-                  <label className="text-sm font-medium">Adres</label>
+                  <label className="text-sm font-medium">Address</label>
                   <textarea
                     name="address"
                     value={formData.address}
@@ -277,13 +277,13 @@ export default function CustomerTable({ data }: CustomerTableProps) {
                   variant="outline"
                   onClick={() => setIsUpdateModalOpen(false)}
                 >
-                  İptal
+                  Cancel
                 </Button>
                 <Button
                   onClick={handleSubmit}
                   disabled={updateCustomer.isPending}
                 >
-                  {updateCustomer.isPending ? "Güncelleniyor..." : "Güncelle"}
+                  {updateCustomer.isPending ? "Updating..." : "Update"}
                 </Button>
               </div>
             </div>
@@ -295,9 +295,9 @@ export default function CustomerTable({ data }: CustomerTableProps) {
       <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Müşteri Sil</DialogTitle>
+            <DialogTitle>Delete Customer</DialogTitle>
             <DialogDescription>
-              Bu müşteriyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+              Are you sure you want to delete this customer? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -305,14 +305,14 @@ export default function CustomerTable({ data }: CustomerTableProps) {
               variant="outline"
               onClick={() => setIsDeleteModalOpen(false)}
             >
-              İptal
+              Cancel
             </Button>
             <Button
               variant="destructive"
               onClick={handleDelete}
               disabled={deleteCustomer.isPending}
             >
-              {deleteCustomer.isPending ? "Siliniyor..." : "Evet, Sil"}
+              {deleteCustomer.isPending ? "Deleting..." : "Yes, Delete"}
             </Button>
           </DialogFooter>
         </DialogContent>

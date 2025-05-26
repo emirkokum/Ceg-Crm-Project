@@ -79,7 +79,10 @@ public class MappingProfile : Profile
         CreateMap<UpdateProductCommand, Product>();
 
         // Interaction mappings
-        CreateMap<Interaction, InteractionDto>();
+        CreateMap<Interaction, InteractionDto>()
+            .ForMember(dest => dest.CustomerFullName, opt =>
+            opt.MapFrom(src => $"{src.Customer.FirstName} {src.Customer.LastName}"));
+
         CreateMap<CreateInteractionCommand, Interaction>();
         CreateMap<UpdateInteractionCommand, Interaction>();
         CreateMap<DeleteInteractionCommand, Interaction>();

@@ -33,7 +33,6 @@ export default function CustomerList() {
 
       const matchesSegment =
         segmentFilter === "" ||
-        customer.segment === segmentFilter ||
         customer.type === segmentFilter;
 
       return matchesSearch && matchesSegment;
@@ -41,17 +40,17 @@ export default function CustomerList() {
   }, [customers, searchTerm, segmentFilter]);
 
   const handleAddCustomer = (newCustomer: any) => {
-    toast.success("Yeni müşteri eklendi");
+    toast.success("New customer added");
   };
 
-  if (isLoading) return <div>Yükleniyor...</div>;
-  if (isError) return <div>Veri alınırken hata oluştu.</div>;
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error fetching data.</div>;
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
         <Input
-          placeholder="Ara (isim veya e-posta)"
+          placeholder="Search (name or email)"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full md:w-1/2"
@@ -64,13 +63,13 @@ export default function CustomerList() {
           value={segmentFilter || "all"}
         >
           <SelectTrigger className="w-full md:w-48">
-            <SelectValue placeholder="Segment seç" />
+            <SelectValue placeholder="Select segment" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Tümü</SelectItem>
+            <SelectItem value="all">All</SelectItem>
             <SelectItem value="VIP">VIP</SelectItem>
-            <SelectItem value="Potansiyel">Potansiyel</SelectItem>
-            <SelectItem value="Pasif">Pasif</SelectItem>
+            <SelectItem value="Potansiyel">Potential</SelectItem>
+            <SelectItem value="Pasif">Passive</SelectItem>
           </SelectContent>
         </Select>
       </div>

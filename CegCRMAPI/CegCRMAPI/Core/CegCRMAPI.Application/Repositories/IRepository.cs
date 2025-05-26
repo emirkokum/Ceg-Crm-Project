@@ -16,5 +16,7 @@ namespace CegCRMAPI.Domain.Repositories
         Task<bool> AnyAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default);
         Task<int> CountAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default);
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        IQueryable<T> Query();
+        Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, bool tracking = false);
     }
 } 

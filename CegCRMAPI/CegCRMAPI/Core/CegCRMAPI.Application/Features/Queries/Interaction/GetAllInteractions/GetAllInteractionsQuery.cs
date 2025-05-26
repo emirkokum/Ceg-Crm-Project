@@ -6,6 +6,8 @@ using MediatR;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper.QueryableExtensions;
 
 namespace CegCRMAPI.Application.Features.Queries.Interactions.GetAllInteractions;
 
@@ -30,11 +32,13 @@ public class GetAllInteractionsQueryHandler : IRequestHandler<GetAllInteractions
     {
         try
         {
-            var interactions = await _interactionRepository.GetAllAsync(cancellationToken);
-            var interactionDtos = _mapper.Map<List<InteractionDto>>(interactions);
+            var interactions = await _interactionRepository.Query()
+                .Include(i => i.Customer)
+                .ProjectTo<InteractionDto>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
             
             return ApiResponse<List<InteractionDto>>.CreateSuccess(
-                interactionDtos, 
+                interactions, 
                 "Interactions retrieved successfully"
             );
         }
