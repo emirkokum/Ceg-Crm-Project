@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import * as interactionApi from "@/api/interaction";
-import { Interaction } from "@/types/interaction";
+import { Interaction, CreateInteraction } from "@/types/interaction";
 
 export const useInteractions = () => {
   return useQuery({
@@ -18,7 +18,7 @@ export const useInteractions = () => {
 export const useCreateInteraction = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: interactionApi.createInteraction,
+    mutationFn: (data: CreateInteraction) => interactionApi.createInteraction(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["interactions"] });
     },

@@ -16,6 +16,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useCustomers } from "@/features/hooks/userCustomerApi";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
 
 export default function InteractionsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -25,6 +27,9 @@ export default function InteractionsPage() {
     content: "",
     interactionDate: "",
   });
+
+  const [customerNameFilter, setCustomerNameFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
 
   const { data: interactions = [], isLoading } = useInteractions();
   const { data: customers = [], isLoading: isLoadingCustomers } = useCustomers();
@@ -55,12 +60,35 @@ export default function InteractionsPage() {
   };
 
   if (isLoading || isLoadingCustomers) {
-    return <div>Loading...</div>;
+    return (
+      <div className="container mx-auto py-10">
+        <div className="flex justify-between items-center mb-6">
+          <Skeleton className="h-8 w-32" />
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <div className="space-y-2">
+          <Skeleton className="w-full h-10" />
+          <Skeleton className="w-full h-10" />
+          <Skeleton className="w-full h-10" />
+          <Skeleton className="w-full h-10" />
+        </div>
+      </div>
+    );
   }
 
+  const filteredInteractions = interactions.filter(interaction => {
+    const customerName = interaction.customerFullName ?? "";
+    const type = interaction.type ?? "";
+
+    const matchesCustomerName = customerName.toLowerCase().includes(customerNameFilter.toLowerCase());
+    const matchesType = typeFilter === "" || type === typeFilter;
+
+    return matchesCustomerName && matchesType;
+  });
+
   return (
-    <div className="container mx-auto py-10">
-      <div className="flex justify-between items-center mb-6">
+    <div className="flex flex-col gap-4">
+      <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Interactions</h1>
         <Button onClick={() => setIsCreateModalOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
@@ -68,7 +96,31 @@ export default function InteractionsPage() {
         </Button>
       </div>
 
-      <InteractionTable data={interactions} />
+      <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between mb-4">
+        <Input
+          placeholder="Search customer..."
+          value={customerNameFilter}
+          onChange={(e) => setCustomerNameFilter(e.target.value)}
+          className="w-full md:w-1/2"
+        />
+        <Select
+          onValueChange={(val) => setTypeFilter(val === "all" ? "" : val)}
+          value={typeFilter || "all"}
+        >
+          <SelectTrigger className="w-full md:w-48">
+            <SelectValue placeholder="Select type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="Email">Email</SelectItem>
+            <SelectItem value="Phone">Phone</SelectItem>
+            <SelectItem value="Meeting">Meeting</SelectItem>
+            <SelectItem value="Other">Other</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <InteractionTable data={filteredInteractions} />
 
       {/* Create Modal */}
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
@@ -104,14 +156,14 @@ export default function InteractionsPage() {
                   onValueChange={(value) => setFormData(prev => ({ ...prev, type: value }))}
                 >
                   <SelectTrigger>
-                      <SelectValue placeholder="Select Type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Email">Email</SelectItem>
-                      <SelectItem value="Phone">Phone</SelectItem>
-                      <SelectItem value="Meeting">Meeting</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
-                    </SelectContent>
+                    <SelectValue placeholder="Select Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Email">Email</SelectItem>
+                    <SelectItem value="Phone">Phone</SelectItem>
+                    <SelectItem value="Meeting">Meeting</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
                 </Select>
               </div>
               <div className="flex-1">
@@ -136,9 +188,9 @@ export default function InteractionsPage() {
                       onSelect={(date: Date | undefined) => setFormData(prev => ({ ...prev, interactionDate: date ? date.toISOString() : "" }))}
                       initialFocus
                     />
-                     <div className="p-3">
+                    <div className="p-3">
                       <label className="text-sm font-medium">Time</label>
-                       <input
+                      <input
                         type="time"
                         value={formData.interactionDate ? format(new Date(formData.interactionDate), "HH:mm") : ""}
                         onChange={(e) => {

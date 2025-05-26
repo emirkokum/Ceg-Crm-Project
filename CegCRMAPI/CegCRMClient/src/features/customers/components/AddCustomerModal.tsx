@@ -81,11 +81,11 @@ export default function AddCustomerModal({ onAddCustomer }: { onAddCustomer: (cu
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>+ Yeni Müşteri</Button>
+        <Button>+ New Customer</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Yeni Müşteri Ekle</DialogTitle>
+          <DialogTitle>Add New Customer</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

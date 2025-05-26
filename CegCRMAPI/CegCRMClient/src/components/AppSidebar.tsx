@@ -50,27 +50,7 @@ const navigationItems = [
     title: "Interactions",
     url: "/interactions",
     icon: MessageSquareIcon,
-  },
-  {
-    title: "Lifecycle",
-    url: "/lifecycle",
-    icon: ListIcon,
-  },
-  {
-    title: "Analytics",
-    url: "/analytics",
-    icon: BarChartIcon,
-  },
-  {
-    title: "Projects",
-    url: "/projects",
-    icon: FolderIcon,
-  },
-  {
-    title: "Team",
-    url: "/team",
-    icon: UsersIcon,
-  },
+  }
 ]
 
 const data = {

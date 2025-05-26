@@ -23,7 +23,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash, Eye, CalendarIcon } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash, Eye, CalendarIcon, ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -63,6 +63,7 @@ interface UpdateFormData {
 
 export default function InteractionTable({ data }: InteractionTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
+
   const [selectedInteraction, setSelectedInteraction] =
     useState<Interaction | null>(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -143,15 +144,50 @@ export default function InteractionTable({ data }: InteractionTableProps) {
   const columns: ColumnDef<Interaction>[] = [
     {
       accessorKey: "customerFullName",
-      header: "Customer Full Name",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="px-0 pt-0 pb-0"
+          >
+            Customer Full Name
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => row.original.customerFullName,
     },
     {
       accessorKey: "type",
-      header: "Type",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="px-0 pt-0 pb-0"
+          >
+            Type
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+       cell: ({ row }) => row.original.type,
     },
     {
       accessorKey: "content",
-      header: "Content",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="px-0 pt-0 pb-0"
+          >
+            Content
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
         const content: string = row.getValue("content");
         const truncatedContent =
@@ -161,7 +197,18 @@ export default function InteractionTable({ data }: InteractionTableProps) {
     },
     {
       accessorKey: "interactionDate",
-      header: "Date",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="px-0 pt-0 pb-0"
+          >
+            Date
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => {
         const date = new Date(row.original.interactionDate);
         return date.toLocaleDateString("en-US");
