@@ -62,7 +62,12 @@ interface UpdateFormData {
 }
 
 export default function InteractionTable({ data }: InteractionTableProps) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: "interactionDate",
+      desc: true
+    }
+  ]);
 
   const [selectedInteraction, setSelectedInteraction] =
     useState<Interaction | null>(null);
@@ -211,7 +216,7 @@ export default function InteractionTable({ data }: InteractionTableProps) {
       },
       cell: ({ row }) => {
         const date = new Date(row.original.interactionDate);
-        return date.toLocaleDateString("en-US");
+        return format(date, "dd/MM/yyyy");
       },
     },
     {
@@ -458,12 +463,10 @@ export default function InteractionTable({ data }: InteractionTableProps) {
               <div className="space-y-1">
                 <p className="text-muted-foreground">Date</p>
                 <div className="bg-muted px-3 py-2 rounded">
-                  {new Date(
-                    selectedInteractionForInspect.interactionDate
-                  ).toLocaleString("en-US", {
-                    dateStyle: "short",
-                    timeStyle: "short",
-                  })}
+                  {format(
+                    new Date(selectedInteractionForInspect.interactionDate),
+                    "dd.MM.yyyy HH:mm"
+                  )}
                 </div>
               </div>
             </div>

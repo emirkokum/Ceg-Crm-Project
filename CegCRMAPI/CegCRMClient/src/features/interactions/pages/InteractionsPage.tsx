@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { useInteractions, useCreateInteraction } from "@/features/hooks/useInteractionApi";
+import {
+  useInteractions,
+  useCreateInteraction,
+} from "@/features/hooks/useInteractionApi";
 import InteractionTable from "../components/InteractionTable";
 import { Button } from "@/components/ui/button";
 import { Plus, CalendarIcon } from "lucide-react";
@@ -10,14 +13,18 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useCustomers } from "@/features/hooks/userCustomerApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
+import SearchableSelect from "@/components/SearchableSelect";
+import DateTimePicker from "@/components/DateTimePicker";
 
 export default function InteractionsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -32,10 +39,15 @@ export default function InteractionsPage() {
   const [typeFilter, setTypeFilter] = useState("");
 
   const { data: interactions = [], isLoading } = useInteractions();
-  const { data: customers = [], isLoading: isLoadingCustomers } = useCustomers();
+  const { data: customers = [], isLoading: isLoadingCustomers } =
+    useCustomers();
   const createInteraction = useCreateInteraction();
 
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleFormChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -76,11 +88,13 @@ export default function InteractionsPage() {
     );
   }
 
-  const filteredInteractions = interactions.filter(interaction => {
+  const filteredInteractions = interactions.filter((interaction) => {
     const customerName = interaction.customerFullName ?? "";
     const type = interaction.type ?? "";
 
-    const matchesCustomerName = customerName.toLowerCase().includes(customerNameFilter.toLowerCase());
+    const matchesCustomerName = customerName
+      .toLowerCase()
+      .includes(customerNameFilter.toLowerCase());
     const matchesType = typeFilter === "" || type === typeFilter;
 
     return matchesCustomerName && matchesType;
@@ -98,7 +112,7 @@ export default function InteractionsPage() {
 
       <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between mb-4">
         <Input
-          placeholder="Search customer..."
+          placeholder="Search With Name..."
           value={customerNameFilter}
           onChange={(e) => setCustomerNameFilter(e.target.value)}
           className="w-full md:w-1/2"
@@ -128,32 +142,34 @@ export default function InteractionsPage() {
           <DialogHeader>
             <DialogTitle>New Interaction</DialogTitle>
           </DialogHeader>
+
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
                 <label className="text-sm font-medium">Customer</label>
-                <Select
+                <SearchableSelect
+                  options={customers.map((c) => ({
+                    value: c.id,
+                    label: c.fullName,
+                  }))}
                   value={formData.customerId}
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, customerId: value }))}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select Customer" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {customers.map(customer => (
-                      <SelectItem key={customer.id} value={customer.id}>
-                        {customer.fullName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  onChange={(val) =>
+                    setFormData((f) => ({ ...f, customerId: val }))
+                  }
+                  placeholder="Select customer"
+                  emptyText="No customer matched."
+                  searchable={true}
+                />
               </div>
+
               <div className="flex-1">
                 <label className="text-sm font-medium">Type</label>
                 <Select
                   name="type"
                   value={formData.type}
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, type: value }))}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, type: value }))
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select Type" />
@@ -166,46 +182,23 @@ export default function InteractionsPage() {
                   </SelectContent>
                 </Select>
               </div>
+
               <div className="flex-1">
-                <label className="text-sm font-medium">Date</label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !formData.interactionDate && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {formData.interactionDate ? format(new Date(formData.interactionDate), "dd.MM.yyyy HH:mm") : <span>Select Date</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={formData.interactionDate ? new Date(formData.interactionDate) : undefined}
-                      onSelect={(date: Date | undefined) => setFormData(prev => ({ ...prev, interactionDate: date ? date.toISOString() : "" }))}
-                      initialFocus
-                    />
-                    <div className="p-3">
-                      <label className="text-sm font-medium">Time</label>
-                      <input
-                        type="time"
-                        value={formData.interactionDate ? format(new Date(formData.interactionDate), "HH:mm") : ""}
-                        onChange={(e) => {
-                          const [hours, minutes] = e.target.value.split(':');
-                          const currentDate = formData.interactionDate ? new Date(formData.interactionDate) : new Date();
-                          currentDate.setHours(parseInt(hours, 10));
-                          currentDate.setMinutes(parseInt(minutes, 10));
-                          setFormData(prev => ({ ...prev, interactionDate: currentDate.toISOString() }));
-                        }}
-                        className="w-full p-2 border rounded"
-                      />
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                <div className="flex-1">
+                  <label className="text-sm font-medium mb-1 block">Date</label>
+                  <DateTimePicker
+                    value={formData.interactionDate}
+                    onChange={(val) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        interactionDate: val,
+                      }))
+                    }
+                    placeholder="Select date and time"
+                  />
+                </div>
               </div>
+
               <div className="col-span-2">
                 <label className="text-sm font-medium">Content</label>
                 <textarea
@@ -217,6 +210,7 @@ export default function InteractionsPage() {
                 />
               </div>
             </div>
+
             <div className="flex justify-end space-x-2">
               <Button
                 variant="outline"
@@ -236,4 +230,4 @@ export default function InteractionsPage() {
       </Dialog>
     </div>
   );
-} 
+}
