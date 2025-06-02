@@ -50,7 +50,12 @@ const navigationItems = [
     title: "Interactions",
     url: "/interactions",
     icon: MessageSquareIcon,
-  }
+  },
+  {
+    title: "Tasks",
+    url: "/tasks",
+    icon: ListIcon,
+  },
 ]
 
 const data = {

@@ -4,6 +4,7 @@ import RegisterPage from "@/features/auth/pages/RegisterPage";
 import CustomerList from "@/features/customers/pages/CustomerList";
 import Dashboard from "@/features/dashboard/pages/Dashboard";
 import InteractionsPage from "@/features/interactions/pages/InteractionsPage";
+import TasksPage from "@/features/tasks/pages/TasksPage";
 import { createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -15,6 +16,7 @@ const router = createBrowserRouter([
       { path: "dashboard", element: <Dashboard /> },
       { path: "/customers", element: <CustomerList /> },
       { path: "/interactions", element: <InteractionsPage /> },
+      { path: "/tasks", element: <TasksPage /> },
     ],
   },
   {

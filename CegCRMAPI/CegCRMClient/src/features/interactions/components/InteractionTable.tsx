@@ -45,10 +45,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
+import DateTimePicker from "@/components/DateTimePicker";
 
 interface InteractionTableProps {
   data: Interaction[];
@@ -342,43 +340,16 @@ export default function InteractionTable({ data }: InteractionTableProps) {
                 </div>
                 <div>
                   <label className="text-sm font-medium">Date</label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !formData.interactionDate && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {formData.interactionDate ? format(new Date(formData.interactionDate), "dd.MM.yyyy HH:mm") : <span>Select Date</span>}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={formData.interactionDate ? new Date(formData.interactionDate) : undefined}
-                        onSelect={(date) => setFormData(prev => ({ ...prev, interactionDate: date ? date.toISOString() : "" }))}
-                        initialFocus
-                      />
-                       <div className="p-3">
-                        <label className="text-sm font-medium">Time</label>
-                         <input
-                          type="time"
-                          value={formData.interactionDate ? format(new Date(formData.interactionDate), "HH:mm") : ""}
-                          onChange={(e) => {
-                            const [hours, minutes] = e.target.value.split(':');
-                            const currentDate = formData.interactionDate ? new Date(formData.interactionDate) : new Date();
-                            currentDate.setHours(parseInt(hours, 10));
-                            currentDate.setMinutes(parseInt(minutes, 10));
-                            setFormData(prev => ({ ...prev, interactionDate: currentDate.toISOString() }));
-                          }}
-                          className="w-full p-2 border rounded"
-                        />
-                      </div>
-                    </PopoverContent>
-                  </Popover>
+                  <DateTimePicker
+                    value={formData.interactionDate}
+                    onChange={(val) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        interactionDate: val,
+                      }))
+                    }
+                    placeholder="Select date and time"
+                  />
                 </div>
                 <div className="col-span-2">
                   <label className="text-sm font-medium">Content</label>
