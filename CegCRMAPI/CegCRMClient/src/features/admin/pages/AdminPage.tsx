@@ -14,7 +14,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Plus } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
 
 export function AdminPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);

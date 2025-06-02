@@ -21,6 +21,7 @@ import {
   MessageSquareIcon,
   UserPlusIcon,
   ShieldIcon,
+  Ticket,
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/NavDocuments"
@@ -78,6 +79,11 @@ const navigationItems = [
     url: "/employees",
     icon: BriefcaseIcon,
   },
+  {
+    title: "Tickets",
+    url: "/tickets",
+    icon: Ticket,
+  },  
 ]
 
 const data = {

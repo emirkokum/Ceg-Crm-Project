@@ -1,6 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import API from "../../api/axios";
 
+export interface UserDto {
+  id: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  department?: string;
+  position?: string;
+  role?: string;
+}
+
 export interface Employee {
   id: string;
   userId: string;
@@ -15,12 +25,7 @@ export interface Employee {
   emergencyPhone?: string;
   bankAccount?: string;
   taxNumber?: string;
-  // Fields from UserDto
-  firstName?: string;
-  lastName?: string;
-  email: string;
-  role?: string;
-  department?: string;
+  user: UserDto;
 }
 
 export interface CreateEmployeeCommand {
@@ -54,11 +59,11 @@ export interface UpdateEmployeeCommand {
 }
 
 export const useEmployees = () => {
-  return useQuery<Employee[]>({
+  return useQuery({
     queryKey: ["employees"],
     queryFn: async () => {
-      const response = await API.get("/Employees");
-      return response.data.data; // Assuming the API response structure is similar to users
+      const response = await API.get<{ data: Employee[] }>("/Employees");
+      return response.data.data;
     },
   });
 };
