@@ -10,17 +10,17 @@ import {
   FileCodeIcon,
   FileIcon,
   FileTextIcon,
-  FolderIcon,
   HelpCircleIcon,
   LayoutDashboardIcon,
   ListIcon,
   SearchIcon,
   SettingsIcon,
   UsersIcon,
+  BriefcaseIcon,
   SquareMousePointer,
   MessageSquareIcon,
   UserPlusIcon,
-  Receipt,
+  ShieldIcon,
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/NavDocuments"
@@ -66,7 +66,17 @@ const navigationItems = [
   {
     title: "Sales",
     url: "/sales",
-    icon: Receipt,
+    icon: BarChartIcon,
+  },
+  {
+    title: "Admin",
+    url: "/admin",
+    icon: ShieldIcon,
+  },
+  {
+    title: "Employees",
+    url: "/employees",
+    icon: BriefcaseIcon,
   },
 ]
 
