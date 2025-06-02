@@ -6,6 +6,7 @@ import Dashboard from "@/features/dashboard/pages/Dashboard";
 import InteractionsPage from "@/features/interactions/pages/InteractionsPage";
 import TasksPage from "@/features/tasks/pages/TasksPage";
 import { LeadsPage } from "@/features/leads/pages/LeadsPage";
+import { SalesPage } from "@/features/sales/pages/SalesPage";
 import { createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
       { path: "/interactions", element: <InteractionsPage /> },
       { path: "/tasks", element: <TasksPage /> },
       { path: "/leads", element: <LeadsPage /> },
+      { path: "/sales", element: <SalesPage /> },
     ],
   },
   {

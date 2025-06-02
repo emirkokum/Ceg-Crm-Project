@@ -20,6 +20,7 @@ import {
   SquareMousePointer,
   MessageSquareIcon,
   UserPlusIcon,
+  Receipt,
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/NavDocuments"
@@ -61,6 +62,11 @@ const navigationItems = [
     title: "Leads",
     url: "/leads",
     icon: UserPlusIcon,
+  },
+  {
+    title: "Sales",
+    url: "/sales",
+    icon: Receipt,
   },
 ]
 
