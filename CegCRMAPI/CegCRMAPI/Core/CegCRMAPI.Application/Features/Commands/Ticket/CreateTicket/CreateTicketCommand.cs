@@ -2,7 +2,7 @@ using AutoMapper;
 using CegCRMAPI.Application.DTOs.Ticket;
 using CegCRMAPI.Application.DTOs.Common;
 using CegCRMAPI.Domain.Entities;
-using CegCRMAPI.Domain.Repositories;
+using CegCRMAPI.Application.Repositories;
 using MediatR;
 
 namespace CegCRMAPI.Application.Features.Commands.Tickets.CreateTicket;
@@ -36,7 +36,7 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, A
     {
         try
         {
-            var ticket = _mapper.Map<Ticket>(request);
+            var ticket = _mapper.Map<CegCRMAPI.Domain.Entities.Ticket>(request);
 
             await _ticketRepository.AddAsync(ticket, cancellationToken);
             await _unitOfWork.SaveChangesAsync();

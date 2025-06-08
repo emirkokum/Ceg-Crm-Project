@@ -1,7 +1,7 @@
 using AutoMapper;
 using CegCRMAPI.Application.DTOs.Customer;
 using CegCRMAPI.Domain.Entities;
-using CegCRMAPI.Domain.Repositories;
+using CegCRMAPI.Application.Repositories;
 using MediatR;
 
 namespace CegCRMAPI.Application.Features.Commands.Customers.CreateCustomer;
@@ -34,7 +34,7 @@ public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerComman
 
     public async Task<CustomerDto> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
     {
-        var customer = _mapper.Map<Customer>(request);
+        var customer = _mapper.Map<Domain.Entities.Customer>(request);
 
         await _customerRepository.AddAsync(customer, cancellationToken);
         await _unitOfWork.SaveChangesAsync();

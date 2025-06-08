@@ -1,8 +1,8 @@
-using CegCRMAPI.Domain.Repositories;
+using CegCRMAPI.Application.Repositories;
 using MediatR;
 using System;
 
-namespace CegCRMAPI.Application.Features.Commands.Customers.DeleteCustomer;
+namespace CegCRMAPI.Application.Features.Commands.Customer.DeleteCustomer;
 
 public record DeleteCustomerCommand : IRequest<bool>
 {

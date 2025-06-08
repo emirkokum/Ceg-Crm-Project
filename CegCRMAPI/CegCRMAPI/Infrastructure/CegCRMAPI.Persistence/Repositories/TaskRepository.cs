@@ -1,5 +1,5 @@
 using CegCRMAPI.Domain.Entities;
-using CegCRMAPI.Domain.Repositories;
+using CegCRMAPI.Application.Repositories;
 using CegCRMAPI.Persistence.Context;
 using CegCRMAPI.Persistence.Repositories;
 

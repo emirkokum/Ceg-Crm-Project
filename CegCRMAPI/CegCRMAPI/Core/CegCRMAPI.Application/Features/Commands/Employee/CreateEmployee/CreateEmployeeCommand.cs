@@ -1,7 +1,7 @@
 using AutoMapper;
 using CegCRMAPI.Application.DTOs.Employee;
 using CegCRMAPI.Domain.Entities;
-using CegCRMAPI.Domain.Repositories;
+using CegCRMAPI.Application.Repositories;
 using MediatR;
 
 namespace CegCRMAPI.Application.Features.Commands.Employees.CreateEmployee;
@@ -40,7 +40,7 @@ public class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeComman
 
     public async Task<EmployeeDto> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
     {
-        var employee = _mapper.Map<Employee>(request);
+        var employee = _mapper.Map<Domain.Entities.Employee>(request);
 
         await _employeeRepository.AddAsync(employee, cancellationToken);
         await _unitOfWork.SaveChangesAsync();

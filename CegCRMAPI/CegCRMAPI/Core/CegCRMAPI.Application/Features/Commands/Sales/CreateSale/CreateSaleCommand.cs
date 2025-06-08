@@ -2,7 +2,7 @@ using AutoMapper;
 using CegCRMAPI.Application.DTOs.Sale;
 using CegCRMAPI.Application.DTOs.Common;
 using CegCRMAPI.Domain.Entities;
-using CegCRMAPI.Domain.Repositories;
+using CegCRMAPI.Application.Repositories;
 using MediatR;
 using System.Collections.Generic;
 

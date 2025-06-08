@@ -2,7 +2,7 @@ using AutoMapper;
 using CegCRMAPI.Application.DTOs.Product;
 using CegCRMAPI.Application.DTOs.Common;
 using CegCRMAPI.Domain.Entities;
-using CegCRMAPI.Domain.Repositories;
+using CegCRMAPI.Application.Repositories;
 using MediatR;
 
 namespace CegCRMAPI.Application.Features.Commands.Products.CreateProduct;

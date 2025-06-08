@@ -1,4 +1,4 @@
-using CegCRMAPI.Domain.Repositories;
+using CegCRMAPI.Application.Repositories;
 using CegCRMAPI.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;

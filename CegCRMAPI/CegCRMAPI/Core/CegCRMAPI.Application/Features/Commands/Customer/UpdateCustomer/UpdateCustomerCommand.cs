@@ -1,7 +1,7 @@
 using AutoMapper;
 using CegCRMAPI.Application.DTOs.Customer;
 using CegCRMAPI.Domain.Entities;
-using CegCRMAPI.Domain.Repositories;
+using CegCRMAPI.Application.Repositories;
 using MediatR;
 using System;
 

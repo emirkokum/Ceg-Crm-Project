@@ -1,5 +1,4 @@
-﻿using CegCRMAPI.Domain.Repositories;
-using CegCRMAPI.Infrastructure.Repositories;
+﻿using CegCRMAPI.Infrastructure.Repositories;
 using CegCRMAPI.Persistence.Context;
 using CegCRMAPI.Persistence.Repositories;
 using CegCRMAPI.Persistence.Seeds;
@@ -8,6 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using CegCRMAPI.Domain.Entities;
+using CegCRMAPI.Application.Repositories;
+using CegCRMAPI.Application.Interfaces.Services;
+using CegCRMAPI.Application.Services.Ai;
 
 namespace CegCRMAPI.Persistence
 {
@@ -28,6 +30,7 @@ namespace CegCRMAPI.Persistence
             services.AddScoped<ISaleRepository, SaleRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAiService,AiService>();
 
             // Configure Identity
             services.AddIdentity<User, IdentityRole<Guid>>(options =>

@@ -1,8 +1,8 @@
 using CegCRMAPI.Application.DTOs.Common;
-using CegCRMAPI.Domain.Repositories;
+using CegCRMAPI.Application.Repositories;
 using MediatR;
 
-namespace CegCRMAPI.Application.Features.Commands.Tasks.DeleteTask;
+namespace CegCRMAPI.Application.Features.Commands.Task.DeleteTask;
 
 public record DeleteTaskCommand : IRequest<ApiResponse<bool>>
 {

@@ -1,8 +1,8 @@
 using CegCRMAPI.Application.DTOs.Common;
-using CegCRMAPI.Domain.Repositories;
+using CegCRMAPI.Application.Repositories;
 using MediatR;
 
-namespace CegCRMAPI.Application.Features.Commands.Tickets.DeleteTicket;
+namespace CegCRMAPI.Application.Features.Commands.Ticket.DeleteTicket;
 
 public record DeleteTicketCommand : IRequest<ApiResponse<bool>>
 {

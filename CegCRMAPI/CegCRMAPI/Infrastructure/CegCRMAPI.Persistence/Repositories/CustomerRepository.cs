@@ -1,6 +1,5 @@
 using CegCRMAPI.Domain.Entities;
-using CegCRMAPI.Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
+using CegCRMAPI.Application.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

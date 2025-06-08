@@ -1,7 +1,7 @@
 using AutoMapper;
 using CegCRMAPI.Application.DTOs.Ticket;
 using CegCRMAPI.Application.DTOs.Common;
-using CegCRMAPI.Domain.Repositories;
+using CegCRMAPI.Application.Repositories;
 using MediatR;
 using System.Collections.Generic;
 using System.Threading;

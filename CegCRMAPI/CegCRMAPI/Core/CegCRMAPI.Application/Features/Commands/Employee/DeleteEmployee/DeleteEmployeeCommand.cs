@@ -1,7 +1,7 @@
-using CegCRMAPI.Domain.Repositories;
+using CegCRMAPI.Application.Repositories;
 using MediatR;
 
-namespace CegCRMAPI.Application.Features.Commands.Employees.DeleteEmployee;
+namespace CegCRMAPI.Application.Features.Commands.Employee.DeleteEmployee;
 
 public record DeleteEmployeeCommand : IRequest<bool>
 {
