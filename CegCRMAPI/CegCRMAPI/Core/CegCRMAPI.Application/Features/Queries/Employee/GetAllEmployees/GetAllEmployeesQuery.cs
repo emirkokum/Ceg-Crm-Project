@@ -2,6 +2,7 @@ using AutoMapper;
 using CegCRMAPI.Application.DTOs.Employee;
 using CegCRMAPI.Application.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,7 +28,8 @@ public class GetAllEmployeesQueryHandler : IRequestHandler<GetAllEmployeesQuery,
 
     public async Task<List<EmployeeDto>> Handle(GetAllEmployeesQuery request, CancellationToken cancellationToken)
     {
-        var employees = await _employeeRepository.GetAllAsync(cancellationToken);
+
+        var employees = await _employeeRepository.Query().Include(e => e.User).ToListAsync(cancellationToken);
         return _mapper.Map<List<EmployeeDto>>(employees);
     }
 } 

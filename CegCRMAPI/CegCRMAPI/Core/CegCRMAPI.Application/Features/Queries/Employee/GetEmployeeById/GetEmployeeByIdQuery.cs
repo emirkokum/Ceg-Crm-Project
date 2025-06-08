@@ -2,6 +2,7 @@ using AutoMapper;
 using CegCRMAPI.Application.DTOs.Employee;
 using CegCRMAPI.Application.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace CegCRMAPI.Application.Features.Queries.Employees.GetEmployeeById;
 
@@ -25,7 +26,11 @@ public class GetEmployeeByIdQueryHandler : IRequestHandler<GetEmployeeByIdQuery,
 
     public async Task<EmployeeDto> Handle(GetEmployeeByIdQuery request, CancellationToken cancellationToken)
     {
-        var employee = await _employeeRepository.GetByIdAsync(request.Id, cancellationToken);
+        var employee = await _employeeRepository
+            .Query()
+            .Include(e => e.User)
+            .FirstOrDefaultAsync(e => e.Id == request.Id, cancellationToken);
+
         if (employee == null)
             throw new Exception($"Employee with ID {request.Id} not found");
 
