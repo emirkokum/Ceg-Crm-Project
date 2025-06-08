@@ -17,17 +17,6 @@ namespace CegCRMAPI.Application.DTOs.Auth
         [StringLength(50)]
         public string FirstName { get; set; }
 
-        [Required]
-        [StringLength(50)]
-        public string LastName { get; set; }
-
-        [Required]
-        [StringLength(50)]
-        public string Department { get; set; }
-
-        [Required]
-        [StringLength(50)]
-        public string Position { get; set; }
     }
 
     public class LoginDto
@@ -46,8 +35,6 @@ namespace CegCRMAPI.Application.DTOs.Auth
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Department { get; set; }
-        public string Position { get; set; }
         public string Role { get; set; }
     }
 } 

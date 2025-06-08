@@ -30,6 +30,13 @@ namespace CegCRMAPI.Persistence.Context
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<IdentityRole<Guid>>().ToTable("Roles");
+            modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("UserRoles");
+            modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("UserClaims");
+            modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("UserLogins");
+            modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("RoleClaims");
+            modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens");
+
             // Configure User entity
             modelBuilder.Entity<User>(entity =>
             {
@@ -37,8 +44,6 @@ namespace CegCRMAPI.Persistence.Context
                 entity.Property(u => u.FirstName).IsRequired().HasMaxLength(50);
                 entity.Property(u => u.LastName).IsRequired().HasMaxLength(50);
                 entity.Property(u => u.PhoneNumber).HasMaxLength(20);
-                entity.Property(u => u.Department).HasMaxLength(50);
-                entity.Property(u => u.Position).HasMaxLength(50);
             });
 
             // Configure Employee entity

@@ -14,8 +14,6 @@ public record RegisterCommand : IRequest<UserDto>
     public string Password { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string Department { get; set; }
-    public string Position { get; set; }
     public string Role { get; set; }
 }
 
@@ -40,9 +38,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, UserDto>
             UserName = request.Email,
             Email = request.Email,
             FirstName = request.FirstName,
-            LastName = request.LastName,
-            Department = request.Department,
-            Position = request.Position
+            LastName = request.LastName
         };
 
         var result = await _userManager.CreateAsync(user, request.Password);

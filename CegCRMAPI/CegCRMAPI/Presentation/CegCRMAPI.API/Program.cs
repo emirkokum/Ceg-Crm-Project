@@ -8,6 +8,7 @@ using CegCRMAPI.Persistence.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using CegCRMAPI.Persistence.Seeds;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,5 +58,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+    await RoleSeeder.SeedRolesAsync(roleManager);
+}
 
 app.Run();

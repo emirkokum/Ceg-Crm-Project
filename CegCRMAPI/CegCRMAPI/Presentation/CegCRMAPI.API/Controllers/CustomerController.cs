@@ -1,18 +1,12 @@
-using CegCRMAPI.Application.DTOs.Customer;
 using CegCRMAPI.Application.DTOs.Common;
+using CegCRMAPI.Application.DTOs.Customer;
+using CegCRMAPI.Application.Features.Commands.Customer.DeleteCustomer;
 using CegCRMAPI.Application.Features.Commands.Customers.CreateCustomer;
-using CegCRMAPI.Application.Features.Commands.Customers.DeleteCustomer;
 using CegCRMAPI.Application.Features.Commands.Customers.UpdateCustomer;
 using CegCRMAPI.Application.Features.Queries.Customers.GetAllCustomers;
 using CegCRMAPI.Application.Features.Queries.Customers.GetCustomerById;
-using CegCRMAPI.Domain.Entities;
-using CegCRMAPI.Domain.Repositories;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace CegCRMAPI.API.Controllers
 {

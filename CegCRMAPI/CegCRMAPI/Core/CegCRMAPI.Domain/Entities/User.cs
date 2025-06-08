@@ -14,17 +14,5 @@ namespace CegCRMAPI.Domain.Entities
         // Temel bilgiler
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
-        public string PhoneNumber { get; set; } = string.Empty;
-
-        // Çalışan bilgileri
-        public string Department { get; set; } = string.Empty;
-        public string Position { get; set; } = string.Empty;
-        public DateTime HireDate { get; set; }
-        public bool IsActive { get; set; } = true;
-
-        // İlişkiler
-        public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
-        public ICollection<Sale> Sales { get; set; } = new List<Sale>();
-        public ICollection<TaskItem> Tasks { get; set; } = new List<TaskItem>();
     }
 }

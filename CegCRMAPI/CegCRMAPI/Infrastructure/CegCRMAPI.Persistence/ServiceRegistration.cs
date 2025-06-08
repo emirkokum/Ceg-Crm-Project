@@ -30,7 +30,7 @@ namespace CegCRMAPI.Persistence
             services.AddScoped<ISaleRepository, SaleRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IAiService,AiService>();
+            services.AddHttpClient<IAiService,AiService>();
 
             // Configure Identity
             services.AddIdentity<User, IdentityRole<Guid>>(options =>
@@ -51,14 +51,6 @@ namespace CegCRMAPI.Persistence
             })
             .AddEntityFrameworkStores<CegCrmDbContext>()
             .AddDefaultTokenProviders();
-
-            // Seed roles
-            var serviceProvider = services.BuildServiceProvider();
-            using (var scope = serviceProvider.CreateScope())
-            {
-                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-                RoleSeeder.SeedRolesAsync(roleManager).Wait();
-            }
 
             return services;
         }

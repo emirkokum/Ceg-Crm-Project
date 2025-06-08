@@ -1,12 +1,12 @@
 using CegCRMAPI.Application.DTOs.Task;
 using CegCRMAPI.Application.DTOs.Common;
 using CegCRMAPI.Application.Features.Commands.Tasks.CreateTask;
-using CegCRMAPI.Application.Features.Commands.Tasks.DeleteTask;
 using CegCRMAPI.Application.Features.Commands.Tasks.UpdateTask;
 using CegCRMAPI.Application.Features.Queries.Tasks.GetAllTasks;
 using CegCRMAPI.Application.Features.Queries.Tasks.GetTaskById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using CegCRMAPI.Application.Features.Commands.Task.DeleteTask;
 
 namespace CegCRMAPI.API.Controllers
 {

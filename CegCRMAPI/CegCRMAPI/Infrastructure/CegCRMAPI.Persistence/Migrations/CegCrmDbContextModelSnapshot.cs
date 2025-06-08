@@ -327,16 +327,11 @@ namespace CegCRMAPI.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("SalesPersonId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Sales");
                 });
@@ -447,6 +442,9 @@ namespace CegCRMAPI.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("AiSuggestedSolution")
+                        .HasColumnType("text");
+
                     b.Property<Guid?>("AssignedEmployeeId")
                         .HasColumnType("uuid");
 
@@ -463,27 +461,21 @@ namespace CegCRMAPI.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Solution")
+                    b.Property<string>("FinalSolution")
                         .HasColumnType("text");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
+                    b.Property<int>("Status")
                         .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AssignedEmployeeId");
 
                     b.HasIndex("CustomerId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Tickets");
                 });
@@ -501,11 +493,6 @@ namespace CegCRMAPI.Persistence.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
-                    b.Property<string>("Department")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -517,12 +504,6 @@ namespace CegCRMAPI.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
-
-                    b.Property<DateTime>("HireDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -547,17 +528,11 @@ namespace CegCRMAPI.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("Position")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -605,7 +580,7 @@ namespace CegCRMAPI.Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -629,7 +604,7 @@ namespace CegCRMAPI.Persistence.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("RoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
@@ -653,7 +628,7 @@ namespace CegCRMAPI.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("UserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
@@ -674,7 +649,7 @@ namespace CegCRMAPI.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("UserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
@@ -689,7 +664,7 @@ namespace CegCRMAPI.Persistence.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -708,7 +683,7 @@ namespace CegCRMAPI.Persistence.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("UserTokens", (string)null);
                 });
 
             modelBuilder.Entity("CegCRMAPI.Domain.Entities.Customer", b =>
@@ -758,10 +733,6 @@ namespace CegCRMAPI.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CegCRMAPI.Domain.Entities.User", null)
-                        .WithMany("Sales")
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Customer");
 
                     b.Navigation("SalesPerson");
@@ -789,7 +760,7 @@ namespace CegCRMAPI.Persistence.Migrations
             modelBuilder.Entity("CegCRMAPI.Domain.Entities.TaskItem", b =>
                 {
                     b.HasOne("CegCRMAPI.Domain.Entities.User", "AssignedUser")
-                        .WithMany("Tasks")
+                        .WithMany()
                         .HasForeignKey("AssignedUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -818,10 +789,6 @@ namespace CegCRMAPI.Persistence.Migrations
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("CegCRMAPI.Domain.Entities.User", null)
-                        .WithMany("Tickets")
-                        .HasForeignKey("UserId");
 
                     b.Navigation("AssignedEmployee");
 
@@ -908,15 +875,6 @@ namespace CegCRMAPI.Persistence.Migrations
             modelBuilder.Entity("CegCRMAPI.Domain.Entities.Sale", b =>
                 {
                     b.Navigation("SaleProducts");
-                });
-
-            modelBuilder.Entity("CegCRMAPI.Domain.Entities.User", b =>
-                {
-                    b.Navigation("Sales");
-
-                    b.Navigation("Tasks");
-
-                    b.Navigation("Tickets");
                 });
 #pragma warning restore 612, 618
         }

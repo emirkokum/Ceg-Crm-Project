@@ -1,13 +1,13 @@
 using CegCRMAPI.Application.DTOs.Employee;
 using CegCRMAPI.Application.DTOs.Common;
 using CegCRMAPI.Application.Features.Commands.Employees.CreateEmployee;
-using CegCRMAPI.Application.Features.Commands.Employees.DeleteEmployee;
 using CegCRMAPI.Application.Features.Commands.Employees.UpdateEmployee;
 using CegCRMAPI.Application.Features.Queries.Employees.GetAllEmployees;
 using CegCRMAPI.Application.Features.Queries.Employees.GetEmployeeById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using CegCRMAPI.Application.Features.Commands.Employee.DeleteEmployee;
 
 namespace CegCRMAPI.API.Controllers
 {
