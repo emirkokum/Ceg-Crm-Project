@@ -11,12 +11,21 @@ namespace CegCRMAPI.Domain.Entities
     {
         public Guid CustomerId { get; set; }
         public Guid? AssignedEmployeeId { get; set; }
-        public string Status { get; set; } = string.Empty;
+        public TicketStatus Status { get; set; } = TicketStatus.Open;
         public string Description { get; set; } = string.Empty;
-        public string? Solution { get; set; }
+        public string? AiSuggestedSolution { get; set; }
+        public string? FinalSolution { get; set; }
 
         // Navigation
         public Customer Customer { get; set; } = null!;
         public Employee? AssignedEmployee { get; set; }
+    }
+
+    public enum TicketStatus
+    {
+        Open,
+        ResolvedByAI,
+        AssignedToEmployee,
+        Closed
     }
 }
