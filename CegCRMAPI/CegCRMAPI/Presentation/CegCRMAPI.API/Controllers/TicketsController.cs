@@ -1,7 +1,6 @@
 using CegCRMAPI.Application.DTOs.Ticket;
 using CegCRMAPI.Application.DTOs.Common;
 using CegCRMAPI.Application.Features.Commands.Tickets.CreateTicket;
-using CegCRMAPI.Application.Features.Commands.Tickets.DeleteTicket;
 using CegCRMAPI.Application.Features.Commands.Tickets.UpdateTicket;
 using CegCRMAPI.Application.Features.Queries.Tickets.GetAllTickets;
 using CegCRMAPI.Application.Features.Queries.Tickets.GetTicketById;
@@ -10,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CegCRMAPI.Application.Features.Commands.Ticket.DeleteTicket;
+using CegCRMAPI.Application.Features.Commands.Tickets.AssignTicketToEmployee;
 
 namespace CegCRMAPI.API.Controllers
 {
@@ -66,5 +67,21 @@ namespace CegCRMAPI.API.Controllers
             var result = await _mediator.Send(command);
             return Ok(result);
         }
+        
+        [HttpPut("{id}/assign")]
+        public async Task<IActionResult> AssignToEmployee(Guid id, [FromBody] AssignTicketToEmployeeCommand request)
+        {
+            if (id != request.TicketId)
+                return BadRequest("Ticket ID mismatch.");
+
+            var command = new AssignTicketToEmployeeCommand(request.TicketId, request.EmployeeId);
+            var result = await _mediator.Send(command);
+
+            if (!result.Success)
+                return BadRequest(result.Message);
+
+            return Ok(result);
+        }
+        
     }
 } 

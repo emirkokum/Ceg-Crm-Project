@@ -4,6 +4,7 @@ using CegCRMAPI.Application.DTOs.Common;
 using CegCRMAPI.Domain.Entities;
 using CegCRMAPI.Application.Repositories;
 using MediatR;
+using CegCRMAPI.Application.Interfaces.Services;
 
 namespace CegCRMAPI.Application.Features.Commands.Tickets.CreateTicket;
 
@@ -21,32 +22,47 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, A
     private readonly ITicketRepository _ticketRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IAiService _aiService;
 
     public CreateTicketCommandHandler(
         ITicketRepository ticketRepository,
         IUnitOfWork unitOfWork,
-        IMapper mapper)
+        IMapper mapper,
+        IAiService aiService)
     {
         _ticketRepository = ticketRepository;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _aiService = aiService;
     }
 
     public async Task<ApiResponse<TicketDto>> Handle(CreateTicketCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            var ticket = _mapper.Map<CegCRMAPI.Domain.Entities.Ticket>(request);
+            // AI çözüm önerisini al
+            var aiSuggestion = await _aiService.GetSolutionAsync(request.Description);
+
+            // Yeni ticket oluştur
+            var ticket = new Domain.Entities.Ticket
+            {
+                CustomerId = request.CustomerId,
+                Description = request.Description,
+                AiSuggestedSolution = aiSuggestion,
+                FinalSolution = aiSuggestion,
+                Status = TicketStatus.ResolvedByAI,
+                AssignedEmployeeId = null
+            };
 
             await _ticketRepository.AddAsync(ticket, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
-            var ticketDto = _mapper.Map<TicketDto>(ticket);
-            return ApiResponse<TicketDto>.CreateSuccess(ticketDto, "Ticket created successfully");
+            var dto = _mapper.Map<TicketDto>(ticket);
+            return ApiResponse<TicketDto>.CreateSuccess(dto, "Ticket created successfully");
         }
         catch (Exception ex)
         {
             return ApiResponse<TicketDto>.CreateError($"Failed to create ticket: {ex.Message}");
         }
     }
-} 
+}

@@ -6,9 +6,10 @@ namespace CegCRMAPI.Application.DTOs.Ticket
     {
         public Guid Id { get; set; }
         public Guid CustomerId { get; set; }
-        public Guid? AssignedEmployeeId { get; set; }
-        public string Status { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public string? Solution { get; set; }
+        public string? AiSuggestedSolution { get; set; }
+        public string? FinalSolution { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public Guid? AssignedEmployeeId { get; set; }
     }
 } 

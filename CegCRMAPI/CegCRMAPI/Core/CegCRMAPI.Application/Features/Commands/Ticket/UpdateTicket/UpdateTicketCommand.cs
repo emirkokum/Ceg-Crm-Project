@@ -3,6 +3,7 @@ using CegCRMAPI.Application.DTOs.Ticket;
 using CegCRMAPI.Application.DTOs.Common;
 using CegCRMAPI.Application.Repositories;
 using MediatR;
+using CegCRMAPI.Domain.Entities;
 
 namespace CegCRMAPI.Application.Features.Commands.Tickets.UpdateTicket;
 
@@ -10,10 +11,9 @@ public record UpdateTicketCommand : IRequest<ApiResponse<TicketDto>>
 {
     public Guid Id { get; init; }
     public Guid CustomerId { get; init; }
+    public TicketStatus? Status { get; init; }
+    public string? FinalSolution { get; init; }
     public Guid? AssignedEmployeeId { get; init; }
-    public string Status { get; init; } = string.Empty;
-    public string Description { get; init; } = string.Empty;
-    public string? Solution { get; init; }
 }
 
 public class UpdateTicketCommandHandler : IRequestHandler<UpdateTicketCommand, ApiResponse<TicketDto>>
@@ -37,10 +37,19 @@ public class UpdateTicketCommandHandler : IRequestHandler<UpdateTicketCommand, A
         try
         {
             var ticket = await _ticketRepository.GetByIdAsync(request.Id, cancellationToken);
-            if (ticket == null)
+            if (ticket is null)
             {
                 return ApiResponse<TicketDto>.CreateError($"Ticket with ID {request.Id} not found");
             }
+
+            if (request.Status.HasValue)
+            ticket.Status = request.Status.Value;
+
+            if (!string.IsNullOrWhiteSpace(request.FinalSolution))
+                ticket.FinalSolution = request.FinalSolution;
+
+            if (request.AssignedEmployeeId.HasValue)
+                ticket.AssignedEmployeeId = request.AssignedEmployeeId;
 
             _mapper.Map(request, ticket);
             await _unitOfWork.SaveChangesAsync();
