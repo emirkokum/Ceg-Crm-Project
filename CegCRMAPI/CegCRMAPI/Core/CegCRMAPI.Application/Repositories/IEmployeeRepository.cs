@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CegCRMAPI.Domain.Repositories
+namespace CegCRMAPI.Application.Repositories
 {
     public interface IEmployeeRepository : IRepository<Employee>
     {

@@ -1,7 +1,7 @@
 using CegCRMAPI.Domain.Entities.Common;
 using System.Linq.Expressions;
 
-namespace CegCRMAPI.Domain.Repositories
+namespace CegCRMAPI.Application.Repositories
 {
     public interface IRepository<T> where T : BaseEntity
     {

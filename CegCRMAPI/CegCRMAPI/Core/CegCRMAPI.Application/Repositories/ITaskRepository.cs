@@ -1,6 +1,6 @@
 using CegCRMAPI.Domain.Entities;
 
-namespace CegCRMAPI.Domain.Repositories
+namespace CegCRMAPI.Application.Repositories
 {
     public interface ITaskRepository : IRepository<TaskItem>
     {

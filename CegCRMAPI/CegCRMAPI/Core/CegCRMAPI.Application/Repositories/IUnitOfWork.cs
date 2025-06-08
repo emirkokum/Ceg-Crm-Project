@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace CegCRMAPI.Domain.Repositories
+namespace CegCRMAPI.Application.Repositories
 {
     public interface IUnitOfWork : IDisposable
     {

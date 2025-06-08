@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CegCRMAPI.Domain.Repositories
+namespace CegCRMAPI.Application.Repositories
 {
     public interface IInteractionRepository:IRepository<Interaction>
     {
