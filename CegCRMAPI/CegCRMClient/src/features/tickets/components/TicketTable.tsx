@@ -16,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Ticket } from "@/types/ticket";
+import { Ticket, TicketStatus } from "@/types/ticket";
 import { Employee } from "@/types/employee";
 import {
   DropdownMenu,
@@ -37,6 +37,7 @@ import {
 import {
   useUpdateTicket,
   useDeleteTicket,
+  useAssignTicket,
 } from "@/features/hooks/useTicketApi";
 import { toast } from "sonner";
 import {
@@ -56,8 +57,8 @@ interface TicketTableProps {
 interface UpdateFormData {
   customerId: string;
   assignedEmployeeId: string | null;
-  status: string;
-  description: string;
+  status: TicketStatus;
+  finalSolution: string | null;
   solution: string;
 }
 
@@ -72,8 +73,8 @@ export default function TicketTable({ data }: TicketTableProps) {
   const [formData, setFormData] = useState<UpdateFormData>({
     customerId: "",
     assignedEmployeeId: null,
-    status: "",
-    description: "",
+    status: TicketStatus.Open,
+    finalSolution: null,
     solution: "",
   });
 
@@ -81,6 +82,7 @@ export default function TicketTable({ data }: TicketTableProps) {
   const { data: customers = [] } = useCustomers();
   const updateTicket = useUpdateTicket();
   const deleteTicket = useDeleteTicket();
+  const assignTicket = useAssignTicket();
 
   const handleUpdate = (ticket: Ticket) => {
     setSelectedTicket(ticket);
@@ -88,8 +90,8 @@ export default function TicketTable({ data }: TicketTableProps) {
       customerId: ticket.customerId,
       assignedEmployeeId: ticket.assignedEmployeeId,
       status: ticket.status,
-      description: ticket.description,
-      solution: ticket.solution,
+      finalSolution: ticket.finalSolution,
+      solution: ticket.finalSolution || "",
     });
     setIsUpdateModalOpen(true);
   };
@@ -134,12 +136,28 @@ export default function TicketTable({ data }: TicketTableProps) {
     try {
       await updateTicket.mutateAsync({
         id: selectedTicket.id,
-        data: formData as Omit<Ticket, "id">,
+        data: {
+          customerId: formData.customerId,
+          assignedEmployeeId: formData.assignedEmployeeId,
+          status: formData.status,
+          finalSolution: formData.finalSolution,
+          description: selectedTicket.description,
+          aiSuggestedSolution: selectedTicket.aiSuggestedSolution,
+        },
       });
       toast.success("Ticket updated successfully");
       setIsUpdateModalOpen(false);
     } catch (error) {
       toast.error("Error updating ticket");
+    }
+  };
+
+  const handleAssignEmployee = async (ticketId: string, employeeId: string) => {
+    try {
+      await assignTicket.mutateAsync({ ticketId, employeeId });
+      toast.success("Ticket assigned successfully");
+    } catch (error) {
+      toast.error("Error assigning ticket");
     }
   };
 
@@ -158,7 +176,10 @@ export default function TicketTable({ data }: TicketTableProps) {
           </Button>
         );
       },
-      cell: ({ row }) => row.original.status,
+      cell: ({ row }) => {
+        const status = row.getValue("status") as TicketStatus;
+        return TicketStatus[status];
+      },
     },
     {
       accessorKey: "description",
@@ -182,7 +203,7 @@ export default function TicketTable({ data }: TicketTableProps) {
       },
     },
     {
-      accessorKey: "solution",
+      accessorKey: "finalSolution",
       header: ({ column }) => {
         return (
           <Button
@@ -196,7 +217,8 @@ export default function TicketTable({ data }: TicketTableProps) {
         );
       },
       cell: ({ row }) => {
-        const solution: string = row.getValue("solution");
+        const solution: string | null = row.getValue("finalSolution");
+        if (!solution) return <span>No solution yet</span>;
         const truncatedSolution =
           solution.length > 50 ? solution.substring(0, 50) + "..." : solution;
         return <span>{truncatedSolution}</span>;
@@ -256,196 +278,220 @@ export default function TicketTable({ data }: TicketTableProps) {
   const table = useReactTable({
     data,
     columns,
+    getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
     },
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
   });
 
   return (
-    <>
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+    <div>
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
                 </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
-      {/* Update Modal */}
       <Dialog open={isUpdateModalOpen} onOpenChange={setIsUpdateModalOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Update Ticket</DialogTitle>
+            <DialogDescription>
+              Make changes to the ticket here. Click save when you're done.
+            </DialogDescription>
           </DialogHeader>
-          {selectedTicket && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium">Status</label>
-                  <Select
-                    value={formData.status}
-                    onValueChange={(val) =>
-                      setFormData((f) => ({ ...f, status: val }))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Open">Open</SelectItem>
-                      <SelectItem value="In Progress">In Progress</SelectItem>
-                      <SelectItem value="Resolved">Resolved</SelectItem>
-                      <SelectItem value="Closed">Closed</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium">Assigned Employee</label>
-                  <Select
-                    value={formData.assignedEmployeeId || ""}
-                    onValueChange={(val) =>
-                      setFormData((f) => ({ ...f, assignedEmployeeId: val }))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Employee" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {employees.map((employee) => (
-                        <SelectItem key={employee.id} value={employee.id}>
-                          {employee.user.firstName} {employee.user.lastName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="col-span-2">
-                  <label className="text-sm font-medium">Description</label>
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleFormChange}
-                    className="w-full p-2 border rounded"
-                    rows={4}
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label className="text-sm font-medium">Solution</label>
-                  <textarea
-                    name="solution"
-                    value={formData.solution}
-                    onChange={handleFormChange}
-                    className="w-full p-2 border rounded"
-                    rows={4}
-                  />
-                </div>
-              </div>
-              <div className="flex justify-end space-x-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsUpdateModalOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleSubmit}
-                  disabled={updateTicket.isPending}
-                >
-                  {updateTicket.isPending ? "Updating..." : "Update"}
-                </Button>
-              </div>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="status" className="text-right">
+                Status
+              </label>
+              <Select
+                name="status"
+                value={formData.status.toString()}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    status: parseInt(value) as TicketStatus,
+                  }))
+                }
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(TicketStatus)
+                    .filter(([key]) => isNaN(Number(key)))
+                    .map(([key, value]) => (
+                      <SelectItem key={key} value={value.toString()}>
+                        {key}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
             </div>
-          )}
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="assignedEmployeeId" className="text-right">
+                Assign Employee
+              </label>
+              <Select
+                name="assignedEmployeeId"
+                value={formData.assignedEmployeeId || "none"}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    assignedEmployeeId: value === "none" ? null : value,
+                  }))
+                }
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Select employee" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None</SelectItem>
+                  {employees.map((employee) => (
+                    <SelectItem key={employee.id} value={employee.id}>
+                      {employee.user.firstName} {employee.user.lastName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="finalSolution" className="text-right">
+                Solution
+              </label>
+              <textarea
+                id="finalSolution"
+                name="finalSolution"
+                value={formData.finalSolution || ""}
+                onChange={handleFormChange}
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={handleSubmit}>Save changes</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation Modal */}
       <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete Ticket</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this ticket? This action cannot be undone.
+              Are you sure you want to delete this ticket? This action cannot be
+              undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsDeleteModalOpen(false)}
-            >
+            <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>
               Cancel
             </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={deleteTicket.isPending}
-            >
-              {deleteTicket.isPending ? "Deleting..." : "Yes, Delete"}
+            <Button variant="destructive" onClick={handleDelete}>
+              Delete
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Inspect Modal */}
       <Dialog open={isInspectModalOpen} onOpenChange={setIsInspectModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-xl">Ticket Details</DialogTitle>
+            <DialogTitle>Ticket Details</DialogTitle>
           </DialogHeader>
-
           {selectedTicketForInspect && (
-            <div className="space-y-4 text-sm">
-              <div className="space-y-1">
-                <p className="text-muted-foreground">Status</p>
-                <div className="bg-muted px-3 py-2 rounded">
-                  {selectedTicketForInspect.status}
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <label className="text-right font-medium">Status</label>
+                <div className="col-span-3">
+                  {TicketStatus[selectedTicketForInspect.status]}
                 </div>
               </div>
-
-              <div className="space-y-1">
-                <p className="text-muted-foreground">Description</p>
-                <div className="bg-muted px-3 py-2 rounded whitespace-pre-wrap">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <label className="text-right font-medium">Description</label>
+                <div className="col-span-3">
                   {selectedTicketForInspect.description}
                 </div>
               </div>
-
-              <div className="space-y-1">
-                <p className="text-muted-foreground">Solution</p>
-                <div className="bg-muted px-3 py-2 rounded whitespace-pre-wrap">
-                  {selectedTicketForInspect.solution}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <label className="text-right font-medium">AI Suggested Solution</label>
+                <div className="col-span-3">
+                  {selectedTicketForInspect.aiSuggestedSolution || "No AI suggestion yet"}
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <label className="text-right font-medium">Final Solution</label>
+                <div className="col-span-3">
+                  {selectedTicketForInspect.finalSolution || "No solution yet"}
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <label className="text-right font-medium">Assigned Employee</label>
+                <div className="col-span-3">
+                  {selectedTicketForInspect.assignedEmployeeId
+                    ? employees.find(
+                        (e) => e.id === selectedTicketForInspect.assignedEmployeeId
+                      )?.user.firstName +
+                      " " +
+                      employees.find(
+                        (e) => e.id === selectedTicketForInspect.assignedEmployeeId
+                      )?.user.lastName
+                    : "Not assigned"}
                 </div>
               </div>
             </div>
           )}
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 } 

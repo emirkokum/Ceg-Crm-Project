@@ -24,19 +24,18 @@ import { useCustomers } from "@/features/hooks/userCustomerApi";
 import { useEmployees } from "@/features/hooks/useEmployeeApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import SearchableSelect from "@/components/SearchableSelect";
-import { Ticket } from "@/types/ticket";
+import { Ticket, TicketStatus } from "@/types/ticket";
 
 export default function TicketsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     customerId: "",
-    assignedEmployeeId: "",
-    status: "",
+    assignedEmployeeId: null as string | null,
+    status: TicketStatus.Open,
     description: "",
-    solution: "",
   });
 
-  const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState<TicketStatus | "all">("all");
 
   const { data: tickets = [], isLoading } = useTickets();
   const { data: customers = [], isLoading: isLoadingCustomers } = useCustomers();
@@ -62,10 +61,9 @@ export default function TicketsPage() {
       setIsCreateModalOpen(false);
       setFormData({
         customerId: "",
-        assignedEmployeeId: "",
-        status: "",
+        assignedEmployeeId: null,
+        status: TicketStatus.Open,
         description: "",
-        solution: "",
       });
     } catch (error) {
       toast.error("Error creating ticket");
@@ -90,9 +88,8 @@ export default function TicketsPage() {
   }
 
   const filteredTickets = tickets.filter((ticket: Ticket) => {
-    const status = ticket.status ?? "";
-    const matchesStatus = statusFilter === "" || status === statusFilter;
-    return matchesStatus;
+    if (statusFilter === "all") return true;
+    return ticket.status === statusFilter;
   });
 
   return (
@@ -107,18 +104,21 @@ export default function TicketsPage() {
 
       <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between mb-4">
         <Select
-          onValueChange={(val) => setStatusFilter(val === "all" ? "" : val)}
-          value={statusFilter || "all"}
+          onValueChange={(val) => setStatusFilter(val === "all" ? "all" : parseInt(val) as TicketStatus)}
+          value={statusFilter === "all" ? "all" : statusFilter.toString()}
         >
           <SelectTrigger className="w-full md:w-48">
             <SelectValue placeholder="Select status" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All</SelectItem>
-            <SelectItem value="Open">Open</SelectItem>
-            <SelectItem value="In Progress">In Progress</SelectItem>
-            <SelectItem value="Resolved">Resolved</SelectItem>
-            <SelectItem value="Closed">Closed</SelectItem>
+            {Object.entries(TicketStatus)
+              .filter(([key]) => isNaN(Number(key)))
+              .map(([key, value]) => (
+                <SelectItem key={key} value={value.toString()}>
+                  {key}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
       </div>
@@ -154,19 +154,22 @@ export default function TicketsPage() {
               <div>
                 <label className="text-sm font-medium">Status</label>
                 <Select
-                  value={formData.status}
+                  value={formData.status.toString()}
                   onValueChange={(val) =>
-                    setFormData((f) => ({ ...f, status: val }))
+                    setFormData((f) => ({ ...f, status: parseInt(val) as TicketStatus }))
                   }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select Status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Open">Open</SelectItem>
-                    <SelectItem value="In Progress">In Progress</SelectItem>
-                    <SelectItem value="Resolved">Resolved</SelectItem>
-                    <SelectItem value="Closed">Closed</SelectItem>
+                    {Object.entries(TicketStatus)
+                      .filter(([key]) => isNaN(Number(key)))
+                      .map(([key, value]) => (
+                        <SelectItem key={key} value={value.toString()}>
+                          {key}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -174,15 +177,16 @@ export default function TicketsPage() {
               <div>
                 <label className="text-sm font-medium">Assigned Employee</label>
                 <Select
-                  value={formData.assignedEmployeeId}
+                  value={formData.assignedEmployeeId || "none"}
                   onValueChange={(val) =>
-                    setFormData((f) => ({ ...f, assignedEmployeeId: val }))
+                    setFormData((f) => ({ ...f, assignedEmployeeId: val === "none" ? null : val }))
                   }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select Employee" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="none">None</SelectItem>
                     {employees.map((employee) => (
                       <SelectItem key={employee.id} value={employee.id}>
                         {employee.user?.firstName || ''} {employee.user?.lastName || ''}
@@ -197,17 +201,6 @@ export default function TicketsPage() {
                 <textarea
                   name="description"
                   value={formData.description}
-                  onChange={handleFormChange}
-                  className="w-full p-2 border rounded"
-                  rows={4}
-                />
-              </div>
-
-              <div className="col-span-2">
-                <label className="text-sm font-medium">Solution</label>
-                <textarea
-                  name="solution"
-                  value={formData.solution}
                   onChange={handleFormChange}
                   className="w-full p-2 border rounded"
                   rows={4}

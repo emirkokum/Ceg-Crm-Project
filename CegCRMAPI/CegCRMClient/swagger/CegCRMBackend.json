@@ -1821,10 +1821,66 @@
           }
         }
       }
+    },
+    "/api/Tickets/{id}/assign": {
+      "put": {
+        "tags": [
+          "Tickets"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignTicketToEmployeeCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignTicketToEmployeeCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignTicketToEmployeeCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "AssignTicketToEmployeeCommand": {
+        "type": "object",
+        "properties": {
+          "ticketId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "employeeId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
       "BooleanApiResponse": {
         "type": "object",
         "properties": {
@@ -2320,6 +2376,10 @@
           "interactionDate": {
             "type": "string",
             "format": "date-time"
+          },
+          "customerFullName": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -2551,14 +2611,6 @@
             "nullable": true
           },
           "lastName": {
-            "type": "string",
-            "nullable": true
-          },
-          "department": {
-            "type": "string",
-            "nullable": true
-          },
-          "position": {
             "type": "string",
             "nullable": true
           },
@@ -2801,21 +2853,25 @@
             "type": "string",
             "format": "uuid"
           },
-          "assignedEmployeeId": {
+          "description": {
             "type": "string",
-            "format": "uuid",
+            "nullable": true
+          },
+          "aiSuggestedSolution": {
+            "type": "string",
+            "nullable": true
+          },
+          "finalSolution": {
+            "type": "string",
             "nullable": true
           },
           "status": {
             "type": "string",
             "nullable": true
           },
-          "description": {
+          "assignedEmployeeId": {
             "type": "string",
-            "nullable": true
-          },
-          "solution": {
-            "type": "string",
+            "format": "uuid",
             "nullable": true
           }
         },
@@ -2856,6 +2912,16 @@
           }
         },
         "additionalProperties": false
+      },
+      "TicketStatus": {
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "type": "integer",
+        "format": "int32"
       },
       "UpdateCustomerDto": {
         "type": "object",
@@ -3144,21 +3210,16 @@
             "type": "string",
             "format": "uuid"
           },
+          "status": {
+            "$ref": "#/components/schemas/TicketStatus"
+          },
+          "finalSolution": {
+            "type": "string",
+            "nullable": true
+          },
           "assignedEmployeeId": {
             "type": "string",
             "format": "uuid",
-            "nullable": true
-          },
-          "status": {
-            "type": "string",
-            "nullable": true
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
-          "solution": {
-            "type": "string",
             "nullable": true
           }
         },
@@ -3180,14 +3241,6 @@
             "nullable": true
           },
           "lastName": {
-            "type": "string",
-            "nullable": true
-          },
-          "department": {
-            "type": "string",
-            "nullable": true
-          },
-          "position": {
             "type": "string",
             "nullable": true
           },
