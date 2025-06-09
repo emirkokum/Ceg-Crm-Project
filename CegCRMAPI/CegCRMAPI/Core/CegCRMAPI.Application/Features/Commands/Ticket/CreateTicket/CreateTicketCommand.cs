@@ -40,10 +40,8 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, A
     {
         try
         {
-            // AI çözüm önerisini al
             var aiSuggestion = await _aiService.GetSolutionAsync(request.Description);
 
-            // Yeni ticket oluştur
             var ticket = new Domain.Entities.Ticket
             {
                 CustomerId = request.CustomerId,

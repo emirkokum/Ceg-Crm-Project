@@ -14,7 +14,6 @@ public record RegisterCommand : IRequest<UserDto>
     public string Password { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string Role { get; set; }
 }
 
 public class RegisterCommandHandler : IRequestHandler<RegisterCommand, UserDto>
@@ -32,7 +31,6 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, UserDto>
 
     public async Task<UserDto> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        // 1. User oluştur
         var user = new User
         {
             UserName = request.Email,
@@ -52,8 +50,8 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, UserDto>
             throw new ValidationException(errors);
         }
 
-        // 2. Role atama
-        var roleResult = await _userManager.AddToRoleAsync(user, request.Role);
+        var roleResult = await _userManager.AddToRoleAsync(user, "BaseUser");
+
         if (!roleResult.Succeeded)
         {
             var errors = roleResult.Errors.ToDictionary(
@@ -63,10 +61,9 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, UserDto>
             throw new ValidationException(errors);
         }
 
-        // 3. Response hazırla
         var roles = await _userManager.GetRolesAsync(user);
         var userDto = _mapper.Map<UserDto>(user);
-        userDto.Role = roles.FirstOrDefault();
+        userDto.Role = roles.FirstOrDefault(); 
 
         return userDto;
     }

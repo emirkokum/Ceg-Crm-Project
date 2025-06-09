@@ -1,11 +1,14 @@
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using CegCRMAPI.Application.Features.Commands.Auth.Login;
+using CegCRMAPI.Application.Features.Commands.Auth.Register;
+using CegCRMAPI.Application.Features.Queries.Auth.GetRoles;
+using CegCRMAPI.Application.Features.Commands.Auth.Role;
 using CegCRMAPI.Application.DTOs.Auth;
 using CegCRMAPI.Application.DTOs.Common;
 using CegCRMAPI.Application.DTOs.User;
-using CegCRMAPI.Application.Features.Commands.Auth.Login;
-using CegCRMAPI.Application.Features.Commands.Auth.Register;
 using CegCRMAPI.Application.Features.Queries.User.GetUsers;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CegCRMAPI.API.Controllers
 {
@@ -21,20 +24,45 @@ namespace CegCRMAPI.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<ApiResponse<UserDto>>> Register([FromBody] RegisterCommand command)
+        public async Task<IActionResult> Register([FromBody] RegisterCommand command)
         {
             var result = await _mediator.Send(command);
-            return Ok(ApiResponse<UserDto>.CreateSuccess(result, "Registration successful"));
+            return Ok(new { Success = result });
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<ApiResponse<UserDto>>> Login([FromBody] LoginCommand command)
+        public async Task<IActionResult> Login([FromBody] LoginCommand command)
         {
             var result = await _mediator.Send(command);
-            return Ok(ApiResponse<UserDto>.CreateSuccess(result, "Login successful"));
+            return Ok(new { Data = result });
+        }
+
+        [HttpGet("roles")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetRoles()
+        {
+            var roles = await _mediator.Send(new GetRolesQuery());
+            return Ok(new { Data = roles });
+        }
+
+        [HttpPost("roles")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateRole([FromBody] CreateRoleCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return Ok(new { Success = result });
+        }
+
+        [HttpDelete("roles/{name}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteRole(string name)
+        {
+            var result = await _mediator.Send(new DeleteRoleCommand { Name = name });
+            return Ok(new { Success = result });
         }
 
         [HttpGet("users")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<List<UserDto>>>> GetUsers()
         {
             var result = await _mediator.Send(new GetUsersQuery());

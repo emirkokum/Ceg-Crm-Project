@@ -2,6 +2,7 @@ using AutoMapper;
 using CegCRMAPI.Application.DTOs;
 using CegCRMAPI.Application.DTOs.Auth;
 using CegCRMAPI.Application.Exceptions;
+using CegCRMAPI.Application.Common.Interfaces;
 using CegCRMAPI.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -21,15 +22,18 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, UserDto>
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly IMapper _mapper;
+    private readonly IJwtService _jwtService;
 
     public LoginCommandHandler(
         UserManager<User> userManager,
         SignInManager<User> signInManager,
-        IMapper mapper)
+        IMapper mapper,
+        IJwtService jwtService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _mapper = mapper;
+        _jwtService = jwtService;
     }
 
     public async Task<UserDto> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -54,8 +58,24 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, UserDto>
         }
 
         var roles = await _userManager.GetRolesAsync(user);
+        
+        if (!roles.Any())
+        {
+            var roleResult = await _userManager.AddToRoleAsync(user, "BaseUser");
+            if (!roleResult.Succeeded)
+            {
+                throw new ValidationException(new Dictionary<string, string[]>
+                {
+                    { "Role", new[] { "Failed to assign default role" } }
+                });
+            }
+            roles = new[] { "BaseUser" };
+        }
+
         var userDto = _mapper.Map<UserDto>(user);
         userDto.Role = roles.FirstOrDefault();
+        
+        userDto.Token = _jwtService.GenerateToken(user.Id.ToString(), user.Email, roles);
 
         return userDto;
     }
