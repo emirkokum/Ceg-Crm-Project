@@ -5,13 +5,13 @@ export const menuItems: MenuItem[] = [
     path: '/dashboard',
     label: 'Dashboard',
     icon: 'dashboard',
-    allowedRoles: ['Admin', 'SalesPerson', 'SupportAgent', 'Assistant'],
+    allowedRoles: ['Admin', 'SalesPerson', 'Support'],
   },
   {
     path: '/customers',
     label: 'Customers',
     icon: 'people',
-    allowedRoles: ['Admin', 'SalesPerson', 'SupportAgent', 'Assistant'],
+    allowedRoles: ['Admin', 'SalesPerson', 'Support'],
   },
   {
     path: '/leads',
@@ -29,19 +29,19 @@ export const menuItems: MenuItem[] = [
     path: '/tickets',
     label: 'Tickets',
     icon: 'confirmation_number',
-    allowedRoles: ['Admin', 'SupportAgent'],
+    allowedRoles: ['Admin', 'Support'],
   },
   {
     path: '/interactions',
     label: 'Interactions',
     icon: 'chat',
-    allowedRoles: ['Admin', 'SalesPerson', 'SupportAgent', 'Assistant'],
+    allowedRoles: ['Admin', 'SalesPerson', 'Support'],
   },
   {
     path: '/tasks',
     label: 'Tasks',
     icon: 'task',
-    allowedRoles: ['Admin', 'Assistant'],
+    allowedRoles: ['Admin'],
   },
   {
     path: '/settings',

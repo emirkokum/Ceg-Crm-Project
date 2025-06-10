@@ -1,8 +1,18 @@
-export type UserRole = 'Admin' | 'SalesPerson' | 'SupportAgent' | 'Assistant';
+export type UserRole = 'Admin' | 'Manager' | 'Employee' | 'SalesPerson' | 'Support' | 'BaseUser';
+
+export interface UserInfo {
+  id: string;
+  email: string;
+  name: string;
+  surname: string;
+  role: UserRole;
+}
 
 export interface AuthContextType {
   role: UserRole | null;
-  setRole: (role: UserRole) => void;
+  userInfo: UserInfo | null;
+  isLoading: boolean;
+  setRole: (role: UserRole, userInfo: UserInfo) => void;
   logout: () => void;
 }
 

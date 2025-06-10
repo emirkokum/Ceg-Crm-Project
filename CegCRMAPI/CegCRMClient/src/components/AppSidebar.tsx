@@ -22,6 +22,8 @@ import {
   UserPlusIcon,
   ShieldIcon,
   Ticket,
+  LogOutIcon,
+  UserIcon,
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/NavDocuments"
@@ -37,54 +39,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-
-const navigationItems = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: LayoutDashboardIcon,
-  },
-  {
-    title: "Customers",
-    url: "/customers",
-    icon: UsersIcon,
-  },
-  {
-    title: "Interactions",
-    url: "/interactions",
-    icon: MessageSquareIcon,
-  },
-  {
-    title: "Tasks",
-    url: "/tasks",
-    icon: ListIcon,
-  },
-  {
-    title: "Leads",
-    url: "/leads",
-    icon: UserPlusIcon,
-  },
-  {
-    title: "Sales",
-    url: "/sales",
-    icon: BarChartIcon,
-  },
-  {
-    title: "Admin",
-    url: "/admin",
-    icon: ShieldIcon,
-  },
-  {
-    title: "Employees",
-    url: "/employees",
-    icon: BriefcaseIcon,
-  },
-  {
-    title: "Tickets",
-    url: "/tickets",
-    icon: Ticket,
-  },  
-]
+import { useAuth } from "@/contexts/AuthContext"
+import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
+import { navigationItems } from "@/app/router"
 
 const data = {
   user: {
@@ -138,27 +96,22 @@ const data = {
       url: "/search",
       icon: SearchIcon,
     },
-  ],
-  documents: [
-    {
-      name: "Data Library",
-      url: "/data-library",
-      icon: DatabaseIcon,
-    },
-    {
-      name: "Reports",
-      url: "/reports",
-      icon: ClipboardListIcon,
-    },
-    {
-      name: "Word Assistant",
-      url: "/word-assistant",
-      icon: FileIcon,
-    },
-  ],
+  ]
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { logout, userInfo } = useAuth();
+
+  const handleLogout = () => {
+    try {
+      logout();
+      toast.success('Logged out successfully');
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error('Failed to logout');
+    }
+  };
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -178,11 +131,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navigationItems} />
-        <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <div className="flex flex-col gap-2 p-4">
+          <div className="flex items-center gap-2">
+            <UserIcon className="h-5 w-5 text-muted-foreground" />
+            <span className="text-sm font-medium text-gray-900 dark:text-white">
+              {userInfo?.email || ''}
+            </span>
+          </div>
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-2 text-sm text-muted-foreground hover:text-foreground"
+            onClick={handleLogout}
+          >
+            <LogOutIcon className="h-4 w-4" />
+            <span>Logout</span>
+          </Button>
+        </div>
       </SidebarFooter>
     </Sidebar>
   )

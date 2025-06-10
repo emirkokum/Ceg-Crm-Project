@@ -79,8 +79,11 @@ export function AdminPage() {
           <SelectContent>
             <SelectItem value="all">All Roles</SelectItem>
             <SelectItem value="Admin">Admin</SelectItem>
-            <SelectItem value="User">User</SelectItem>
             <SelectItem value="Manager">Manager</SelectItem>
+            <SelectItem value="Employee">Employee</SelectItem>
+            <SelectItem value="SalesPerson">Sales Person</SelectItem>
+            <SelectItem value="Support">Support</SelectItem>
+            <SelectItem value="BaseUser">Base User</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -114,8 +117,6 @@ export function AdminPage() {
                   </Button>
                   <Button variant="destructive" size="sm"
                     onClick={() => {
-                      console.log("Deleting user with ID:", user.id);
-                      // TODO: Implement delete functionality with confirmation
                     }}
                   >
                     Delete
@@ -159,8 +160,11 @@ export function AdminPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Admin">Admin</SelectItem>
-                    <SelectItem value="User">User</SelectItem>
                     <SelectItem value="Manager">Manager</SelectItem>
+                    <SelectItem value="Employee">Employee</SelectItem>
+                    <SelectItem value="SalesPerson">Sales Person</SelectItem>
+                    <SelectItem value="Support">Support</SelectItem>
+                    <SelectItem value="BaseUser">Base User</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -211,8 +215,11 @@ export function AdminPage() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Admin">Admin</SelectItem>
-                      <SelectItem value="User">User</SelectItem>
                       <SelectItem value="Manager">Manager</SelectItem>
+                      <SelectItem value="Employee">Employee</SelectItem>
+                      <SelectItem value="SalesPerson">Sales Person</SelectItem>
+                      <SelectItem value="Support">Support</SelectItem>
+                      <SelectItem value="BaseUser">Base User</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -228,7 +235,7 @@ export function AdminPage() {
                 >
                   Cancel
                 </Button>
-                <Button onClick={() => console.log("Saving user:", userToEdit?.id)}>Save Changes</Button>
+                <Button>Save Changes</Button>
               </div>
             </div>
           )}

@@ -1,31 +1,88 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { AuthContextType, UserRole } from '../types/auth';
+import { AuthContextType, UserRole, UserInfo } from '../types/auth';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [role, setRole] = useState<UserRole | null>(null);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Initialize role from localStorage on mount
-    const storedRole = localStorage.getItem('role') as UserRole | null;
-    if (storedRole) {
-      setRole(storedRole);
-    }
+    // Initialize auth state from localStorage on mount
+    const initializeAuth = () => {
+      try {
+        const storedRole = localStorage.getItem('role') as UserRole | null;
+        const token = localStorage.getItem('token');
+        const storedUserInfo = localStorage.getItem('userInfo');
+        
+        if (storedRole && token) {
+          setRole(storedRole);
+          if (storedUserInfo) {
+            setUserInfo(JSON.parse(storedUserInfo));
+          }
+        } else {
+          if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+            handleLogout();
+          }
+        }
+      } catch (error) {
+        console.error('Error initializing auth state:', error);
+        if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+          handleLogout();
+        } else {
+          setIsLoading(false);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeAuth();
   }, []);
 
-  const handleSetRole = (newRole: UserRole) => {
-    setRole(newRole);
-    localStorage.setItem('role', newRole);
+  const handleSetRole = (newRole: UserRole, userData?: UserInfo) => {
+    try {
+      setRole(newRole);
+      localStorage.setItem('role', newRole);
+      
+      if (userData) {
+        setUserInfo(userData);
+        localStorage.setItem('userInfo', JSON.stringify(userData));
+      }
+    } catch (error) {
+      console.error('Error setting role:', error);
+      throw new Error('Failed to set user role');
+    }
   };
 
-  const logout = () => {
-    setRole(null);
-    localStorage.removeItem('role');
+  const handleLogout = () => {
+    try {
+      setRole(null);
+      setUserInfo(null);
+      localStorage.removeItem('role');
+      localStorage.removeItem('token');
+      localStorage.removeItem('userInfo');
+      navigate('/login', { replace: true });
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>; // You might want to replace this with a proper loading component
+  }
 
   return (
-    <AuthContext.Provider value={{ role, setRole: handleSetRole, logout }}>
+    <AuthContext.Provider value={{ 
+      role, 
+      userInfo,
+      setRole: handleSetRole, 
+      logout: handleLogout,
+      isLoading 
+    }}>
       {children}
     </AuthContext.Provider>
   );

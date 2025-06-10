@@ -9,19 +9,16 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
-import { UserRole } from "@/types/auth";
 import API from "@/api/axios";
 import { AxiosError } from "axios";
 
-export function LoginForm({
+export function RegisterForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const { setRole } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -32,34 +29,19 @@ export function LoginForm({
     const formData = new FormData(e.currentTarget);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
+    const firstName = formData.get('firstName') as string;
+    const lastName = formData.get('lastName') as string;
 
-    const loginData = { email, password };
+    const registerData = { email, password, firstName, lastName };
 
     try {
-      const { data } = await API.post('/Auth/login', loginData);
-      if (data.data?.token) {
-        localStorage.setItem('token', data.data.token);
-      }
-      
-      if (data.data?.role) {
-        const userRole = data.data.role as UserRole;
-        const userInfo = {
-          id: data.data.id,
-          email: data.data.email,
-          name: data.data.firstName,
-          surname: data.data.lastName,
-          role: userRole
-        };
-        setRole(userRole, userInfo);
-      }
-      
-      toast.success('Login successful!');
-      
+      const { data } = await API.post('/Auth/register', registerData);
+      toast.success(data.message || 'Registration successful!');
       setTimeout(() => {
-        navigate('/dashboard', { replace: true });
+        navigate('/login', { replace: true });
       }, 100);
     } catch (error) {
-      console.error('Login error details:', {
+      console.error('Registration error details:', {
         error,
         isAxiosError: error instanceof AxiosError,
         response: error instanceof AxiosError ? error.response?.data : null,
@@ -68,19 +50,15 @@ export function LoginForm({
       
       if (error instanceof AxiosError) {
         if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          const errorMessage = error.response.data?.message || error.response.data?.error || 'Login failed';
+          const errorMessage = error.response.data?.message || error.response.data?.error || 'Registration failed';
           toast.error(errorMessage);
         } else if (error.request) {
-          // The request was made but no response was received
           toast.error('No response from server. Please check your connection.');
         } else {
-          // Something happened in setting up the request that triggered an Error
           toast.error('Error setting up request. Please try again.');
         }
       } else {
-        toast.error(error instanceof Error ? error.message : 'Login failed. Please check your credentials.');
+        toast.error(error instanceof Error ? error.message : 'Registration failed. Please try again.');
       }
     } finally {
       setIsLoading(false);
@@ -91,14 +69,36 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
+          <CardTitle className="text-2xl">Register</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your details below to create an account
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
+              <div className="grid gap-2">
+                <Label htmlFor="firstName">First Name</Label>
+                <Input
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  placeholder="John"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  placeholder="Doe"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -111,15 +111,7 @@ export function LoginForm({
                 />
               </div>
               <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
+                <Label htmlFor="password">Password</Label>
                 <Input 
                   id="password" 
                   name="password" 
@@ -129,13 +121,13 @@ export function LoginForm({
                 />
               </div>
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login"}
+                {isLoading ? "Registering..." : "Register"}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <a href="/register" className="underline underline-offset-4">
-                Sign up
+              Already have an account?{" "}
+              <a href="/login" className="underline underline-offset-4">
+                Sign in
               </a>
             </div>
           </form>
@@ -143,4 +135,4 @@ export function LoginForm({
       </Card>
     </div>
   );
-}
+} 
