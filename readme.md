@@ -4,10 +4,6 @@
 ## Description
 This CRM (Customer Relationship Management) application is the basic complement of user management, AI-integrated ticketing system, customer profile management, contact tracking and sales management. The project will develop a system that will provide user authorization and access control service, as well as customer management, along with management of admin, users and roles. Artificial intelligence will strengthen the ticketing system by making complaint resolution predictions.
 
-
-
-
-
 ## Installation
 
 Clone
@@ -71,4 +67,4 @@ npm run dev
 ```
   
 ## System Diagram
-
+![System-Diagram](https://github.com/user-attachments/assets/98353781-40f5-4e37-99c9-49f21148db78)
