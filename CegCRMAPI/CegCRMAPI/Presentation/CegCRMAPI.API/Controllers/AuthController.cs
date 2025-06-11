@@ -9,6 +9,8 @@ using CegCRMAPI.Application.DTOs.Auth;
 using CegCRMAPI.Application.DTOs.Common;
 using CegCRMAPI.Application.DTOs.User;
 using CegCRMAPI.Application.Features.Queries.User.GetUsers;
+using CegCRMAPI.Application.Features.Commands.User.UpdateUser;
+using CegCRMAPI.Application.Features.Commands.User.DeleteUser;
 
 namespace CegCRMAPI.API.Controllers
 {
@@ -62,11 +64,27 @@ namespace CegCRMAPI.API.Controllers
         }
 
         [HttpGet("users")]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ApiResponse<List<UserDto>>>> GetUsers()
         {
             var result = await _mediator.Send(new GetUsersQuery());
             return Ok(ApiResponse<List<UserDto>>.CreateSuccess(result.Users, result.Message));
+        }
+
+        [HttpPut("users/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ApiResponse<UserDto>>> UpdateUser(Guid id, [FromBody] UpdateUserCommand command)
+        {
+            command = command with { Id = id };
+            var result = await _mediator.Send(command);
+            return Ok(ApiResponse<UserDto>.CreateSuccess(result, "User updated successfully"));
+        }
+
+        [HttpDelete("users/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ApiResponse<bool>>> DeleteUser(Guid id)
+        {
+            var result = await _mediator.Send(new DeleteUserCommand { Id = id });
+            return Ok(ApiResponse<bool>.CreateSuccess(result, "User deleted successfully"));
         }
     }
 } 

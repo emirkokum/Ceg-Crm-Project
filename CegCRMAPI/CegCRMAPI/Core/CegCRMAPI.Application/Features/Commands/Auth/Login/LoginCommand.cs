@@ -1,13 +1,9 @@
 using AutoMapper;
-using CegCRMAPI.Application.DTOs;
 using CegCRMAPI.Application.DTOs.Auth;
 using CegCRMAPI.Application.Exceptions;
 using CegCRMAPI.Application.Common.Interfaces;
-using CegCRMAPI.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 
 namespace CegCRMAPI.Application.Features.Commands.Auth.Login;
 
@@ -19,14 +15,14 @@ public record LoginCommand : IRequest<UserDto>
 
 public class LoginCommandHandler : IRequestHandler<LoginCommand, UserDto>
 {
-    private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
+    private readonly UserManager<Domain.Entities.User> _userManager;
+    private readonly SignInManager<Domain.Entities.User> _signInManager;
     private readonly IMapper _mapper;
     private readonly IJwtService _jwtService;
 
     public LoginCommandHandler(
-        UserManager<User> userManager,
-        SignInManager<User> signInManager,
+        UserManager<Domain.Entities.User> userManager,
+        SignInManager<Domain.Entities.User> signInManager,
         IMapper mapper,
         IJwtService jwtService)
     {

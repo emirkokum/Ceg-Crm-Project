@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useUsers } from "@/features/hooks/useUserApi";
-import { User } from "@/features/hooks/useUserApi";
+import { useUsers, useCreateUser, useUpdateUser, useDeleteUser, User, CreateUserData, UpdateUserData } from "@/features/hooks/useUserApi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -23,6 +22,26 @@ export function AdminPage() {
   const [userToEdit, setUserToEdit] = useState<User | null>(null);
 
   const { data: users = [], isLoading } = useUsers();
+  const createUser = useCreateUser();
+  const updateUser = useUpdateUser();
+  const deleteUser = useDeleteUser();
+
+  const [newUser, setNewUser] = useState<CreateUserData>({
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    role: "",
+  });
+
+  const [editedUser, setEditedUser] = useState<UpdateUserData>({
+    id: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    role: "",
+    department: "",
+  });
 
   const filteredUsers = users.filter((user) => {
     const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
@@ -34,6 +53,50 @@ export function AdminPage() {
 
     return matchesSearch && matchesRole;
   });
+
+  const handleCreateUser = async () => {
+    try {
+      await createUser.mutateAsync(newUser);
+      setIsCreateModalOpen(false);
+      setNewUser({
+        email: "",
+        password: "",
+        firstName: "",
+        lastName: "",
+        role: "",
+      });
+      alert("User created successfully");
+    } catch (error) {
+      alert("Failed to create user");
+    }
+  };
+
+  const handleUpdateUser = async () => {
+    if (!userToEdit) return;
+    try {
+      await updateUser.mutateAsync(editedUser);
+      setIsEditModalOpen(false);
+      setUserToEdit(null);
+      alert("User updated successfully");
+    } catch (error) {
+      alert("Failed to update user");
+    }
+  };
+
+  const handleDeleteUser = async (userId: string) => {
+    if (!confirm("Are you sure you want to delete this user?")) return;
+    try {
+      const response = await deleteUser.mutateAsync(userId);
+      if (response) {
+        alert("User deleted successfully");
+      } else {
+        alert("Failed to delete user");
+      }
+    } catch (error) {
+      console.error("Delete user error:", error);
+      alert("Failed to delete user");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -110,14 +173,21 @@ export function AdminPage() {
                   <Button variant="outline" size="sm" className="mr-2"
                     onClick={() => {
                       setUserToEdit(user);
+                      setEditedUser({
+                        id: user.id,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        email: user.email,
+                        role: user.role || "",
+                        department: user.department,
+                      });
                       setIsEditModalOpen(true);
                     }}
                   >
                     Edit
                   </Button>
                   <Button variant="destructive" size="sm"
-                    onClick={() => {
-                    }}
+                    onClick={() => handleDeleteUser(user.id)}
                   >
                     Delete
                   </Button>
@@ -138,23 +208,44 @@ export function AdminPage() {
             <div className="grid gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="firstName">First Name</Label>
-                <Input id="firstName" />
+                <Input 
+                  id="firstName" 
+                  value={newUser.firstName}
+                  onChange={(e) => setNewUser({ ...newUser, firstName: e.target.value })}
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="lastName">Last Name</Label>
-                <Input id="lastName" />
+                <Input 
+                  id="lastName" 
+                  value={newUser.lastName}
+                  onChange={(e) => setNewUser({ ...newUser, lastName: e.target.value })}
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" />
+                <Input 
+                  id="email" 
+                  type="email" 
+                  value={newUser.email}
+                  onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" />
+                <Input 
+                  id="password" 
+                  type="password" 
+                  value={newUser.password}
+                  onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="role">Role</Label>
-                <Select>
+                <Select 
+                  value={newUser.role}
+                  onValueChange={(value) => setNewUser({ ...newUser, role: value })}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select role" />
                   </SelectTrigger>
@@ -168,10 +259,6 @@ export function AdminPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="department">Department</Label>
-                <Input id="department" />
-              </div>
             </div>
             <div className="flex justify-end space-x-2">
               <Button
@@ -180,7 +267,12 @@ export function AdminPage() {
               >
                 Cancel
               </Button>
-              <Button>Create User</Button>
+              <Button 
+                onClick={handleCreateUser}
+                disabled={createUser.isPending}
+              >
+                {createUser.isPending ? "Creating..." : "Create User"}
+              </Button>
             </div>
           </div>
         </DialogContent>
@@ -197,19 +289,35 @@ export function AdminPage() {
               <div className="grid gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="editFirstName">First Name</Label>
-                  <Input id="editFirstName" defaultValue={userToEdit.firstName} />
+                  <Input 
+                    id="editFirstName" 
+                    value={editedUser.firstName}
+                    onChange={(e) => setEditedUser({ ...editedUser, firstName: e.target.value })}
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="editLastName">Last Name</Label>
-                  <Input id="editLastName" defaultValue={userToEdit.lastName} />
+                  <Input 
+                    id="editLastName" 
+                    value={editedUser.lastName}
+                    onChange={(e) => setEditedUser({ ...editedUser, lastName: e.target.value })}
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="editEmail">Email</Label>
-                  <Input id="editEmail" type="email" defaultValue={userToEdit.email} />
+                  <Input 
+                    id="editEmail" 
+                    type="email" 
+                    value={editedUser.email}
+                    onChange={(e) => setEditedUser({ ...editedUser, email: e.target.value })}
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="editRole">Role</Label>
-                  <Select defaultValue={userToEdit.role}>
+                  <Select 
+                    value={editedUser.role}
+                    onValueChange={(value) => setEditedUser({ ...editedUser, role: value })}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select role" />
                     </SelectTrigger>
@@ -225,7 +333,11 @@ export function AdminPage() {
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="editDepartment">Department</Label>
-                  <Input id="editDepartment" defaultValue={userToEdit.department} />
+                  <Input 
+                    id="editDepartment" 
+                    value={editedUser.department || ""}
+                    onChange={(e) => setEditedUser({ ...editedUser, department: e.target.value })}
+                  />
                 </div>
               </div>
               <div className="flex justify-end space-x-2">
@@ -235,7 +347,12 @@ export function AdminPage() {
                 >
                   Cancel
                 </Button>
-                <Button>Save Changes</Button>
+                <Button 
+                  onClick={handleUpdateUser}
+                  disabled={updateUser.isPending}
+                >
+                  {updateUser.isPending ? "Saving..." : "Save Changes"}
+                </Button>
               </div>
             </div>
           )}

@@ -18,11 +18,11 @@ public record RegisterCommand : IRequest<UserDto>
 
 public class RegisterCommandHandler : IRequestHandler<RegisterCommand, UserDto>
 {
-    private readonly UserManager<User> _userManager;
+    private readonly UserManager<Domain.Entities.User> _userManager;
     private readonly IMapper _mapper;
 
     public RegisterCommandHandler(
-        UserManager<User> userManager,
+        UserManager<Domain.Entities.User> userManager,
         IMapper mapper)
     {
         _userManager = userManager;
@@ -31,7 +31,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, UserDto>
 
     public async Task<UserDto> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        var user = new User
+        var user = new Domain.Entities.User
         {
             UserName = request.Email,
             Email = request.Email,
