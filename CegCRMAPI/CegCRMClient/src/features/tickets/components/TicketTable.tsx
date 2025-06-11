@@ -38,6 +38,7 @@ import {
   useUpdateTicket,
   useDeleteTicket,
   useAssignTicket,
+  useUpdateTicketStatus,
 } from "@/features/hooks/useTicketApi";
 import { toast } from "sonner";
 import {
@@ -49,6 +50,7 @@ import {
 } from "@/components/ui/select";
 import { useEmployees } from "@/features/hooks/useEmployeeApi";
 import { useCustomers } from "@/features/hooks/userCustomerApi";
+import { Badge } from "@/components/ui/badge";
 
 interface TicketTableProps {
   data: Ticket[];
@@ -57,7 +59,7 @@ interface TicketTableProps {
 interface UpdateFormData {
   customerId: string;
   assignedEmployeeId: string | null;
-  status: TicketStatus;
+  status: string;
   finalSolution: string | null;
   solution: string;
 }
@@ -73,7 +75,7 @@ export default function TicketTable({ data }: TicketTableProps) {
   const [formData, setFormData] = useState<UpdateFormData>({
     customerId: "",
     assignedEmployeeId: null,
-    status: TicketStatus.Open,
+    status: "Open",
     finalSolution: null,
     solution: "",
   });
@@ -83,6 +85,7 @@ export default function TicketTable({ data }: TicketTableProps) {
   const updateTicket = useUpdateTicket();
   const deleteTicket = useDeleteTicket();
   const assignTicket = useAssignTicket();
+  const updateTicketStatus = useUpdateTicketStatus();
 
   const handleUpdate = (ticket: Ticket) => {
     setSelectedTicket(ticket);
@@ -161,6 +164,62 @@ export default function TicketTable({ data }: TicketTableProps) {
     }
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Open":
+        return "bg-yellow-100 text-yellow-800 hover:bg-yellow-100";
+      case "ResolvedByAI":
+        return "bg-green-100 text-green-800 hover:bg-green-100";
+      case "AssignedToEmployee":
+        return "bg-blue-100 text-blue-800 hover:bg-blue-100";
+      case "Closed":
+        return "bg-gray-100 text-gray-800 hover:bg-gray-100";
+      default:
+        return "bg-gray-100 text-gray-800 hover:bg-gray-100";
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case "Open":
+        return "Open";
+      case "ResolvedByAI":
+        return "Resolved by AI";
+      case "AssignedToEmployee":
+        return "Assigned to Employee";
+      case "Closed":
+        return "Closed";
+      default:
+        return "Unknown";
+    }
+  };
+
+  const getNextStatus = (currentStatus: string): string => {
+    switch (currentStatus) {
+      case "Open":
+        return "ResolvedByAI";
+      case "ResolvedByAI":
+        return "AssignedToEmployee";
+      case "AssignedToEmployee":
+        return "Closed";
+      case "Closed":
+        return "Open";
+      default:
+        return "Open";
+    }
+  };
+
+  const handleStatusChange = async (ticketId: string, selectedStatus: string) => {
+    try {
+      const statusValue = TicketStatus[selectedStatus as keyof typeof TicketStatus];
+      await updateTicketStatus.mutateAsync({ ticketId, newStatus: statusValue });
+      toast.success("Ticket status updated successfully");
+    } catch (error) {
+      console.error("Error updating ticket status:", error);
+      toast.error("Error updating ticket status");
+    }
+  };
+
   const columns: ColumnDef<Ticket>[] = [
     {
       accessorKey: "status",
@@ -177,8 +236,35 @@ export default function TicketTable({ data }: TicketTableProps) {
         );
       },
       cell: ({ row }) => {
-        const status = row.getValue("status") as TicketStatus;
-        return TicketStatus[status];
+        const status = row.getValue("status") as string;
+        const ticket = row.original;
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Badge 
+                variant="secondary" 
+                className={`${getStatusColor(status)} cursor-pointer hover:opacity-80`}
+              >
+                {getStatusLabel(status)}
+              </Badge>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              {Object.entries(TicketStatus)
+                .filter(([key]) => isNaN(Number(key)))
+                .map(([key]) => (
+                  <DropdownMenuItem
+                    key={key}
+                    onClick={() => handleStatusChange(ticket.id, key)}
+                    className="cursor-pointer"
+                  >
+                    <Badge variant="secondary" className={getStatusColor(key)}>
+                      {getStatusLabel(key)}
+                    </Badge>
+                  </DropdownMenuItem>
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
       },
     },
     {
@@ -355,11 +441,11 @@ export default function TicketTable({ data }: TicketTableProps) {
               </label>
               <Select
                 name="status"
-                value={formData.status.toString()}
+                value={formData.status}
                 onValueChange={(value) =>
                   setFormData((prev) => ({
                     ...prev,
-                    status: parseInt(value) as TicketStatus,
+                    status: value,
                   }))
                 }
               >
@@ -370,8 +456,8 @@ export default function TicketTable({ data }: TicketTableProps) {
                   {Object.entries(TicketStatus)
                     .filter(([key]) => isNaN(Number(key)))
                     .map(([key, value]) => (
-                      <SelectItem key={key} value={value.toString()}>
-                        {key}
+                      <SelectItem key={key} value={key}>
+                        {getStatusLabel(key)}
                       </SelectItem>
                     ))}
                 </SelectContent>
@@ -453,7 +539,9 @@ export default function TicketTable({ data }: TicketTableProps) {
               <div className="grid grid-cols-4 items-center gap-4">
                 <label className="text-right font-medium">Status</label>
                 <div className="col-span-3">
-                  {TicketStatus[selectedTicketForInspect.status]}
+                  <Badge variant="secondary" className={getStatusColor(selectedTicketForInspect.status)}>
+                    {getStatusLabel(selectedTicketForInspect.status)}
+                  </Badge>
                 </div>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">

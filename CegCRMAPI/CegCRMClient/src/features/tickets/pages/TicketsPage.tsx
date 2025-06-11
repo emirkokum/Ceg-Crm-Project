@@ -28,14 +28,19 @@ import { Ticket, TicketStatus } from "@/types/ticket";
 
 export default function TicketsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    customerId: string;
+    assignedEmployeeId: string | null;
+    status: string;
+    description: string;
+  }>({
     customerId: "",
-    assignedEmployeeId: null as string | null,
-    status: TicketStatus.Open,
+    assignedEmployeeId: null,
+    status: "Open",
     description: "",
   });
 
-  const [statusFilter, setStatusFilter] = useState<TicketStatus | "all">("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const { data: tickets = [], isLoading } = useTickets();
   const { data: customers = [], isLoading: isLoadingCustomers } = useCustomers();
@@ -62,7 +67,7 @@ export default function TicketsPage() {
       setFormData({
         customerId: "",
         assignedEmployeeId: null,
-        status: TicketStatus.Open,
+        status: "Open",
         description: "",
       });
     } catch (error) {
@@ -104,8 +109,8 @@ export default function TicketsPage() {
 
       <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between mb-4">
         <Select
-          onValueChange={(val) => setStatusFilter(val === "all" ? "all" : parseInt(val) as TicketStatus)}
-          value={statusFilter === "all" ? "all" : statusFilter.toString()}
+          onValueChange={(val) => setStatusFilter(val)}
+          value={statusFilter}
         >
           <SelectTrigger className="w-full md:w-48">
             <SelectValue placeholder="Select status" />
@@ -114,8 +119,8 @@ export default function TicketsPage() {
             <SelectItem value="all">All</SelectItem>
             {Object.entries(TicketStatus)
               .filter(([key]) => isNaN(Number(key)))
-              .map(([key, value]) => (
-                <SelectItem key={key} value={value.toString()}>
+              .map(([key]) => (
+                <SelectItem key={key} value={key}>
                   {key}
                 </SelectItem>
               ))}
@@ -154,9 +159,9 @@ export default function TicketsPage() {
               <div>
                 <label className="text-sm font-medium">Status</label>
                 <Select
-                  value={formData.status.toString()}
+                  value={formData.status}
                   onValueChange={(val) =>
-                    setFormData((f) => ({ ...f, status: parseInt(val) as TicketStatus }))
+                    setFormData((f) => ({ ...f, status: val }))
                   }
                 >
                   <SelectTrigger>
@@ -165,8 +170,8 @@ export default function TicketsPage() {
                   <SelectContent>
                     {Object.entries(TicketStatus)
                       .filter(([key]) => isNaN(Number(key)))
-                      .map(([key, value]) => (
-                        <SelectItem key={key} value={value.toString()}>
+                      .map(([key]) => (
+                        <SelectItem key={key} value={key}>
                           {key}
                         </SelectItem>
                       ))}

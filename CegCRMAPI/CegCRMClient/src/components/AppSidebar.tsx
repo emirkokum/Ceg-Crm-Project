@@ -3,33 +3,19 @@
 
 import * as React from "react"
 import {
-  BarChartIcon,
   CameraIcon,
-  ClipboardListIcon,
-  DatabaseIcon,
   FileCodeIcon,
-  FileIcon,
   FileTextIcon,
   HelpCircleIcon,
-  LayoutDashboardIcon,
-  ListIcon,
   SearchIcon,
   SettingsIcon,
-  UsersIcon,
-  BriefcaseIcon,
   SquareMousePointer,
-  MessageSquareIcon,
-  UserPlusIcon,
-  ShieldIcon,
-  Ticket,
   LogOutIcon,
   UserIcon,
 } from "lucide-react"
 
-import { NavDocuments } from "@/components/NavDocuments"
 import { NavMain } from "@/components/NavMain"
 import { NavSecondary } from "@/components/NavSecondary"
-import { NavUser } from "@/components/NavUser"
 import {
   Sidebar,
   SidebarContent,
@@ -100,7 +86,7 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { logout, userInfo } = useAuth();
+  const { logout, userInfo, role } = useAuth();
 
   const handleLogout = () => {
     try {
@@ -111,6 +97,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       toast.error('Failed to logout');
     }
   };
+
+  const filteredNavigationItems = navigationItems.filter(item => 
+    role && item.allowedRoles.includes(role)
+  );
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -130,11 +120,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navigationItems} />
+        <NavMain items={filteredNavigationItems} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <div className="flex flex-col gap-2 p-4">
+        <div className="flex flex-col gap-5 p-1.5">
           <div className="flex items-center gap-2">
             <UserIcon className="h-5 w-5 text-muted-foreground" />
             <span className="text-sm font-medium text-gray-900 dark:text-white">
@@ -143,7 +133,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </div>
           <Button
             variant="ghost"
-            className="w-full justify-start gap-2 text-sm text-muted-foreground hover:text-foreground"
+            className="w-full justify-start text-sm hover:text-foreground bg-red-400"
             onClick={handleLogout}
           >
             <LogOutIcon className="h-4 w-4" />

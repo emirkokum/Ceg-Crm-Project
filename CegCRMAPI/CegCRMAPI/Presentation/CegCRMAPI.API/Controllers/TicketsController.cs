@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CegCRMAPI.Application.Features.Commands.Ticket.DeleteTicket;
 using CegCRMAPI.Application.Features.Commands.Tickets.AssignTicketToEmployee;
+using CegCRMAPI.Application.Features.Commands.Ticket;
+using CegCRMAPI.Application.Features.Commands.Tickets.ChangeTicketStatus;
 
 namespace CegCRMAPI.API.Controllers
 {
@@ -82,6 +84,21 @@ namespace CegCRMAPI.API.Controllers
 
             return Ok(result);
         }
-        
+
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> ChangeStatus(Guid id, [FromBody] ChangeTicketStatusCommand request)
+        {
+            if (id != request.TicketId)
+                return BadRequest("Ticket ID mismatch");
+
+            var command = new ChangeTicketStatusCommand(request.TicketId, request.NewStatus);
+            var result = await _mediator.Send(command);
+
+            if (!result.Success)
+                return NotFound(result.Message);
+
+            return Ok(result);
+        }
+
     }
 } 

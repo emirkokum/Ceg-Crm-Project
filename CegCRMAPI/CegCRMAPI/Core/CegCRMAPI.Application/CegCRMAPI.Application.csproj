@@ -21,4 +21,8 @@
     <ProjectReference Include="..\CegCRMAPI.Domain\CegCRMAPI.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Commands\Ticket\ChangeTicketStatus\" />
+  </ItemGroup>
+
 </Project>

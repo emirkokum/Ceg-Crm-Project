@@ -16,15 +16,18 @@ import {
   CheckSquare,
   MessageSquare,
   Settings,
+  PlusCircle,
   type LucideIcon
 } from "lucide-react";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Navigate } from "react-router-dom";
 
 // Import other page components
 import CustomersPage from "@/features/customers/pages/CustomersPage";
 import { LeadsPage } from "@/features/leads/pages/LeadsPage";
 import { SalesPage } from "@/features/sales/pages/SalesPage";
 import TicketsPage from "@/features/tickets/pages/TicketsPage";
+import CreateTicketPage from "@/features/tickets/pages/CreateTicketPage";
 import TasksPage from "@/features/tasks/pages/TasksPage";
 import InteractionsPage from "@/features/interactions/pages/InteractionsPage";
 
@@ -35,12 +38,12 @@ interface NavigationItem {
   allowedRoles: UserRole[];
 }
 
-const navigationItems: NavigationItem[] = [
+export const navigationItems: NavigationItem[] = [
   {
     title: "Dashboard",
     url: "/dashboard",
     icon: LayoutDashboard,
-    allowedRoles: ["Admin", "Manager", "Employee", "SalesPerson", "Support", "BaseUser"],
+    allowedRoles: ["Admin", "Manager", "SalesPerson", "Support", "BaseUser", "Customer"],
   },
   {
     title: "Customers",
@@ -67,10 +70,16 @@ const navigationItems: NavigationItem[] = [
     allowedRoles: ["Admin", "Manager", "Support"],
   },
   {
+    title: "Create Ticket",
+    url: "/tickets/create",
+    icon: PlusCircle,
+    allowedRoles: ["Admin","Customer"],
+  },
+  {
     title: "Tasks",
     url: "/tasks",
     icon: CheckSquare,
-    allowedRoles: ["Admin", "Manager", "Employee", "SalesPerson", "Support"],
+    allowedRoles: ["Admin", "Manager", "SalesPerson", "Support"],
   },
   {
     title: "Interactions",
@@ -96,9 +105,17 @@ const router = createBrowserRouter([
     ),
     children: [
       {
+        index: true,
+        element: (
+          <ProtectedRoute allowedRoles={["Admin", "Manager", "SalesPerson", "Support", "BaseUser", "Customer"]}>
+            <Navigate to="/dashboard" replace />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "dashboard",
         element: (
-          <ProtectedRoute allowedRoles={["Admin", "Manager", "Employee", "SalesPerson", "Support", "BaseUser"]}>
+          <ProtectedRoute allowedRoles={["Admin", "Manager", "SalesPerson", "Support", "BaseUser", "Customer"]}>
             <Dashboard />
           </ProtectedRoute>
         ),
@@ -144,9 +161,17 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "tickets/create",
+        element: (
+          <ProtectedRoute allowedRoles={["Admin","Customer"]}>
+            <CreateTicketPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "tasks",
         element: (
-          <ProtectedRoute allowedRoles={["Admin", "Manager", "Employee", "SalesPerson", "Support"]}>
+          <ProtectedRoute allowedRoles={["Admin", "Manager", "SalesPerson", "Support"]}>
             <TasksPage />
           </ProtectedRoute>
         ),
@@ -183,5 +208,4 @@ const router = createBrowserRouter([
   },
 ]);
 
-export { navigationItems };
 export default router;

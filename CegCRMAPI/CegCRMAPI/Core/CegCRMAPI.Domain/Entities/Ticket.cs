@@ -25,7 +25,7 @@ namespace CegCRMAPI.Domain.Entities
     {
         Open,
         ResolvedByAI,
-        AssignedToEmployee,
-        Closed
+        AssignedToEmployee, 
+        Closed  
     }
 }

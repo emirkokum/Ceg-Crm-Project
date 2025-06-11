@@ -40,7 +40,6 @@ export function AdminPage() {
     lastName: "",
     email: "",
     role: "",
-    department: "",
   });
 
   const filteredUsers = users.filter((user) => {
@@ -146,6 +145,7 @@ export function AdminPage() {
             <SelectItem value="Employee">Employee</SelectItem>
             <SelectItem value="SalesPerson">Sales Person</SelectItem>
             <SelectItem value="Support">Support</SelectItem>
+            <SelectItem value="Customer">Customer</SelectItem>
             <SelectItem value="BaseUser">Base User</SelectItem>
           </SelectContent>
         </Select>
@@ -158,7 +158,6 @@ export function AdminPage() {
               <th className="text-left p-4">Name</th>
               <th className="text-left p-4">Email</th>
               <th className="text-left p-4">Role</th>
-              <th className="text-left p-4">Department</th>
               <th className="text-left p-4">Actions</th>
             </tr>
           </thead>
@@ -168,7 +167,6 @@ export function AdminPage() {
                 <td className="p-4">{`${user.firstName} ${user.lastName}`}</td>
                 <td className="p-4">{user.email}</td>
                 <td className="p-4">{user.role || "User"}</td>
-                <td className="p-4">{user.department || "-"}</td>
                 <td className="p-4">
                   <Button variant="outline" size="sm" className="mr-2"
                     onClick={() => {
@@ -179,7 +177,6 @@ export function AdminPage() {
                         lastName: user.lastName,
                         email: user.email,
                         role: user.role || "",
-                        department: user.department,
                       });
                       setIsEditModalOpen(true);
                     }}
@@ -255,6 +252,7 @@ export function AdminPage() {
                     <SelectItem value="Employee">Employee</SelectItem>
                     <SelectItem value="SalesPerson">Sales Person</SelectItem>
                     <SelectItem value="Support">Support</SelectItem>
+                    <SelectItem value="Customer">Customer</SelectItem>
                     <SelectItem value="BaseUser">Base User</SelectItem>
                   </SelectContent>
                 </Select>
@@ -327,17 +325,10 @@ export function AdminPage() {
                       <SelectItem value="Employee">Employee</SelectItem>
                       <SelectItem value="SalesPerson">Sales Person</SelectItem>
                       <SelectItem value="Support">Support</SelectItem>
+                      <SelectItem value="Customer">Customer</SelectItem>
                       <SelectItem value="BaseUser">Base User</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="editDepartment">Department</Label>
-                  <Input 
-                    id="editDepartment" 
-                    value={editedUser.department || ""}
-                    onChange={(e) => setEditedUser({ ...editedUser, department: e.target.value })}
-                  />
                 </div>
               </div>
               <div className="flex justify-end space-x-2">

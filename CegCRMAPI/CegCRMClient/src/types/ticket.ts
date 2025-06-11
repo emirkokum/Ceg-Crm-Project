@@ -1,7 +1,7 @@
 export enum TicketStatus {
   Open = 0,
-  InProgress = 1,
-  Resolved = 2,
+  ResolvedByAI = 1,
+  AssignedToEmployee = 2,
   Closed = 3
 }
 
@@ -11,14 +11,14 @@ export interface Ticket {
   description: string;
   aiSuggestedSolution: string | null;
   finalSolution: string | null;
-  status: TicketStatus;
+  status: string;
   assignedEmployeeId: string | null;
 }
 
 export interface CreateTicket {
   customerId: string;
   assignedEmployeeId: string | null;
-  status: TicketStatus;
+  status: string;
   description: string;
   aiSuggestedSolution?: string;
   finalSolution?: string;
