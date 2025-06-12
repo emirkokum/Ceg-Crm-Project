@@ -126,10 +126,24 @@ export default function CustomerTable({ data }: CustomerTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="font-semibold"
           >
             First Name
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
+        );
+      },
+      cell: ({ row }) => {
+        const customer = row.original;
+        return (
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+              <span className="text-sm font-medium">
+                {customer.firstName?.[0]?.toUpperCase() || "?"}
+              </span>
+            </div>
+            <span>{customer.firstName}</span>
+          </div>
         );
       },
     },
@@ -140,6 +154,7 @@ export default function CustomerTable({ data }: CustomerTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="font-semibold"
           >
             Last Name
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -154,10 +169,19 @@ export default function CustomerTable({ data }: CustomerTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="font-semibold"
           >
             Email
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
+        );
+      },
+      cell: ({ row }) => {
+        const email = row.original.email;
+        return (
+          <a href={`mailto:${email}`} className="text-primary hover:underline">
+            {email}
+          </a>
         );
       },
     },
@@ -168,24 +192,19 @@ export default function CustomerTable({ data }: CustomerTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="font-semibold"
           >
             Phone
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
-    },
-    {
-      accessorKey: "address",
-      header: ({ column }) => {
+      cell: ({ row }) => {
+        const phone = row.original.phone;
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Address
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+          <a href={`tel:${phone}`} className="text-primary hover:underline">
+            {phone}
+          </a>
         );
       },
     },
@@ -238,41 +257,54 @@ export default function CustomerTable({ data }: CustomerTableProps) {
 
   return (
     <>
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  No customers found.
                 </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+              </TableRow>
+            ) : (
+              table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
       {/* Update Modal */}
       <Dialog open={isUpdateModalOpen} onOpenChange={setIsUpdateModalOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Update Customer</DialogTitle>
+            <DialogDescription>
+              Make changes to the customer information below.
+            </DialogDescription>
           </DialogHeader>
           {selectedCustomer && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div>
+                <div className="space-y-2">
                   <label className="text-sm font-medium">First Name</label>
                   <input
                     type="text"
@@ -282,7 +314,7 @@ export default function CustomerTable({ data }: CustomerTableProps) {
                     className="w-full p-2 border rounded"
                   />
                 </div>
-                <div>
+                <div className="space-y-2">
                   <label className="text-sm font-medium">Last Name</label>
                   <input
                     type="text"
@@ -292,7 +324,7 @@ export default function CustomerTable({ data }: CustomerTableProps) {
                     className="w-full p-2 border rounded"
                   />
                 </div>
-                <div>
+                <div className="space-y-2">
                   <label className="text-sm font-medium">Email</label>
                   <input
                     type="email"
@@ -302,7 +334,7 @@ export default function CustomerTable({ data }: CustomerTableProps) {
                     className="w-full p-2 border rounded"
                   />
                 </div>
-                <div>
+                <div className="space-y-2">
                   <label className="text-sm font-medium">Phone</label>
                   <input
                     type="tel"
@@ -312,13 +344,14 @@ export default function CustomerTable({ data }: CustomerTableProps) {
                     className="w-full p-2 border rounded"
                   />
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-2 space-y-2">
                   <label className="text-sm font-medium">Address</label>
                   <textarea
                     name="address"
                     value={formData.address}
                     onChange={handleFormChange}
                     className="w-full p-2 border rounded"
+                    rows={3}
                   />
                 </div>
               </div>

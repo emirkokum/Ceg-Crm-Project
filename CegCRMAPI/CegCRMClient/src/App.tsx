@@ -4,6 +4,7 @@ import { SiteHeader } from "./components/SiteHeader";
 import { Outlet } from "react-router-dom";
 import PageWrapper from "./components/PageWrapper";
 import { ThemeProvider } from "./components/ThemeProvider";
+import { Toaster } from "sonner";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           </div>
         </SidebarInset>
       </SidebarProvider>
+      <Toaster position="top-right" richColors/>
     </ThemeProvider>
   );
 }

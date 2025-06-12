@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Plus } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 export function AdminPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -64,9 +65,9 @@ export function AdminPage() {
         lastName: "",
         role: "",
       });
-      alert("User created successfully");
+      toast.success("User created successfully");
     } catch (error) {
-      alert("Failed to create user");
+      toast.error("Failed to create user");
     }
   };
 
@@ -76,9 +77,9 @@ export function AdminPage() {
       await updateUser.mutateAsync(editedUser);
       setIsEditModalOpen(false);
       setUserToEdit(null);
-      alert("User updated successfully");
+      toast.success("User updated successfully");
     } catch (error) {
-      alert("Failed to update user");
+      toast.error("Failed to update user");
     }
   };
 
@@ -87,13 +88,12 @@ export function AdminPage() {
     try {
       const response = await deleteUser.mutateAsync(userId);
       if (response) {
-        alert("User deleted successfully");
+        toast.success("User deleted successfully");
       } else {
-        alert("Failed to delete user");
+        toast.error("Failed to delete user");
       }
     } catch (error) {
-      console.error("Delete user error:", error);
-      alert("Failed to delete user");
+      toast.error("Failed to delete user");
     }
   };
 
