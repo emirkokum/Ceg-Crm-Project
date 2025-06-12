@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { 
   TicketIcon, 
   CheckCircle2, 
@@ -15,31 +14,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getAllTickets } from "@/api/ticket";
 import { Ticket } from "@/types/ticket";
 import { Progress } from "@/components/ui/progress";
 
-export function TicketsCard() {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [loading, setLoading] = useState(true);
+interface TicketsCardProps {
+  tickets: Ticket[];
+  title?: string;
+  description?: string;
+  showResolutionRate?: boolean;
+}
 
-  useEffect(() => {
-    const fetchTickets = async () => {
-      try {
-        const response = await getAllTickets();
-        if (response.data?.success) {
-          setTickets(response.data.data || []);
-        }
-      } catch (error) {
-        console.error("Error fetching tickets:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTickets();
-  }, []);
-
+export function TicketsCard({ 
+  tickets, 
+  title = "Support Tickets", 
+  description = "Ticket management overview",
+  showResolutionRate = true 
+}: TicketsCardProps) {
   const openTickets = tickets.filter(ticket => ticket.status === "Open").length;
   const resolvedTickets = tickets.filter(ticket => ticket.status === "ResolvedByAI").length;
   const assignedTickets = tickets.filter(ticket => ticket.status === "AssignedToEmployee").length;
@@ -50,8 +40,8 @@ export function TicketsCard() {
     <Card className="overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Support Tickets</CardTitle>
-          <CardDescription>Ticket management overview</CardDescription>
+          <CardTitle className="text-2xl font-bold">{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
         </div>
         <div className="rounded-full bg-primary/10 p-2">
           <TicketIcon className="h-6 w-6 text-primary" />
@@ -83,19 +73,21 @@ export function TicketsCard() {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <TrendingUp className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium">Resolution Rate</span>
+          {showResolutionRate && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium">Resolution Rate</span>
+                </div>
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  {resolutionRate.toFixed(1)}%
+                </Badge>
               </div>
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <Clock className="h-3 w-3" />
-                {resolutionRate.toFixed(1)}%
-              </Badge>
+              <Progress value={resolutionRate} className="h-2" />
             </div>
-            <Progress value={resolutionRate} className="h-2" />
-          </div>
+          )}
 
           <div className="rounded-lg border p-3">
             <div className="flex items-center justify-between">

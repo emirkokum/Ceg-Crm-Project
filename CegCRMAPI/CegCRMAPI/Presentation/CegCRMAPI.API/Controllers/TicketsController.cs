@@ -13,6 +13,7 @@ using CegCRMAPI.Application.Features.Commands.Ticket.DeleteTicket;
 using CegCRMAPI.Application.Features.Commands.Tickets.AssignTicketToEmployee;
 using CegCRMAPI.Application.Features.Commands.Ticket;
 using CegCRMAPI.Application.Features.Commands.Tickets.ChangeTicketStatus;
+using CegCRMAPI.Application.Features.Queries.Ticket.GetTicketsByCustomers;
 
 namespace CegCRMAPI.API.Controllers
 {
@@ -31,6 +32,14 @@ namespace CegCRMAPI.API.Controllers
         public async Task<ActionResult<ApiResponse<List<TicketDto>>>> GetAll()
         {
             var query = new GetAllTicketsQuery();
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+
+        [HttpGet("ByCustomer")]
+        public async Task<ActionResult<ApiResponse<List<TicketDto>>>> GetByCustomer(Guid customerId)
+        {
+            var query = new GetTicketsByCustomerIdQuery(customerId);
             var result = await _mediator.Send(query);
             return Ok(result);
         }

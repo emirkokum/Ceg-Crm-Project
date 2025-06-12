@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CegCRMAPI.Application.DTOs.Ticket;
+using CegCRMAPI.Application.Features.Queries.Ticket.GetTicketsByCustomers;
+using CegCRMAPI.Application.Features.Queries.Interaction.GetInteractionsByCustomerId;
 
 namespace CegCRMAPI.API.Controllers
 {
@@ -28,6 +31,14 @@ namespace CegCRMAPI.API.Controllers
         public async Task<ActionResult<ApiResponse<List<InteractionDto>>>> GetAll()
         {
             var query = new GetAllInteractionsQuery();
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+
+        [HttpGet("ByCustomer")]
+        public async Task<ActionResult<ApiResponse<List<InteractionDto>>>> GetByCustomer(Guid customerId)
+        {
+            var query = new GetInteractionsByCustomerIdQuery(customerId);
             var result = await _mediator.Send(query);
             return Ok(result);
         }

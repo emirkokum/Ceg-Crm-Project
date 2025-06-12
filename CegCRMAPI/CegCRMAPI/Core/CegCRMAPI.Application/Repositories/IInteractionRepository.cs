@@ -7,5 +7,6 @@ namespace CegCRMAPI.Application.Repositories
 {
     public interface IInteractionRepository:IRepository<Interaction>
     {
+        Task<List<Interaction>> GetByCustomerIdAsync(Guid customerId, CancellationToken cancellationToken = default);
     }
 } 

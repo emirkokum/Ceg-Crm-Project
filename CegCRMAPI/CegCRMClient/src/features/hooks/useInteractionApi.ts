@@ -5,10 +5,10 @@ import { Interaction, CreateInteraction } from "@/types/interaction";
 export const useInteractions = () => {
   return useQuery({
     queryKey: ["interactions"],
-    queryFn: interactionApi.getAllInteractions,
-    select: (data) => {
-      if (data?.data?.data && Array.isArray(data.data.data)) {
-        return data.data.data as Interaction[];
+    queryFn: async () => {
+      const response = await interactionApi.getAllInteractions();
+      if (response?.data?.data && Array.isArray(response.data.data)) {
+        return response.data.data as Interaction[];
       }
       return [];
     },

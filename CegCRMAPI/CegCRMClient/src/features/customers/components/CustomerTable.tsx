@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/dialog";
 import { useUpdateCustomer, useDeleteCustomer } from "@/features/hooks/userCustomerApi";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 interface CustomerTableProps {
   data: Customer[];
@@ -65,6 +66,7 @@ export default function CustomerTable({ data }: CustomerTableProps) {
 
   const updateCustomer = useUpdateCustomer();
   const deleteCustomer = useDeleteCustomer();
+  const navigate = useNavigate();
 
   const handleUpdate = (customer: Customer) => {
     setSelectedCustomer(customer);
@@ -118,6 +120,10 @@ export default function CustomerTable({ data }: CustomerTableProps) {
     }
   };
 
+  const handleRowClick = (customerId: string) => {
+    navigate(`/customers/${customerId}`);
+  };
+
   const columns: ColumnDef<Customer>[] = [
     {
       accessorKey: "firstName",
@@ -136,7 +142,10 @@ export default function CustomerTable({ data }: CustomerTableProps) {
       cell: ({ row }) => {
         const customer = row.original;
         return (
-          <div className="flex items-center gap-2">
+          <div 
+            className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded-md"
+            onClick={() => handleRowClick(customer.id)}
+          >
             <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
               <span className="text-sm font-medium">
                 {customer.firstName?.[0]?.toUpperCase() || "?"}
@@ -161,6 +170,17 @@ export default function CustomerTable({ data }: CustomerTableProps) {
           </Button>
         );
       },
+      cell: ({ row }) => {
+        const customer = row.original;
+        return (
+          <div 
+            className="cursor-pointer hover:bg-muted/50 p-2 rounded-md"
+            onClick={() => handleRowClick(customer.id)}
+          >
+            {customer.lastName}
+          </div>
+        );
+      },
     },
     {
       accessorKey: "email",
@@ -177,11 +197,16 @@ export default function CustomerTable({ data }: CustomerTableProps) {
         );
       },
       cell: ({ row }) => {
-        const email = row.original.email;
+        const customer = row.original;
         return (
-          <a href={`mailto:${email}`} className="text-primary hover:underline">
-            {email}
-          </a>
+          <div 
+            className="cursor-pointer hover:bg-muted/50 p-2 rounded-md"
+            onClick={() => handleRowClick(customer.id)}
+          >
+            <a href={`mailto:${customer.email}`} className="text-primary hover:underline">
+              {customer.email}
+            </a>
+          </div>
         );
       },
     },
@@ -200,11 +225,16 @@ export default function CustomerTable({ data }: CustomerTableProps) {
         );
       },
       cell: ({ row }) => {
-        const phone = row.original.phone;
+        const customer = row.original;
         return (
-          <a href={`tel:${phone}`} className="text-primary hover:underline">
-            {phone}
-          </a>
+          <div 
+            className="cursor-pointer hover:bg-muted/50 p-2 rounded-md"
+            onClick={() => handleRowClick(customer.id)}
+          >
+            <a href={`tel:${customer.phone}`} className="text-primary hover:underline">
+              {customer.phone}
+            </a>
+          </div>
         );
       },
     },

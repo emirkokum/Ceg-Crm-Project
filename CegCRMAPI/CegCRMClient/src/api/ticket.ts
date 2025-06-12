@@ -10,4 +10,6 @@ export const assignTicket = (ticketId: string, employeeId: string) =>
   API.put(`/Tickets/${ticketId}/assign`, { ticketId, employeeId });
 
 export const updateTicketStatus = (ticketId: string, newStatus: TicketStatus) =>
-  API.patch(`/Tickets/${ticketId}/status`, { ticketId, newStatus }); 
+  API.patch(`/Tickets/${ticketId}/status`, { ticketId, newStatus });
+
+export const getTicketsByCustomer = (customerId: string) => API.get(`/Tickets/ByCustomer/${customerId}`); 

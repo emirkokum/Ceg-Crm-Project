@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { 
   MessageSquare, 
   Phone, 
@@ -15,44 +14,39 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getAllInteractions } from "@/api/interaction";
 import { Interaction } from "@/types/interaction";
 import { Progress } from "@/components/ui/progress";
 
-export function InteractionsOverviewCard() {
-  const [interactions, setInteractions] = useState<Interaction[]>([]);
-  const [loading, setLoading] = useState(true);
+interface InteractionsOverviewCardProps {
+  interactions: Interaction[];
+  title?: string;
+  description?: string;
+  showDistribution?: boolean;
+  filterByDate?: boolean;
+}
 
-  useEffect(() => {
-    const fetchInteractions = async () => {
-      try {
-        const response = await getAllInteractions();
-        if (response.data?.success) {
-          setInteractions(response.data.data || []);
-        }
-      } catch (error) {
-        console.error("Error fetching interactions:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchInteractions();
-  }, []);
-
+export function InteractionsOverviewCard({ 
+  interactions, 
+  title = "Customer Interactions", 
+  description = "Today's interaction overview",
+  showDistribution = true,
+  filterByDate = true
+}: InteractionsOverviewCardProps) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const todayInteractions = interactions.filter(interaction => {
-    const interactionDate = new Date(interaction.interactionDate);
-    interactionDate.setHours(0, 0, 0, 0);
-    return interactionDate.getTime() === today.getTime();
-  });
+  const filteredInteractions = filterByDate 
+    ? interactions.filter(interaction => {
+        const interactionDate = new Date(interaction.interactionDate);
+        interactionDate.setHours(0, 0, 0, 0);
+        return interactionDate.getTime() === today.getTime();
+      })
+    : interactions;
 
-  const messageInteractions = todayInteractions.filter(i => i.type === "Message").length;
-  const callInteractions = todayInteractions.filter(i => i.type === "Call").length;
-  const emailInteractions = todayInteractions.filter(i => i.type === "Email").length;
-  const totalInteractions = todayInteractions.length;
+  const messageInteractions = filteredInteractions.filter(i => i.type === "Message").length;
+  const callInteractions = filteredInteractions.filter(i => i.type === "Call").length;
+  const emailInteractions = filteredInteractions.filter(i => i.type === "Email").length;
+  const totalInteractions = filteredInteractions.length;
 
   const messagePercentage = totalInteractions > 0 ? (messageInteractions / totalInteractions) * 100 : 0;
   const callPercentage = totalInteractions > 0 ? (callInteractions / totalInteractions) * 100 : 0;
@@ -62,8 +56,8 @@ export function InteractionsOverviewCard() {
     <Card className="overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Customer Interactions</CardTitle>
-          <CardDescription>Today's interaction overview</CardDescription>
+          <CardTitle className="text-2xl font-bold">{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
         </div>
         <div className="rounded-full bg-primary/10 p-2">
           <MessageSquare className="h-6 w-6 text-primary" />
@@ -95,37 +89,39 @@ export function InteractionsOverviewCard() {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <TrendingUp className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium">Interaction Distribution</span>
-              </div>
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <Calendar className="h-3 w-3" />
-                Today
-              </Badge>
-            </div>
+          {showDistribution && (
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span>Messages</span>
-                <span>{messagePercentage.toFixed(1)}%</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium">Interaction Distribution</span>
+                </div>
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  <Calendar className="h-3 w-3" />
+                  {filterByDate ? "Today" : "All Time"}
+                </Badge>
               </div>
-              <Progress value={messagePercentage} className="h-2" />
-              
-              <div className="flex items-center justify-between text-sm">
-                <span>Calls</span>
-                <span>{callPercentage.toFixed(1)}%</span>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span>Messages</span>
+                  <span>{messagePercentage.toFixed(1)}%</span>
+                </div>
+                <Progress value={messagePercentage} className="h-2" />
+                
+                <div className="flex items-center justify-between text-sm">
+                  <span>Calls</span>
+                  <span>{callPercentage.toFixed(1)}%</span>
+                </div>
+                <Progress value={callPercentage} className="h-2" />
+                
+                <div className="flex items-center justify-between text-sm">
+                  <span>Emails</span>
+                  <span>{emailPercentage.toFixed(1)}%</span>
+                </div>
+                <Progress value={emailPercentage} className="h-2" />
               </div>
-              <Progress value={callPercentage} className="h-2" />
-              
-              <div className="flex items-center justify-between text-sm">
-                <span>Emails</span>
-                <span>{emailPercentage.toFixed(1)}%</span>
-              </div>
-              <Progress value={emailPercentage} className="h-2" />
             </div>
-          </div>
+          )}
 
           <div className="rounded-lg border p-3">
             <div className="flex items-center justify-between">

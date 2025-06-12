@@ -7,7 +7,7 @@ namespace CegCRMAPI.Domain.Entities
 {
     public class Employee : BaseEntity
     {
-        public Guid UserId { get; set; }  // Identity User
+        public Guid UserId { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; }
         

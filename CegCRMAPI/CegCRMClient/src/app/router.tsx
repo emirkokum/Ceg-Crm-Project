@@ -30,6 +30,7 @@ import TicketsPage from "@/features/tickets/pages/TicketsPage";
 import CreateTicketPage from "@/features/tickets/pages/CreateTicketPage";
 import TasksPage from "@/features/tasks/pages/TasksPage";
 import InteractionsPage from "@/features/interactions/pages/InteractionsPage";
+import CustomerDetailsPage from "@/features/customers/pages/CustomerDetailsPage";
 
 interface NavigationItem {
   title: string;
@@ -133,6 +134,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={["Admin", "Manager", "SalesPerson", "Support"]}>
             <CustomersPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "customers/:id",
+        element: (
+          <ProtectedRoute allowedRoles={["Admin", "Manager", "SalesPerson", "Support"]}>
+            <CustomerDetailsPage />
           </ProtectedRoute>
         ),
       },

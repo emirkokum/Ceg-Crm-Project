@@ -11,11 +11,14 @@ import {
 import { Ticket, CreateTicket, TicketStatus } from "@/types/ticket";
 
 export const useTickets = () => {
-  return useQuery<Ticket[]>({
+  return useQuery({
     queryKey: ["tickets"],
     queryFn: async () => {
       const response = await getAllTickets();
-      return response.data.data;
+      if (response?.data?.data && Array.isArray(response.data.data)) {
+        return response.data.data as Ticket[];
+      }
+      return [];
     },
   });
 };
@@ -24,6 +27,13 @@ export const useTicket = (id: string) => {
   return useQuery({
     queryKey: ["ticket", id],
     queryFn: () => getTicketById(id),
+    enabled: !!id,
+    select: (response) => {
+      if (response?.data?.data) {
+        return response.data.data as Ticket;
+      }
+      return null;
+    },
   });
 };
 

@@ -1,6 +1,7 @@
 ﻿using CegCRMAPI.Domain.Entities.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,9 +24,16 @@ namespace CegCRMAPI.Domain.Entities
 
     public enum TicketStatus
     {
-        Open,
-        ResolvedByAI,
-        AssignedToEmployee, 
-        Closed  
+        [Display(Name = "Open")]
+        Open = 1,
+
+        [Display(Name = "ResolvedByAI")]
+        ResolvedByAI = 2,
+
+        [Display(Name = "AssignedToEmployee ")]
+        AssignedToEmployee = 3,
+
+        [Display(Name = "Closed")]
+        Closed = 4
     }
 }
