@@ -1,20 +1,13 @@
 import { useState, useMemo } from "react";
 import CustomerTable from "../components/CustomerTable";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import AddCustomerModal from "../components/AddCustomerModal";
 import { toast } from "sonner";
 import { useCustomers } from "@/features/hooks/userCustomerApi";
 import { Customer } from "@/types/customer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, Search, Filter, Download, Upload } from "lucide-react";
+import { Users, Search, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -22,17 +15,24 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { EnumSelect } from "@/components/EnumSelect";
+import { CustomerType } from "@/constants/enums";
+
+const customerTypeOptions = [
+  { value: CustomerType.Person, label: "Person" },
+  { value: CustomerType.Business, label: "Business" },
+];
 
 export default function CustomerList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("name");
+  const [typeFilter, setTypeFilter] = useState<number | null>(null);
 
   const { data: customers, isLoading, isError } = useCustomers();
 
   const filteredCustomers = useMemo(() => {
-    if (!Array.isArray(customers)) {
-      return [];
-    }
+    if (!Array.isArray(customers)) return [];
+    
     return customers.filter((customer: Customer) => {
       const name = customer.fullName ?? "";
       const email = customer.email ?? "";
@@ -43,13 +43,11 @@ export default function CustomerList() {
         email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         phone.toLowerCase().includes(searchTerm.toLowerCase());
 
-      return matchesSearch
-    });
-  }, [customers, searchTerm]);
+      const matchesType = typeFilter === null || customer.type === typeFilter;
 
-  const handleAddCustomer = (newCustomer: any) => {
-    toast.success("New customer added");
-  };
+      return matchesSearch && matchesType;
+    });
+  }, [customers, searchTerm, typeFilter]);
 
   const handleExport = () => {
     toast.info("Export functionality coming soon!");
@@ -99,12 +97,12 @@ export default function CustomerList() {
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
-          <AddCustomerModal onAddCustomer={handleAddCustomer} />
+          <AddCustomerModal onAddCustomer={() => {}} />
         </div>
       </div>
 
       <Card>
-        <CardContent className="p-6">
+        <CardContent className="px-10 py-5">
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
             <div className="relative w-full md:w-1/2">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -116,6 +114,15 @@ export default function CustomerList() {
               />
             </div>
             <div className="flex gap-2 w-full md:w-auto">
+              <EnumSelect
+                options={[
+                  { value: 0, label: "All" },
+                  ...customerTypeOptions
+                ]}
+                value={typeFilter ?? 0}
+                onValueChange={(value) => setTypeFilter(value === 0 ? null : value)}
+                placeholder="Filter by type"
+              />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="w-full md:w-[180px]">
@@ -137,7 +144,7 @@ export default function CustomerList() {
       </Card>
 
       <Card>
-        <CardContent className="p-10">
+        <CardContent className="px-10 py-5">
           <CustomerTable data={filteredCustomers} />
         </CardContent>
       </Card>

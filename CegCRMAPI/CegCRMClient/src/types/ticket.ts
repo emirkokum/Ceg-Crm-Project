@@ -1,25 +1,21 @@
-export enum TicketStatus {
-  Open = 0,
-  ResolvedByAI = 1,
-  AssignedToEmployee = 2,
-  Closed = 3
-}
-
 export interface Ticket {
   id: string;
   customerId: string;
-  description: string;
-  aiSuggestedSolution: string | null;
-  finalSolution: string | null;
-  status: string;
   assignedEmployeeId: string | null;
+  status: number;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateTicket {
   customerId: string;
   assignedEmployeeId: string | null;
-  status: string;
+  status: number;
   description: string;
-  aiSuggestedSolution?: string;
-  finalSolution?: string;
+}
+
+export interface UpdateTicket {
+  id: string;
+  data: Partial<CreateTicket>;
 } 

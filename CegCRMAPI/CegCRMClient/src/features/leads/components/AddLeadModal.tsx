@@ -7,76 +7,68 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useCreateCustomer } from "@/features/hooks/userCustomerApi";
+import { useCreateLead } from "@/features/hooks/useLeadApi";
 import { toast } from "sonner";
 import { Plus } from "lucide-react";
 import { EnumSelect } from "@/components/EnumSelect";
-import { CreateCustomer } from "@/types/customer";
-import { IndustryType, CustomerType } from "@/constants/enums";
+import { Lead } from "@/types/lead";
+import { useEnum } from "@/features/hooks/useEnums";
 
-const industryTypeOptions = [
-  { value: IndustryType.Technology, label: "Technology" },
-  { value: IndustryType.Finance, label: "Finance" },
-  { value: IndustryType.Health, label: "Health" },
-  { value: IndustryType.Retail, label: "Retail" },
-  { value: IndustryType.Education, label: "Education" },
-  { value: IndustryType.Other, label: "Other" },
-];
-
-const customerTypeOptions = [
-  { value: CustomerType.Person, label: "Person" },
-  { value: CustomerType.Business, label: "Business" },
-];
-
-interface AddCustomerModalProps {
-  onAddCustomer: (customer: CreateCustomer) => void;
+interface AddLeadModalProps {
+  onAddLead: (lead: Omit<Lead, "id" | "createdDate" | "updatedDate">) => void;
 }
 
-export default function AddCustomerModal({ onAddCustomer }: AddCustomerModalProps) {
+export function AddLeadModal({ onAddLead }: AddLeadModalProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const createCustomer = useCreateCustomer();
+  const createLead = useCreateLead();
+  const { data: leadStatusOptions } = useEnum("lead-status");
+  const { data: leadSourceOptions } = useEnum("lead-source");
+  const { data: industryTypeOptions } = useEnum("industry-type");
 
-  const [formData, setFormData] = useState<CreateCustomer & { type: number }>({
-    firstName: "",
-    lastName: "",
+  const [formData, setFormData] = useState<Omit<Lead, "id" | "createdDate" | "updatedDate">>({
+    companyName: "",
+    contactName: "",
     email: "",
     phone: "",
-    address: "",
-    industryType: 0,
-    type: CustomerType.Person,
+    source: 0,
+    status: 0,
+    industry: 0,
+    notes: "",
+    assignedToEmployeeId: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const customerData = {
-        firstName: formData.firstName.trim(),
-        lastName: formData.lastName.trim(),
+      const leadData = {
+        ...formData,
+        companyName: formData.companyName.trim(),
+        contactName: formData.contactName.trim(),
         email: formData.email.trim(),
         phone: formData.phone.trim(),
-        address: formData.address.trim(),
-        industryType: formData.industryType,
-        type: formData.type,
+        notes: formData.notes.trim(),
       };
       
-      await createCustomer.mutateAsync(customerData);
-      toast.success("Customer added successfully");
-      onAddCustomer(customerData);
+      await createLead.mutateAsync(leadData);
+      toast.success("Lead added successfully");
+      onAddLead(leadData);
       setIsOpen(false);
       setFormData({
-        firstName: "",
-        lastName: "",
+        companyName: "",
+        contactName: "",
         email: "",
         phone: "",
-        address: "",
-        industryType: 0,
-        type: CustomerType.Person,
+        source: 0,
+        status: 0,
+        industry: 0,
+        notes: "",
+        assignedToEmployeeId: "",
       });
     } catch (error: any) {
       if (error.response?.data) {
-        toast.error(error.response.data.message || "Error adding customer");
+        toast.error(error.response.data.message || "Error adding lead");
       } else {
-        toast.error("Error adding customer");
+        toast.error("Error adding lead");
       }
     }
   };
@@ -96,32 +88,32 @@ export default function AddCustomerModal({ onAddCustomer }: AddCustomerModalProp
       <DialogTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
-          Add Customer
+          Add Lead
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Customer</DialogTitle>
+          <DialogTitle>Add New Lead</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">First Name</label>
+              <label className="text-sm font-medium">Company Name</label>
               <input
                 type="text"
-                name="firstName"
-                value={formData.firstName}
+                name="companyName"
+                value={formData.companyName}
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
                 required
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Last Name</label>
+              <label className="text-sm font-medium">Contact Name</label>
               <input
                 type="text"
-                name="lastName"
-                value={formData.lastName}
+                name="contactName"
+                value={formData.contactName}
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
                 required
@@ -149,37 +141,47 @@ export default function AddCustomerModal({ onAddCustomer }: AddCustomerModalProp
                 required
               />
             </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Source</label>
+              <EnumSelect
+                options={leadSourceOptions || []}
+                value={formData.source}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, source: value }))
+                }
+                placeholder="Select source"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Status</label>
+              <EnumSelect
+                options={leadStatusOptions || []}
+                value={formData.status}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, status: value }))
+                }
+                placeholder="Select status"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Industry</label>
+              <EnumSelect
+                options={industryTypeOptions || []}
+                value={formData.industry}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, industry: value }))
+                }
+                placeholder="Select industry"
+              />
+            </div>
             <div className="col-span-2 space-y-2">
-              <label className="text-sm font-medium">Address</label>
+              <label className="text-sm font-medium">Notes</label>
               <textarea
-                name="address"
-                value={formData.address}
+                name="notes"
+                value={formData.notes}
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
                 rows={3}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Customer Type</label>
-              <EnumSelect
-                options={customerTypeOptions}
-                value={formData.type}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({ ...prev, type: value }))
-                }
-                placeholder="Select customer type"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Industry Type</label>
-              <EnumSelect
-                options={industryTypeOptions}
-                value={formData.industryType}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({ ...prev, industryType: value }))
-                }
-                placeholder="Select industry type"
               />
             </div>
           </div>
@@ -191,10 +193,10 @@ export default function AddCustomerModal({ onAddCustomer }: AddCustomerModalProp
             >
               Cancel
             </Button>
-            <Button type="submit">Add Customer</Button>
+            <Button type="submit">Add Lead</Button>
           </div>
         </form>
       </DialogContent>
     </Dialog>
   );
-}
+} 

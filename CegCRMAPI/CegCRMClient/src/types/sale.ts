@@ -7,7 +7,7 @@ export interface Sale {
   discount: number;
   tax: number;
   finalAmount: number;
-  status: string | null;
+  status: number; //enum
   invoiceNumber: string | null;
   createdDate: string;
   updatedDate: string | null;

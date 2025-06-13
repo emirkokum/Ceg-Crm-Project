@@ -1,62 +1,22 @@
 import { useState, useMemo } from "react";
 import { LeadTable } from "../components/LeadTable";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useLeads } from "@/features/hooks/useLeadApi";
-import { Lead } from "@/types/lead";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
+import { Users, Search, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
+import { AddLeadModal } from "../components/AddLeadModal";
+import { EnumSelect } from "@/components/EnumSelect";
+import { useEnum } from "@/features/hooks/useEnums";
 import { toast } from "sonner";
-import { useCreateLead } from "@/features/hooks/useLeadApi";
-import { Textarea } from "@/components/ui/textarea";
 
 export function LeadsPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState<number | null>(null);
 
   const { data: leads, isLoading, isError } = useLeads();
-  const createLead = useCreateLead();
-
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [formData, setFormData] = useState<Partial<Lead>>({
-    companyName: "",
-    contactName: "",
-    email: "",
-    phone: "",
-    source: "",
-    status: "New",
-    industry: "",
-    notes: "",
-  });
-
-  const handleCreate = async () => {
-    try {
-      await createLead.mutateAsync(formData as Omit<Lead, "id" | "createdDate" | "updatedDate">);
-      toast.success("Lead created successfully");
-      setIsCreateOpen(false);
-      setFormData({
-        companyName: "",
-        contactName: "",
-        email: "",
-        phone: "",
-        source: "",
-        status: "New",
-        industry: "",
-        notes: "",
-      });
-    } catch (error) {
-      toast.error("Failed to create lead");
-    }
-  };
+  const { data: leadStatusOptions } = useEnum("lead-status");
 
   const filteredLeads = useMemo(() => {
     if (!Array.isArray(leads)) {
@@ -73,18 +33,25 @@ export function LeadsPage() {
         email.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesStatus =
-        statusFilter === "" ||
+        statusFilter === null ||
         lead.status === statusFilter;
 
       return matchesSearch && matchesStatus;
     });
   }, [leads, searchTerm, statusFilter]);
 
+  const handleExport = () => {
+    toast.info("Export functionality coming soon!");
+  };
+
   if (isLoading) return (
-    <div className="flex flex-col gap-4">
+    <div className="space-y-6 p-6">
       <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
         <Skeleton className="w-full md:w-1/2 h-10" />
-        <Skeleton className="w-32 h-10" />
+        <div className="flex gap-2">
+          <Skeleton className="w-32 h-10" />
+          <Skeleton className="w-32 h-10" />
+        </div>
       </div>
       <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
         <Skeleton className="w-full md:w-48 h-10" />
@@ -98,135 +65,65 @@ export function LeadsPage() {
     </div>
   );
 
-  if (isError) return <div>Error fetching data.</div>;
+  if (isError) return (
+    <Card className="p-6">
+      <CardContent className="flex flex-col items-center justify-center space-y-4">
+        <div className="text-red-500 text-xl">Error fetching data</div>
+        <Button variant="outline" onClick={() => window.location.reload()}>
+          Try Again
+        </Button>
+      </CardContent>
+    </Card>
+  );
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Leads</h1>
-        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Lead
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create New Lead</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="form-field">
-                <Label htmlFor="companyName">Company Name</Label>
-                <Input
-                  id="companyName"
-                  value={formData.companyName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, companyName: e.target.value })
-                  }
-                />
-              </div>
-              <div className="form-field">
-                <Label htmlFor="contactName">Contact Name</Label>
-                <Input
-                  id="contactName"
-                  value={formData.contactName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, contactName: e.target.value })
-                  }
-                />
-              </div>
-              <div className="form-field">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                />
-              </div>
-              <div className="form-field">
-                <Label htmlFor="phone">Phone</Label>
-                <Input
-                  id="phone"
-                  value={formData.phone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
-                />
-              </div>
-              <div className="form-field">
-                <Label htmlFor="source">Source</Label>
-                <Input
-                  id="source"
-                  value={formData.source}
-                  onChange={(e) =>
-                    setFormData({ ...formData, source: e.target.value })
-                  }
-                />
-              </div>
-              <div className="form-field">
-                <Label htmlFor="status">Status</Label>
-                <Input
-                  id="status"
-                  value={formData.status}
-                  onChange={(e) =>
-                    setFormData({ ...formData, status: e.target.value })
-                  }
-                />
-              </div>
-              <div className="form-field">
-                <Label htmlFor="industry">Industry</Label>
-                <Input
-                  id="industry"
-                  value={formData.industry}
-                  onChange={(e) =>
-                    setFormData({ ...formData, industry: e.target.value })
-                  }
-                />
-              </div>
-              <div className="form-field">
-                <Label htmlFor="notes">Notes</Label>
-                <Textarea
-                  id="notes"
-                  value={formData.notes}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                    setFormData({ ...formData, notes: e.target.value })
-                  }
-                />
-              </div>
-              <Button onClick={handleCreate}>Create Lead</Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-      <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
-        <Input
-          placeholder="Search (company, contact, or email)"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full md:w-1/2"
-        />
-        <Select
-          onValueChange={(val) => setStatusFilter(val === "all" ? "" : val)}
-          value={statusFilter || "all"}
-        >
-          <SelectTrigger className="w-full md:w-48">
-            <SelectValue placeholder="Select status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="New">New</SelectItem>
-            <SelectItem value="Contacted">Contacted</SelectItem>
-            <SelectItem value="Qualified">Qualified</SelectItem>
-            <SelectItem value="Unqualified">Unqualified</SelectItem>
-          </SelectContent>
-        </Select>
+    <div className="space-y-6 p-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex items-center gap-2">
+          <Users className="h-6 w-6" />
+          <h1 className="text-2xl font-bold">Leads</h1>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleExport}>
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
+          <AddLeadModal onAddLead={() => {}} />
+        </div>
       </div>
 
-      <LeadTable data={filteredLeads} />
+      <Card>
+        <CardContent className="px-10 py-5">
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
+            <div className="relative w-full md:w-1/2">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search (company, contact or email)"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <div className="flex gap-2 w-full md:w-auto">
+              <EnumSelect
+                options={[
+                  { value: 0, label: "All" },
+                  ...(leadStatusOptions || [])
+                ]}
+                value={statusFilter ?? 0}
+                onValueChange={(value) => setStatusFilter(value === 0 ? null : value)}
+                placeholder="Filter by status"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="px-10 py-5">
+          <LeadTable data={filteredLeads} />
+        </CardContent>
+      </Card>
     </div>
   );
 } 

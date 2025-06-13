@@ -1,10 +1,10 @@
-import { 
-  TicketIcon, 
-  CheckCircle2, 
-  Clock, 
+import {
+  TicketIcon,
+  CheckCircle2,
+  Clock,
   AlertCircle,
   TrendingUp,
-  Users
+  Users,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -14,8 +14,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Ticket } from "@/types/ticket";
 import { Progress } from "@/components/ui/progress";
+import { Ticket } from "@/types/ticket";
+
+const TicketStatus = {
+  Open: 1,
+  ResolvedByAI: 2,
+  AssignedToEmployee: 3,
+  Closed: 4,
+} as const;
 
 interface TicketsCardProps {
   tickets: Ticket[];
@@ -24,17 +31,27 @@ interface TicketsCardProps {
   showResolutionRate?: boolean;
 }
 
-export function TicketsCard({ 
-  tickets, 
-  title = "Support Tickets", 
+export function TicketsCard({
+  tickets,
+  title = "Support Tickets",
   description = "Ticket management overview",
-  showResolutionRate = true 
+  showResolutionRate = true,
 }: TicketsCardProps) {
-  const openTickets = tickets.filter(ticket => ticket.status === "Open").length;
-  const resolvedTickets = tickets.filter(ticket => ticket.status === "ResolvedByAI").length;
-  const assignedTickets = tickets.filter(ticket => ticket.status === "AssignedToEmployee").length;
+  const openTickets = tickets.filter(
+    (ticket) => ticket.status === TicketStatus.Open
+  ).length;
+
+  const resolvedTickets = tickets.filter(
+    (ticket) => ticket.status === TicketStatus.ResolvedByAI
+  ).length;
+
+  const assignedTickets = tickets.filter(
+    (ticket) => ticket.status === TicketStatus.AssignedToEmployee
+  ).length;
+
   const totalTickets = tickets.length;
-  const resolutionRate = totalTickets > 0 ? (resolvedTickets / totalTickets) * 100 : 0;
+  const resolutionRate =
+    totalTickets > 0 ? (resolvedTickets / totalTickets) * 100 : 0;
 
   return (
     <Card className="overflow-hidden">
@@ -53,21 +70,27 @@ export function TicketsCard({
             <div className="flex flex-col space-y-1.5 rounded-lg border p-3">
               <div className="flex items-center space-x-2">
                 <AlertCircle className="h-4 w-4 text-yellow-500" />
-                <span className="text-sm font-medium text-muted-foreground">Open</span>
+                <span className="text-sm font-medium text-muted-foreground">
+                  Open
+                </span>
               </div>
               <div className="text-2xl font-bold">{openTickets}</div>
             </div>
             <div className="flex flex-col space-y-1.5 rounded-lg border p-3">
               <div className="flex items-center space-x-2">
                 <Users className="h-4 w-4 text-blue-500" />
-                <span className="text-sm font-medium text-muted-foreground">Assigned</span>
+                <span className="text-sm font-medium text-muted-foreground">
+                  Assigned
+                </span>
               </div>
               <div className="text-2xl font-bold">{assignedTickets}</div>
             </div>
             <div className="flex flex-col space-y-1.5 rounded-lg border p-3">
               <div className="flex items-center space-x-2">
                 <CheckCircle2 className="h-4 w-4 text-green-500" />
-                <span className="text-sm font-medium text-muted-foreground">Resolved</span>
+                <span className="text-sm font-medium text-muted-foreground">
+                  Resolved
+                </span>
               </div>
               <div className="text-2xl font-bold">{resolvedTickets}</div>
             </div>
@@ -104,4 +127,4 @@ export function TicketsCard({
       </CardContent>
     </Card>
   );
-} 
+}

@@ -16,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Ticket, TicketStatus } from "@/types/ticket";
+import { Ticket } from "@/types/ticket";
 import { Employee } from "@/types/employee";
 import {
   DropdownMenu,
@@ -51,6 +51,15 @@ import {
 import { useEmployees } from "@/features/hooks/useEmployeeApi";
 import { useCustomers } from "@/features/hooks/userCustomerApi";
 import { Badge } from "@/components/ui/badge";
+import { TicketStatus } from "@/constants/enums";
+import { EnumSelect } from "@/components/EnumSelect";
+
+const ticketStatusOptions = [
+  { value: TicketStatus.Open, label: "Open" },
+  { value: TicketStatus.ResolvedByAI, label: "Resolved" },
+  { value: TicketStatus.AssignedToEmployee, label: "Assigned" },
+  { value: TicketStatus.Closed, label: "Closed" },
+];
 
 interface TicketTableProps {
   data: Ticket[];
@@ -59,9 +68,8 @@ interface TicketTableProps {
 interface UpdateFormData {
   customerId: string;
   assignedEmployeeId: string | null;
-  status: string;
-  finalSolution: string | null;
-  solution: string;
+  status: number;
+  description: string;
 }
 
 export default function TicketTable({ data }: TicketTableProps) {
@@ -75,9 +83,8 @@ export default function TicketTable({ data }: TicketTableProps) {
   const [formData, setFormData] = useState<UpdateFormData>({
     customerId: "",
     assignedEmployeeId: null,
-    status: "Open",
-    finalSolution: null,
-    solution: "",
+    status: TicketStatus.Open,
+    description: "",
   });
 
   const { data: employees = [] } = useEmployees();
@@ -93,8 +100,7 @@ export default function TicketTable({ data }: TicketTableProps) {
       customerId: ticket.customerId,
       assignedEmployeeId: ticket.assignedEmployeeId,
       status: ticket.status,
-      finalSolution: ticket.finalSolution,
-      solution: ticket.finalSolution || "",
+      description: ticket.description,
     });
     setIsUpdateModalOpen(true);
   };
@@ -143,9 +149,9 @@ export default function TicketTable({ data }: TicketTableProps) {
           customerId: formData.customerId,
           assignedEmployeeId: formData.assignedEmployeeId,
           status: formData.status,
-          finalSolution: formData.finalSolution,
-          description: selectedTicket.description,
-          aiSuggestedSolution: selectedTicket.aiSuggestedSolution,
+          description: formData.description,
+          createdAt: selectedTicket.createdAt,
+          updatedAt: selectedTicket.updatedAt,
         },
       });
       toast.success("Ticket updated successfully");
@@ -164,58 +170,71 @@ export default function TicketTable({ data }: TicketTableProps) {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: number | string) => {
+    if (typeof status === 'string') {
+      switch (status) {
+        case 'Open':
+          return "bg-yellow-100 text-yellow-800 hover:bg-yellow-100";
+        case 'ResolvedByAI':
+          return "bg-green-100 text-green-800 hover:bg-green-100";
+        case 'AssignedToEmployee':
+          return "bg-blue-100 text-blue-800 hover:bg-blue-100";
+        case 'Closed':
+          return "bg-gray-100 text-gray-800 hover:bg-gray-100";
+        default:
+          return "bg-gray-100 text-gray-800 hover:bg-gray-100";
+      }
+    }
+
     switch (status) {
-      case "Open":
+      case TicketStatus.Open:
         return "bg-yellow-100 text-yellow-800 hover:bg-yellow-100";
-      case "ResolvedByAI":
+      case TicketStatus.ResolvedByAI:
         return "bg-green-100 text-green-800 hover:bg-green-100";
-      case "AssignedToEmployee":
+      case TicketStatus.AssignedToEmployee:
         return "bg-blue-100 text-blue-800 hover:bg-blue-100";
-      case "Closed":
+      case TicketStatus.Closed:
         return "bg-gray-100 text-gray-800 hover:bg-gray-100";
       default:
         return "bg-gray-100 text-gray-800 hover:bg-gray-100";
     }
   };
 
-  const getStatusLabel = (status: string) => {
+  const getStatusLabel = (status: number | string) => {
+    if (typeof status === 'string') {
+      switch (status) {
+        case 'Open':
+          return "Open";
+        case 'ResolvedByAI':
+          return "Resolved";
+        case 'AssignedToEmployee':
+          return "Assigned";
+        case 'Closed':
+          return "Closed";
+        default:
+          return "Unknown";
+      }
+    }
+
     switch (status) {
-      case "Open":
+      case TicketStatus.Open:
         return "Open";
-      case "ResolvedByAI":
-        return "Resolved by AI";
-      case "AssignedToEmployee":
-        return "Assigned to Employee";
-      case "Closed":
+      case TicketStatus.ResolvedByAI:
+        return "Resolved";
+      case TicketStatus.AssignedToEmployee:
+        return "Assigned";
+      case TicketStatus.Closed:
         return "Closed";
       default:
         return "Unknown";
     }
   };
 
-  const getNextStatus = (currentStatus: string): string => {
-    switch (currentStatus) {
-      case "Open":
-        return "ResolvedByAI";
-      case "ResolvedByAI":
-        return "AssignedToEmployee";
-      case "AssignedToEmployee":
-        return "Closed";
-      case "Closed":
-        return "Open";
-      default:
-        return "Open";
-    }
-  };
-
-  const handleStatusChange = async (ticketId: string, selectedStatus: string) => {
+  const handleStatusChange = async (ticketId: string, newStatus: number) => {
     try {
-      const statusValue = TicketStatus[selectedStatus as keyof typeof TicketStatus];
-      await updateTicketStatus.mutateAsync({ ticketId, newStatus: statusValue });
+      await updateTicketStatus.mutateAsync({ ticketId, newStatus });
       toast.success("Ticket status updated successfully");
     } catch (error) {
-      console.error("Error updating ticket status:", error);
       toast.error("Error updating ticket status");
     }
   };
@@ -236,7 +255,7 @@ export default function TicketTable({ data }: TicketTableProps) {
         );
       },
       cell: ({ row }) => {
-        const status = row.getValue("status") as string;
+        const status = row.getValue("status") as number;
         const ticket = row.original;
         return (
           <DropdownMenu>
@@ -249,19 +268,17 @@ export default function TicketTable({ data }: TicketTableProps) {
               </Badge>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              {Object.entries(TicketStatus)
-                .filter(([key]) => isNaN(Number(key)))
-                .map(([key]) => (
-                  <DropdownMenuItem
-                    key={key}
-                    onClick={() => handleStatusChange(ticket.id, key)}
-                    className="cursor-pointer"
-                  >
-                    <Badge variant="secondary" className={getStatusColor(key)}>
-                      {getStatusLabel(key)}
-                    </Badge>
-                  </DropdownMenuItem>
-                ))}
+              {ticketStatusOptions.map((option) => (
+                <DropdownMenuItem
+                  key={option.value}
+                  onClick={() => handleStatusChange(ticket.id, option.value)}
+                  className="cursor-pointer"
+                >
+                  <Badge variant="secondary" className={getStatusColor(option.value)}>
+                    {option.label}
+                  </Badge>
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -286,28 +303,6 @@ export default function TicketTable({ data }: TicketTableProps) {
         const truncatedDescription =
           description.length > 50 ? description.substring(0, 50) + "..." : description;
         return <span>{truncatedDescription}</span>;
-      },
-    },
-    {
-      accessorKey: "finalSolution",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="px-0 pt-0 pb-0"
-          >
-            Solution
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => {
-        const solution: string | null = row.getValue("finalSolution");
-        if (!solution) return <span>No solution yet</span>;
-        const truncatedSolution =
-          solution.length > 50 ? solution.substring(0, 50) + "..." : solution;
-        return <span>{truncatedSolution}</span>;
       },
     },
     {
@@ -439,29 +434,18 @@ export default function TicketTable({ data }: TicketTableProps) {
               <label htmlFor="status" className="text-right">
                 Status
               </label>
-              <Select
-                name="status"
-                value={formData.status}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    status: value,
-                  }))
-                }
-              >
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(TicketStatus)
-                    .filter(([key]) => isNaN(Number(key)))
-                    .map(([key, value]) => (
-                      <SelectItem key={key} value={key}>
-                        {getStatusLabel(key)}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
+              <div className="col-span-3">
+                <EnumSelect
+                  options={ticketStatusOptions}
+                  value={formData.status}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      status: value,
+                    }))
+                  }
+                />
+              </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <label htmlFor="assignedEmployeeId" className="text-right">
@@ -491,13 +475,13 @@ export default function TicketTable({ data }: TicketTableProps) {
               </Select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="finalSolution" className="text-right">
-                Solution
+              <label htmlFor="description" className="text-right">
+                Description
               </label>
               <textarea
-                id="finalSolution"
-                name="finalSolution"
-                value={formData.finalSolution || ""}
+                id="description"
+                name="description"
+                value={formData.description}
                 onChange={handleFormChange}
                 className="col-span-3"
               />
@@ -548,18 +532,6 @@ export default function TicketTable({ data }: TicketTableProps) {
                 <label className="text-right font-medium">Description</label>
                 <div className="col-span-3">
                   {selectedTicketForInspect.description}
-                </div>
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <label className="text-right font-medium">AI Suggested Solution</label>
-                <div className="col-span-3">
-                  {selectedTicketForInspect.aiSuggestedSolution || "No AI suggestion yet"}
-                </div>
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <label className="text-right font-medium">Final Solution</label>
-                <div className="col-span-3">
-                  {selectedTicketForInspect.finalSolution || "No solution yet"}
                 </div>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">

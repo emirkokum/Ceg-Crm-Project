@@ -34,6 +34,13 @@ public class EnumsController : ControllerBase
         return cachedEnum;
     }
 
+    [HttpGet("customer-type")]
+    public ActionResult<ApiResponse<List<EnumDto>>> GetCustomerType()
+    {
+        var result = GetOrSetCache<CustomerType>("CustomerTypeEnum");
+        return ApiResponse<List<EnumDto>>.CreateSuccess(result);
+    }
+
     [HttpGet("lead-status")]
     public ActionResult<ApiResponse<List<EnumDto>>> GetLeadStatus()
     {

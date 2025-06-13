@@ -24,23 +24,33 @@ import { useCustomers } from "@/features/hooks/userCustomerApi";
 import { useEmployees } from "@/features/hooks/useEmployeeApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import SearchableSelect from "@/components/SearchableSelect";
-import { Ticket, TicketStatus } from "@/types/ticket";
+import { Ticket } from "@/types/ticket";
+import { Customer } from "@/types/customer";
+import { TicketStatus } from "@/constants/enums";
+import { EnumSelect } from "@/components/EnumSelect";
+
+const ticketStatusOptions = [
+  { value: TicketStatus.Open, label: "Open" },
+  { value: TicketStatus.ResolvedByAI, label: "Resolved" },
+  { value: TicketStatus.AssignedToEmployee, label: "Assigned" },
+  { value: TicketStatus.Closed, label: "Closed" },
+];
 
 export default function TicketsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [formData, setFormData] = useState<{
     customerId: string;
     assignedEmployeeId: string | null;
-    status: string;
+    status: number;
     description: string;
   }>({
     customerId: "",
     assignedEmployeeId: null,
-    status: "Open",
+    status: TicketStatus.Open,
     description: "",
   });
 
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<number | null>(null);
 
   const { data: tickets = [], isLoading } = useTickets();
   const { data: customers = [], isLoading: isLoadingCustomers } = useCustomers();
@@ -67,7 +77,7 @@ export default function TicketsPage() {
       setFormData({
         customerId: "",
         assignedEmployeeId: null,
-        status: "Open",
+        status: TicketStatus.Open,
         description: "",
       });
     } catch (error) {
@@ -93,7 +103,7 @@ export default function TicketsPage() {
   }
 
   const filteredTickets = tickets.filter((ticket: Ticket) => {
-    if (statusFilter === "all") return true;
+    if (statusFilter === null) return true;
     return ticket.status === statusFilter;
   });
 
@@ -108,24 +118,15 @@ export default function TicketsPage() {
       </div>
 
       <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between mb-4">
-        <Select
-          onValueChange={(val) => setStatusFilter(val)}
-          value={statusFilter}
-        >
-          <SelectTrigger className="w-full md:w-48">
-            <SelectValue placeholder="Select status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            {Object.entries(TicketStatus)
-              .filter(([key]) => isNaN(Number(key)))
-              .map(([key]) => (
-                <SelectItem key={key} value={key}>
-                  {key}
-                </SelectItem>
-              ))}
-          </SelectContent>
-        </Select>
+        <EnumSelect
+          options={[
+            { value: 0, label: "All" },
+            ...ticketStatusOptions
+          ]}
+          value={statusFilter ?? 0}
+          onValueChange={(value) => setStatusFilter(value === 0 ? null : value)}
+          placeholder="Filter by status"
+        />
       </div>
 
       <TicketTable data={filteredTickets} />
@@ -142,7 +143,7 @@ export default function TicketsPage() {
               <div className="col-span-2">
                 <label className="text-sm font-medium">Customer</label>
                 <SearchableSelect
-                  options={customers.map((c) => ({
+                  options={customers.map((c: Customer) => ({
                     value: c.id,
                     label: `${c.firstName} ${c.lastName}`,
                   }))}
@@ -158,25 +159,13 @@ export default function TicketsPage() {
 
               <div>
                 <label className="text-sm font-medium">Status</label>
-                <Select
+                <EnumSelect
+                  options={ticketStatusOptions}
                   value={formData.status}
-                  onValueChange={(val) =>
-                    setFormData((f) => ({ ...f, status: val }))
+                  onValueChange={(value) =>
+                    setFormData((f) => ({ ...f, status: value }))
                   }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(TicketStatus)
-                      .filter(([key]) => isNaN(Number(key)))
-                      .map(([key]) => (
-                        <SelectItem key={key} value={key}>
-                          {key}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                />
               </div>
 
               <div>

@@ -1,12 +1,13 @@
 export interface Lead {
   id: string;
+  assignedToEmployeeId:string;
   companyName: string;
   contactName: string;
   email: string;
   phone: string;
-  source: string;
-  status: string;
-  industry: string;
+  source: number; //enum
+  status: number; //enum
+  industry: number; //enum
   notes: string;
   createdDate: string;
   updatedDate: string;

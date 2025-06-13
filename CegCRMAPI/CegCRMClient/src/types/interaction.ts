@@ -1,7 +1,7 @@
 export interface Interaction {
   id: string;
   customerId: string;
-  type: string;
+  type: number; //enum
   content: string;
   interactionDate: string;
   customerFullName: string;

@@ -5,9 +5,9 @@ export interface Task {
   title: string;
   description: string;
   dueDate: string;
-  priority: string;
-  status: string;
-  type: string;
+  priority: number; //enum
+  status: number;//enum
+  type: number;//enum
 }
 
 export interface CreateTask {

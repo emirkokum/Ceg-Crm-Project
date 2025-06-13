@@ -8,7 +8,6 @@ import {
   getSortedRowModel,
   useReactTable,
   SortingState,
-  getFilteredRowModel,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -38,6 +37,8 @@ import {
 import { useUpdateCustomer, useDeleteCustomer } from "@/features/hooks/userCustomerApi";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { CustomerType, IndustryType } from "@/constants/enums";
+import { EnumSelect } from "@/components/EnumSelect";
 
 interface CustomerTableProps {
   data: Customer[];
@@ -49,6 +50,8 @@ interface UpdateFormData {
   email: string;
   phone: string;
   address: string;
+  type: number;
+  industryType: number;
 }
 
 export default function CustomerTable({ data }: CustomerTableProps) {
@@ -62,6 +65,8 @@ export default function CustomerTable({ data }: CustomerTableProps) {
     email: "",
     phone: "",
     address: "",
+    type: CustomerType.Person,
+    industryType: IndustryType.Technology,
   });
 
   const updateCustomer = useUpdateCustomer();
@@ -76,6 +81,8 @@ export default function CustomerTable({ data }: CustomerTableProps) {
       email: customer.email || "",
       phone: customer.phone || "",
       address: customer.address || "",
+      type: customer.type,
+      industryType: customer.industryType,
     });
     setIsUpdateModalOpen(true);
   };
@@ -124,21 +131,41 @@ export default function CustomerTable({ data }: CustomerTableProps) {
     navigate(`/customers/${customerId}`);
   };
 
+  const getCustomerTypeLabel = (type: number) => {
+    switch (type) {
+      case CustomerType.Person:
+        return "Person";
+      case CustomerType.Business:
+        return "Business";
+      default:
+        return "Unknown";
+    }
+  };
+
+  const getCustomerTypeColor = (type: number) => {
+    switch (type) {
+      case CustomerType.Person:
+        return "bg-blue-100 text-blue-800";
+      case CustomerType.Business:
+        return "bg-purple-100 text-purple-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
   const columns: ColumnDef<Customer>[] = [
     {
       accessorKey: "firstName",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="font-semibold"
-          >
-            First Name
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="font-semibold"
+        >
+          First Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
       cell: ({ row }) => {
         const customer = row.original;
         return (
@@ -158,18 +185,16 @@ export default function CustomerTable({ data }: CustomerTableProps) {
     },
     {
       accessorKey: "lastName",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="font-semibold"
-          >
-            Last Name
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="font-semibold"
+        >
+          Last Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
       cell: ({ row }) => {
         const customer = row.original;
         return (
@@ -184,18 +209,16 @@ export default function CustomerTable({ data }: CustomerTableProps) {
     },
     {
       accessorKey: "email",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="font-semibold"
-          >
-            Email
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="font-semibold"
+        >
+          Email
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
       cell: ({ row }) => {
         const customer = row.original;
         return (
@@ -212,18 +235,16 @@ export default function CustomerTable({ data }: CustomerTableProps) {
     },
     {
       accessorKey: "phone",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="font-semibold"
-          >
-            Phone
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="font-semibold"
+        >
+          Phone
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
       cell: ({ row }) => {
         const customer = row.original;
         return (
@@ -239,10 +260,32 @@ export default function CustomerTable({ data }: CustomerTableProps) {
       },
     },
     {
+      accessorKey: "type",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="font-semibold"
+        >
+          Type
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => {
+        const customer = row.original;
+        return (
+          <div className="p-2">
+            <span className={`px-2 py-1 rounded-full text-sm ${getCustomerTypeColor(customer.type)}`}>
+              {getCustomerTypeLabel(customer.type)}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
       id: "actions",
       cell: ({ row }) => {
         const customer = row.original;
-
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -282,7 +325,6 @@ export default function CustomerTable({ data }: CustomerTableProps) {
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
   });
 
   return (
@@ -382,6 +424,38 @@ export default function CustomerTable({ data }: CustomerTableProps) {
                     onChange={handleFormChange}
                     className="w-full p-2 border rounded"
                     rows={3}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Customer Type</label>
+                  <EnumSelect
+                    options={[
+                      { value: CustomerType.Person, label: "Person" },
+                      { value: CustomerType.Business, label: "Business" },
+                    ]}
+                    value={formData.type}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, type: value }))
+                    }
+                    placeholder="Select customer type"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Industry Type</label>
+                  <EnumSelect
+                    options={[
+                      { value: IndustryType.Technology, label: "Technology" },
+                      { value: IndustryType.Finance, label: "Finance" },
+                      { value: IndustryType.Health, label: "Health" },
+                      { value: IndustryType.Retail, label: "Retail" },
+                      { value: IndustryType.Education, label: "Education" },
+                      { value: IndustryType.Other, label: "Other" },
+                    ]}
+                    value={selectedCustomer.industryType}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, industryType: value }))
+                    }
+                    placeholder="Select industry type"
                   />
                 </div>
               </div>
