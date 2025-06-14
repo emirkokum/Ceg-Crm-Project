@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CegCRMAPI.Persistence.Migrations
 {
     [DbContext(typeof(CegCrmDbContext))]
-    [Migration("20250608184627_InitialWithIdentity")]
-    partial class InitialWithIdentity
+    [Migration("20250614001922_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,9 @@ namespace CegCRMAPI.Persistence.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CompanyName")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDate")
@@ -58,6 +61,12 @@ namespace CegCRMAPI.Persistence.Migrations
 
                     b.Property<string>("Phone")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Sector")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TaxNumber")
                         .HasColumnType("text");
 
                     b.Property<int>("Type")
@@ -199,6 +208,9 @@ namespace CegCRMAPI.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("AssignedToEmployeeId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("CompanyName")
                         .HasColumnType("text");
 
@@ -216,27 +228,23 @@ namespace CegCRMAPI.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Industry")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Industry")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("Notes")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<bool>("IsConverted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Source")
-                        .IsRequired()
+                    b.Property<int>("Source")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("integer");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
+                    b.Property<int>("Status")
                         .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
@@ -244,6 +252,55 @@ namespace CegCRMAPI.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Leads");
+                });
+
+            modelBuilder.Entity("CegCRMAPI.Domain.Entities.Note", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("CustomerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("LeadId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("SaleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("TaskId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("TicketId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("LeadId");
+
+                    b.HasIndex("SaleId");
+
+                    b.HasIndex("TaskId");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("Notes");
                 });
 
             modelBuilder.Entity("CegCRMAPI.Domain.Entities.Product", b =>
@@ -316,10 +373,9 @@ namespace CegCRMAPI.Persistence.Migrations
                     b.Property<Guid>("SalesPersonId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
+                    b.Property<int>("Status")
                         .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("Tax")
                         .HasColumnType("numeric");
@@ -330,16 +386,11 @@ namespace CegCRMAPI.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("SalesPersonId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Sales");
                 });
@@ -411,24 +462,21 @@ namespace CegCRMAPI.Persistence.Migrations
                     b.Property<Guid?>("EmployeeId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Priority")
-                        .IsRequired()
+                    b.Property<int>("Priority")
                         .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("integer");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
+                    b.Property<int>("Status")
                         .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
+                    b.Property<int>("Type")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
@@ -479,16 +527,11 @@ namespace CegCRMAPI.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AssignedEmployeeId");
 
                     b.HasIndex("CustomerId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Tickets");
                 });
@@ -506,11 +549,6 @@ namespace CegCRMAPI.Persistence.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
-                    b.Property<string>("Department")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -522,12 +560,6 @@ namespace CegCRMAPI.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
-
-                    b.Property<DateTime>("HireDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -552,17 +584,11 @@ namespace CegCRMAPI.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("Position")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -749,6 +775,39 @@ namespace CegCRMAPI.Persistence.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("CegCRMAPI.Domain.Entities.Note", b =>
+                {
+                    b.HasOne("CegCRMAPI.Domain.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("CegCRMAPI.Domain.Entities.Lead", "Lead")
+                        .WithMany("Notes")
+                        .HasForeignKey("LeadId");
+
+                    b.HasOne("CegCRMAPI.Domain.Entities.Sale", "Sale")
+                        .WithMany()
+                        .HasForeignKey("SaleId");
+
+                    b.HasOne("CegCRMAPI.Domain.Entities.TaskItem", "Task")
+                        .WithMany()
+                        .HasForeignKey("TaskId");
+
+                    b.HasOne("CegCRMAPI.Domain.Entities.Ticket", "Ticket")
+                        .WithMany()
+                        .HasForeignKey("TicketId");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Lead");
+
+                    b.Navigation("Sale");
+
+                    b.Navigation("Task");
+
+                    b.Navigation("Ticket");
+                });
+
             modelBuilder.Entity("CegCRMAPI.Domain.Entities.Sale", b =>
                 {
                     b.HasOne("CegCRMAPI.Domain.Entities.Customer", "Customer")
@@ -762,10 +821,6 @@ namespace CegCRMAPI.Persistence.Migrations
                         .HasForeignKey("SalesPersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("CegCRMAPI.Domain.Entities.User", null)
-                        .WithMany("Sales")
-                        .HasForeignKey("UserId");
 
                     b.Navigation("Customer");
 
@@ -794,7 +849,7 @@ namespace CegCRMAPI.Persistence.Migrations
             modelBuilder.Entity("CegCRMAPI.Domain.Entities.TaskItem", b =>
                 {
                     b.HasOne("CegCRMAPI.Domain.Entities.User", "AssignedUser")
-                        .WithMany("Tasks")
+                        .WithMany()
                         .HasForeignKey("AssignedUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -823,10 +878,6 @@ namespace CegCRMAPI.Persistence.Migrations
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("CegCRMAPI.Domain.Entities.User", null)
-                        .WithMany("Tickets")
-                        .HasForeignKey("UserId");
 
                     b.Navigation("AssignedEmployee");
 
@@ -903,6 +954,8 @@ namespace CegCRMAPI.Persistence.Migrations
             modelBuilder.Entity("CegCRMAPI.Domain.Entities.Lead", b =>
                 {
                     b.Navigation("Interactions");
+
+                    b.Navigation("Notes");
                 });
 
             modelBuilder.Entity("CegCRMAPI.Domain.Entities.Product", b =>
@@ -913,15 +966,6 @@ namespace CegCRMAPI.Persistence.Migrations
             modelBuilder.Entity("CegCRMAPI.Domain.Entities.Sale", b =>
                 {
                     b.Navigation("SaleProducts");
-                });
-
-            modelBuilder.Entity("CegCRMAPI.Domain.Entities.User", b =>
-                {
-                    b.Navigation("Sales");
-
-                    b.Navigation("Tasks");
-
-                    b.Navigation("Tickets");
                 });
 #pragma warning restore 612, 618
         }

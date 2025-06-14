@@ -16,6 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Lead } from "@/types/lead";
+import { UpdateLeadData } from "@/api/lead";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,24 +43,12 @@ interface LeadTableProps {
   data: Lead[];
 }
 
-interface UpdateFormData {
-  companyName: string;
-  contactName: string;
-  email: string;
-  phone: string;
-  source: number;
-  status: number;
-  industry: number;
-  notes: string;
-  assignedToEmployeeId: string;
-}
-
 export function LeadTable({ data }: LeadTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [formData, setFormData] = useState<UpdateFormData>({
+  const [formData, setFormData] = useState<UpdateLeadData>({
     companyName: "",
     contactName: "",
     email: "",
@@ -67,7 +56,15 @@ export function LeadTable({ data }: LeadTableProps) {
     source: 0,
     status: 0,
     industry: 0,
-    notes: "",
+    notes: {
+      id: "",
+      content: "",
+      customerId: null,
+      leadId: null,
+      ticketId: null,
+      saleId: null,
+      taskId: null
+    },
     assignedToEmployeeId: "",
   });
 
@@ -88,7 +85,15 @@ export function LeadTable({ data }: LeadTableProps) {
       source: lead.source,
       status: lead.status,
       industry: lead.industry,
-      notes: lead.notes || "",
+      notes: {
+        id: lead.notes?.id || "",
+        content: lead.notes?.content || "",
+        customerId: lead.notes?.customerId || null,
+        leadId: lead.id,
+        ticketId: lead.notes?.ticketId || null,
+        saleId: lead.notes?.saleId || null,
+        taskId: lead.notes?.taskId || null
+      },
       assignedToEmployeeId: lead.assignedToEmployeeId || "",
     });
     setIsUpdateModalOpen(true);
@@ -113,10 +118,20 @@ export function LeadTable({ data }: LeadTableProps) {
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (name === "notes") {
+      setFormData((prev) => ({
+        ...prev,
+        notes: {
+          ...prev.notes,
+          content: value
+        }
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async () => {
@@ -504,7 +519,7 @@ export function LeadTable({ data }: LeadTableProps) {
                   <label className="text-sm font-medium">Notes</label>
                   <textarea
                     name="notes"
-                    value={formData.notes}
+                    value={formData.notes.content}
                     onChange={handleFormChange}
                     className="w-full p-2 border rounded"
                     rows={3}

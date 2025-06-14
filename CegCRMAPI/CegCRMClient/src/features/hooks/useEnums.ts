@@ -28,7 +28,7 @@ export function useEnum(enumType: EnumType) {
   return useQuery({
     queryKey: ["enum", enumType],
     queryFn: () => fetchEnum(enumType),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 } 

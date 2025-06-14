@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CegCRMAPI.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialWithIdentity : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,14 +17,15 @@ namespace CegCRMAPI.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    AssignedToEmployeeId = table.Column<Guid>(type: "uuid", nullable: true),
                     CompanyName = table.Column<string>(type: "text", nullable: true),
                     ContactName = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     Phone = table.Column<string>(type: "text", nullable: false),
-                    Source = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Status = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    Industry = table.Column<string>(type: "text", nullable: false),
-                    Notes = table.Column<string>(type: "text", nullable: false),
+                    Source = table.Column<int>(type: "integer", maxLength: 50, nullable: false),
+                    Status = table.Column<int>(type: "integer", maxLength: 30, nullable: false),
+                    Industry = table.Column<int>(type: "integer", nullable: false),
+                    IsConverted = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -74,11 +75,6 @@ namespace CegCRMAPI.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     FirstName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    PhoneNumber = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    Department = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Position = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    HireDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -87,6 +83,7 @@ namespace CegCRMAPI.Persistence.Migrations
                     PasswordHash = table.Column<string>(type: "text", nullable: true),
                     SecurityStamp = table.Column<string>(type: "text", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
@@ -248,6 +245,9 @@ namespace CegCRMAPI.Persistence.Migrations
                     Phone = table.Column<string>(type: "text", nullable: false),
                     Address = table.Column<string>(type: "text", nullable: false),
                     Type = table.Column<int>(type: "integer", nullable: false),
+                    CompanyName = table.Column<string>(type: "text", nullable: true),
+                    TaxNumber = table.Column<string>(type: "text", nullable: true),
+                    Sector = table.Column<string>(type: "text", nullable: true),
                     EmployeeId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -305,9 +305,8 @@ namespace CegCRMAPI.Persistence.Migrations
                     Discount = table.Column<decimal>(type: "numeric", nullable: false),
                     Tax = table.Column<decimal>(type: "numeric", nullable: false),
                     FinalAmount = table.Column<decimal>(type: "numeric", nullable: false),
-                    Status = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    Status = table.Column<int>(type: "integer", maxLength: 30, nullable: false),
                     InvoiceNumber = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -327,11 +326,6 @@ namespace CegCRMAPI.Persistence.Migrations
                         principalTable: "Employees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Sales_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -344,9 +338,9 @@ namespace CegCRMAPI.Persistence.Migrations
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     DueDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Priority = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    Status = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    Type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Priority = table.Column<int>(type: "integer", maxLength: 20, nullable: false),
+                    Status = table.Column<int>(type: "integer", maxLength: 30, nullable: false),
+                    Type = table.Column<int>(type: "integer", maxLength: 50, nullable: false),
                     EmployeeId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -384,7 +378,6 @@ namespace CegCRMAPI.Persistence.Migrations
                     Description = table.Column<string>(type: "text", nullable: false),
                     AiSuggestedSolution = table.Column<string>(type: "text", nullable: true),
                     FinalSolution = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -402,11 +395,6 @@ namespace CegCRMAPI.Persistence.Migrations
                         name: "FK_Tickets_Employees_AssignedEmployeeId",
                         column: x => x.AssignedEmployeeId,
                         principalTable: "Employees",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Tickets_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
                         principalColumn: "Id");
                 });
 
@@ -441,6 +429,51 @@ namespace CegCRMAPI.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Notes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: true),
+                    LeadId = table.Column<Guid>(type: "uuid", nullable: true),
+                    TicketId = table.Column<Guid>(type: "uuid", nullable: true),
+                    SaleId = table.Column<Guid>(type: "uuid", nullable: true),
+                    TaskId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notes_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Notes_Leads_LeadId",
+                        column: x => x.LeadId,
+                        principalTable: "Leads",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Notes_Sales_SaleId",
+                        column: x => x.SaleId,
+                        principalTable: "Sales",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Notes_Tasks_TaskId",
+                        column: x => x.TaskId,
+                        principalTable: "Tasks",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Notes_Tickets_TicketId",
+                        column: x => x.TicketId,
+                        principalTable: "Tickets",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_EmployeeId",
                 table: "Customers",
@@ -466,6 +499,31 @@ namespace CegCRMAPI.Persistence.Migrations
                 name: "IX_Interactions_LeadId",
                 table: "Interactions",
                 column: "LeadId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notes_CustomerId",
+                table: "Notes",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notes_LeadId",
+                table: "Notes",
+                column: "LeadId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notes_SaleId",
+                table: "Notes",
+                column: "SaleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notes_TaskId",
+                table: "Notes",
+                column: "TaskId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notes_TicketId",
+                table: "Notes",
+                column: "TicketId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
@@ -499,11 +557,6 @@ namespace CegCRMAPI.Persistence.Migrations
                 column: "SalesPersonId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Sales_UserId",
-                table: "Sales",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Tasks_AssignedUserId",
                 table: "Tasks",
                 column: "AssignedUserId");
@@ -527,11 +580,6 @@ namespace CegCRMAPI.Persistence.Migrations
                 name: "IX_Tickets_CustomerId",
                 table: "Tickets",
                 column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tickets_UserId",
-                table: "Tickets",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserClaims_UserId",
@@ -567,16 +615,13 @@ namespace CegCRMAPI.Persistence.Migrations
                 name: "Interactions");
 
             migrationBuilder.DropTable(
+                name: "Notes");
+
+            migrationBuilder.DropTable(
                 name: "RoleClaims");
 
             migrationBuilder.DropTable(
                 name: "SaleProduct");
-
-            migrationBuilder.DropTable(
-                name: "Tasks");
-
-            migrationBuilder.DropTable(
-                name: "Tickets");
 
             migrationBuilder.DropTable(
                 name: "UserClaims");
@@ -592,6 +637,12 @@ namespace CegCRMAPI.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Leads");
+
+            migrationBuilder.DropTable(
+                name: "Tasks");
+
+            migrationBuilder.DropTable(
+                name: "Tickets");
 
             migrationBuilder.DropTable(
                 name: "Products");

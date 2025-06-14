@@ -1,20 +1,14 @@
-using CegCRMAPI.API.Authorization;
-using CegCRMAPI.Application;
-using CegCRMAPI.Persistence;
-using CegCRMAPI.Application.Mappings;
 using CegCRMAPI.API.Middleware;
-using CegCRMAPI.Domain.Entities;
-using CegCRMAPI.Persistence.Context;
+using CegCRMAPI.Application;
+using CegCRMAPI.Application.Mappings;
 using CegCRMAPI.Core.Common.Models;
-using CegCRMAPI.Core.Common.Interfaces;
 using CegCRMAPI.Infrastructure.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using CegCRMAPI.Persistence;
+using CegCRMAPI.Persistence.Seeds;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using CegCRMAPI.Persistence.Seeds;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +16,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddInfrastructureServices();
+
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: true)
+    .AddUserSecrets<Program>()
+    .AddEnvironmentVariables();
 
 // Configure JWT Settings
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));

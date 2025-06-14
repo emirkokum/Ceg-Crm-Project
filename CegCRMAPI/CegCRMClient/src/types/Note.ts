@@ -1,9 +1,9 @@
 export interface Note{
     id:string;
     content:string;
-    customerId:string;
-    leadId:string;
-    ticketId:string;
-    saleId:string;
-    taskId:string;
+    customerId:string | null;
+    leadId:string | null;
+    ticketId:string | null;
+    saleId:string | null;
+    taskId:string | null;
 }

@@ -29,6 +29,7 @@ namespace CegCRMAPI.Persistence
             services.AddScoped<ILeadRepository, LeadRepository>();
             services.AddScoped<ISaleRepository, SaleRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<INoteRepository, NoteRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddHttpClient<IAiService,AiService>();
 

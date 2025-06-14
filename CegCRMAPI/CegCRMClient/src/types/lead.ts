@@ -1,3 +1,5 @@
+import { Note } from "./Note";
+
 export interface Lead {
   id: string;
   assignedToEmployeeId:string;
@@ -8,7 +10,7 @@ export interface Lead {
   source: number; //enum
   status: number; //enum
   industry: number; //enum
-  notes: string;
+  notes: Note;
   createdDate: string;
   updatedDate: string;
 } 

@@ -297,7 +297,7 @@ namespace CegCRMAPI.Persistence.Migrations
 
                     b.HasIndex("TicketId");
 
-                    b.ToTable("Note");
+                    b.ToTable("Notes");
                 });
 
             modelBuilder.Entity("CegCRMAPI.Domain.Entities.Product", b =>
