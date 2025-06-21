@@ -24,13 +24,10 @@ API.interceptors.response.use(
       message: error.message
     });
 
-    // Handle token expiration
     if (error.response?.status === 401) {
-      // Clear auth state
       localStorage.removeItem('token');
       localStorage.removeItem('role');
       
-      // Redirect to login if not already there
       if (!window.location.pathname.includes('/login')) {
         window.location.href = '/login';
       }

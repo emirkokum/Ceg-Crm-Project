@@ -34,7 +34,6 @@ export function AddLeadModal({ onAddLead }: AddLeadModalProps) {
     status: 0,
     industry: 0,
     notes: "",
-    assignedToEmployeeId: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -62,7 +61,6 @@ export function AddLeadModal({ onAddLead }: AddLeadModalProps) {
         status: 0,
         industry: 0,
         notes: "",
-        assignedToEmployeeId: "",
       });
     } catch (error: any) {
       if (error.response?.data) {

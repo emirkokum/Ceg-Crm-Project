@@ -27,6 +27,9 @@ using CegCRMAPI.Application.Features.Commands.Interactions.CreateInteraction;
 using CegCRMAPI.Application.Features.Commands.Interactions.UpdateInteraction;
 using CegCRMAPI.Application.Features.Commands.Interactions.DeleteInteraction;
 using CegCRMAPI.Application.Features.Commands.Task.DeleteTask;
+using CegCRMAPI.Application.DTOs.Note;
+using CegCRMAPI.Application.Features.Commands.Note.CreateNote;
+using CegCRMAPI.Application.Features.Commands.Note.UpdateNote;
 
 namespace CegCRMAPI.Application.Mappings;
 
@@ -62,9 +65,15 @@ public class MappingProfile : Profile
         CreateMap<UpdateTicketCommand, Ticket>();
 
         // Lead mappings
-        CreateMap<Lead, LeadDto>();
-        CreateMap<CreateLeadCommand, Lead>();
-        CreateMap<UpdateLeadCommand, Lead>();
+        CreateMap<Lead, LeadDto>()
+            .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
+            .ForMember(dest => dest.Source, opt => opt.MapFrom(src => src.Source))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+            .ForMember(dest => dest.Industry, opt => opt.MapFrom(src => src.Industry));
+        CreateMap<CreateLeadCommand, Lead>()
+            .ForMember(dest => dest.Notes, opt => opt.Ignore());
+        CreateMap<UpdateLeadCommand, Lead>()
+            .ForMember(dest => dest.Notes, opt => opt.Ignore());
 
         // Sale mappings
         CreateMap<Sale, SaleDto>();
@@ -77,6 +86,11 @@ public class MappingProfile : Profile
         CreateMap<Product, ProductDto>();
         CreateMap<CreateProductCommand, Product>();
         CreateMap<UpdateProductCommand, Product>();
+        
+        // Note mappings
+        CreateMap<Note, NoteDto>();
+        CreateMap<CreateNoteCommand, Note>();
+        CreateMap<UpdateNoteCommand, Note>();
 
         // Interaction mappings
         CreateMap<Interaction, InteractionDto>()

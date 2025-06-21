@@ -1,3 +1,4 @@
+using CegCRMAPI.Domain.Entities;
 using System;
 
 namespace CegCRMAPI.Application.DTOs.Lead
@@ -9,11 +10,10 @@ namespace CegCRMAPI.Application.DTOs.Lead
         public string ContactName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
-        public string Source { get; set; } = string.Empty;
-        public string Status { get; set; } = string.Empty;
-        public string Industry { get; set; } = string.Empty;
+        public LeadSource Source { get; init; }
+        public LeadStatus Status { get; init; }
+        public IndustryType Industry { get; init; }
+
         public string Notes { get; set; } = string.Empty;
-        public DateTime CreatedDate { get; set; }
-        public DateTime? UpdatedDate { get; set; }
     }
 } 

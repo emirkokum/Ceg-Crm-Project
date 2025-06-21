@@ -14,9 +14,9 @@ public record UpdateLeadCommand : IRequest<ApiResponse<LeadDto>>
     public string ContactName { get; init; } = string.Empty;
     public string Email { get; init; } = string.Empty;
     public string Phone { get; init; } = string.Empty;
-    public string Source { get; init; } = string.Empty;
-    public string Status { get; init; } = string.Empty;
-    public string Industry { get; init; } = string.Empty;
+    public LeadSource Source { get; init; }
+    public LeadStatus Status { get; init; }
+    public IndustryType Industry { get; init; }
     public string Notes { get; init; } = string.Empty;
 }
 

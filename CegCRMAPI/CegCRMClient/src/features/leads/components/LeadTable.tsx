@@ -56,16 +56,7 @@ export function LeadTable({ data }: LeadTableProps) {
     source: 0,
     status: 0,
     industry: 0,
-    notes: {
-      id: "",
-      content: "",
-      customerId: null,
-      leadId: null,
-      ticketId: null,
-      saleId: null,
-      taskId: null
-    },
-    assignedToEmployeeId: "",
+    notes:"",
   });
 
   const updateLead = useUpdateLead();
@@ -85,16 +76,7 @@ export function LeadTable({ data }: LeadTableProps) {
       source: lead.source,
       status: lead.status,
       industry: lead.industry,
-      notes: {
-        id: lead.notes?.id || "",
-        content: lead.notes?.content || "",
-        customerId: lead.notes?.customerId || null,
-        leadId: lead.id,
-        ticketId: lead.notes?.ticketId || null,
-        saleId: lead.notes?.saleId || null,
-        taskId: lead.notes?.taskId || null
-      },
-      assignedToEmployeeId: lead.assignedToEmployeeId || "",
+      notes: lead.notes || "",
     });
     setIsUpdateModalOpen(true);
   };
@@ -118,20 +100,10 @@ export function LeadTable({ data }: LeadTableProps) {
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    if (name === "notes") {
-      setFormData((prev) => ({
-        ...prev,
-        notes: {
-          ...prev.notes,
-          content: value
-        }
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async () => {
@@ -519,7 +491,7 @@ export function LeadTable({ data }: LeadTableProps) {
                   <label className="text-sm font-medium">Notes</label>
                   <textarea
                     name="notes"
-                    value={formData.notes.content}
+                    value={formData.notes}
                     onChange={handleFormChange}
                     className="w-full p-2 border rounded"
                     rows={3}

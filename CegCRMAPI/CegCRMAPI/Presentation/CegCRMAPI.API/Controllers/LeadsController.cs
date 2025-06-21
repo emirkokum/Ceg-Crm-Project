@@ -44,9 +44,13 @@ namespace CegCRMAPI.API.Controllers
         public async Task<ActionResult<ApiResponse<LeadDto>>> Create([FromBody] CreateLeadCommand command)
         {
             var result = await _mediator.Send(command);
+
+            if (!result.Success || result.Data == null)
+                return BadRequest(result); 
+
             return CreatedAtAction(
-                nameof(GetById), 
-                new { id = result.Data.Id }, 
+                nameof(GetById),
+                new { id = result.Data.Id },
                 result
             );
         }
