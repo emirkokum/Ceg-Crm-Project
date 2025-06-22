@@ -1,3 +1,9 @@
+export enum SaleStatus {
+  Pending = 0,
+  Completed = 1,
+  Cancelled = 2
+}
+
 export interface Sale {
   id: string;
   saleDate: string;
@@ -7,7 +13,7 @@ export interface Sale {
   discount: number;
   tax: number;
   finalAmount: number;
-  status: number; //enum
+  status: SaleStatus; //enum
   invoiceNumber: string | null;
   createdDate: string;
   updatedDate: string | null;

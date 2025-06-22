@@ -5,6 +5,7 @@ using CegCRMAPI.Domain.Entities;
 using CegCRMAPI.Application.Repositories;
 using MediatR;
 using System.Collections.Generic;
+using static CegCRMAPI.Domain.Entities.Sale;
 
 namespace CegCRMAPI.Application.Features.Commands.Sales.CreateSale;
 
@@ -17,8 +18,8 @@ public record CreateSaleCommand : IRequest<ApiResponse<SaleDto>>
     public decimal Discount { get; init; }
     public decimal Tax { get; init; }
     public decimal FinalAmount { get; init; }
-    public string Status { get; init; } = string.Empty;
-    public string InvoiceNumber { get; init; } = string.Empty;
+    public SaleStatus Status { get; init; }
+    public string? InvoiceNumber { get; init; } = string.Empty;
     public ICollection<SaleProductItemDto> Products { get; init; } = new List<SaleProductItemDto>();
 }
 
@@ -45,9 +46,22 @@ public class CreateSaleCommandHandler : IRequestHandler<CreateSaleCommand, ApiRe
     {
         try
         {
-            var sale = _mapper.Map<Sale>(request);
+            var sale = new Sale
+            {
+                SaleDate = request.SaleDate,
+                CustomerId = request.CustomerId,
+                SalesPersonId = request.SalesPersonId,
+                TotalAmount = request.TotalAmount,
+                Discount = request.Discount,
+                Tax = request.Tax,
+                FinalAmount = request.FinalAmount,
+                Status = request.Status,
+                InvoiceNumber = string.IsNullOrWhiteSpace(request.InvoiceNumber)
+                    ? $"INV-{DateTime.UtcNow:yyyyMMddHHmmssfff}"
+                    : request.InvoiceNumber
+            };
 
-            // Add products to the sale
+
             foreach (var productItem in request.Products)
             {
                 var product = await _productRepository.GetByIdAsync(productItem.ProductId, cancellationToken);
@@ -72,7 +86,12 @@ public class CreateSaleCommandHandler : IRequestHandler<CreateSaleCommand, ApiRe
         }
         catch (Exception ex)
         {
-            return ApiResponse<SaleDto>.CreateError($"Failed to create sale: {ex.Message}");
+            var errorMessage = ex.InnerException != null
+                ? $"{ex.Message} - Inner: {ex.InnerException.Message}"
+                : ex.Message;
+
+            return ApiResponse<SaleDto>.CreateError($"Failed to create sale: {errorMessage}");
+
         }
     }
-} 
+}

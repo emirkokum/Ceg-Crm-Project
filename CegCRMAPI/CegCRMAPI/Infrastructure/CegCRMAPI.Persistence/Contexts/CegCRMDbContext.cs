@@ -31,6 +31,21 @@ namespace CegCRMAPI.Persistence.Context
             modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("UserLogins");
             modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("RoleClaims");
             modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens");
+            modelBuilder.Entity<Sale>()
+                .HasOne(s => s.Customer)
+                .WithMany()
+                .HasForeignKey(s => s.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired();
+
+            modelBuilder.Entity<Sale>()
+                .HasOne(s => s.SalesPerson)
+                .WithMany()
+                .HasForeignKey(s => s.SalesPersonId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired();
+
+
 
             // Configure User entity
             modelBuilder.Entity<User>(entity =>

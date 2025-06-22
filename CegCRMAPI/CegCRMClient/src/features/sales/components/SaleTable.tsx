@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -22,9 +22,9 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { MoreHorizontal, Pencil, Trash, Eye, ArrowUpDown } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash, Eye, ArrowUpDown, Calendar, User, DollarSign, Package, Receipt } from "lucide-react";
 import { useUpdateSale, useDeleteSale } from "@/features/hooks/useSaleApi";
-import { Sale } from "@/types/sale";
+import { Sale, SaleStatus } from "@/types/sale";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import {
@@ -36,18 +36,27 @@ import {
   flexRender,
   SortingState,
 } from "@tanstack/react-table";
+import { Badge } from "@/components/ui/badge";
+import { useCustomers } from "@/features/hooks/userCustomerApi";
+import { useEmployees } from "@/features/hooks/useEmployeeApi";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import SearchableSelect from "@/components/SearchableSelect";
+import { useProducts } from "@/features/hooks/useProductApi";
 
 interface SaleTableProps {
   data: Sale[];
 }
 
-interface UpdateFormData extends Omit<Sale, "id" | "createdDate" | "updatedDate" | "saleProducts"> {}
+interface UpdateFormData extends Omit<Sale, "id" | "createdDate" | "updatedDate" | "saleProducts" | "status"> {
+  status: string | null;
+}
 
 export default function SaleTable({ data }: SaleTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [formData, setFormData] = useState<UpdateFormData>({
     saleDate: "",
     customerId: "",
@@ -59,9 +68,75 @@ export default function SaleTable({ data }: SaleTableProps) {
     status: null,
     invoiceNumber: null,
   });
+  const [selectedProducts, setSelectedProducts] = useState<any[]>([]);
 
+  const { data: customers = [] } = useCustomers();
+  const { data: employees = [] } = useEmployees();
+  const { data: products = [] } = useProducts();
   const updateSale = useUpdateSale();
   const deleteSale = useDeleteSale();
+
+  const getStatusBadgeVariant = (status: SaleStatus | string | null) => {
+    const statusValue = typeof status === 'number' ? status : String(status || "Pending");
+    
+    if (typeof statusValue === 'number') {
+      switch (statusValue) {
+        case SaleStatus.Pending:
+          return "secondary"; // Yellow badge
+        case SaleStatus.Completed:
+          return "default"; // Green badge
+        case SaleStatus.Cancelled:
+          return "destructive"; // Red badge
+        default:
+          return "outline";
+      }
+    } else {
+      switch (statusValue) {
+        case "Pending":
+          return "secondary"; // Yellow badge
+        case "Completed":
+          return "default"; // Green badge
+        case "Cancelled":
+          return "destructive"; // Red badge
+        default:
+          return "outline";
+      }
+    }
+  };
+
+  const getStatusText = (status: SaleStatus | string | null) => {
+    const statusValue = typeof status === 'number' ? status : String(status || "Pending");
+    
+    if (typeof statusValue === 'number') {
+      switch (statusValue) {
+        case SaleStatus.Pending:
+          return "Pending";
+        case SaleStatus.Completed:
+          return "Completed";
+        case SaleStatus.Cancelled:
+          return "Cancelled";
+        default:
+          return "Pending";
+      }
+    } else {
+      return statusValue;
+    }
+  };
+
+  const getCustomerName = (customerId: string) => {
+    const customer = customers.find((c: any) => c.id === customerId);
+    return customer ? (customer.fullName || `${customer.firstName} ${customer.lastName}`) : customerId;
+  };
+
+  const getSalespersonName = (salesPersonId: string) => {
+    const employee = employees.find(e => e.id === salesPersonId);
+    return employee ? `${employee.user.firstName || ''} ${employee.user.lastName || ''}`.trim() || employee.user.email : salesPersonId;
+  };
+
+  const handleRowClick = (sale: Sale) => {
+    setSelectedSale(sale);
+    setIsDetailModalOpen(true);
+  };
 
   const handleUpdate = (sale: Sale) => {
     setSelectedSale(sale);
@@ -73,9 +148,10 @@ export default function SaleTable({ data }: SaleTableProps) {
       discount: sale.discount,
       tax: sale.tax,
       finalAmount: sale.finalAmount,
-      status: sale.status,
+      status: String(sale.status),
       invoiceNumber: sale.invoiceNumber,
     });
+    setSelectedProducts(sale.saleProducts || []);
     setIsUpdateModalOpen(true);
   };
 
@@ -104,41 +180,48 @@ export default function SaleTable({ data }: SaleTableProps) {
     }));
   };
 
-  const handleSubmit = async () => {
-    if (!selectedSale) return;
-
-    try {
-      await updateSale.mutateAsync({
-        id: selectedSale.id,
-        data: formData,
-      });
-      toast.success("Sale updated successfully");
-      setIsUpdateModalOpen(false);
-    } catch (error) {
-      toast.error("Error updating sale");
-    }
+  const handleAddProduct = (productId: string) => {
+    const product = products.find((p: any) => p.id === productId);
+    if (!product) return;
+    if (selectedProducts.some((sp) => sp.productId === productId)) return;
+    setSelectedProducts([
+      ...selectedProducts,
+      {
+        productId,
+        quantity: 1,
+        unitPrice: product.price,
+      },
+    ]);
   };
 
+  const handleRemoveProduct = (productId: string) => {
+    setSelectedProducts(selectedProducts.filter((sp) => sp.productId !== productId));
+  };
+
+  const handleProductChange = (productId: string, field: "quantity" | "unitPrice", value: number) => {
+    setSelectedProducts((prev) =>
+      prev.map((sp) =>
+        sp.productId === productId ? { ...sp, [field]: value } : sp
+      )
+    );
+  };
+
+  const calculateTotals = () => {
+    const subtotal = selectedProducts.reduce((sum, sp) => sum + sp.unitPrice * sp.quantity, 0);
+    const discountAmount = subtotal * ((formData.discount || 0) / 100);
+    const taxAmount = (subtotal - discountAmount) * ((formData.tax || 0) / 100);
+    const final = subtotal - discountAmount + taxAmount;
+    return { subtotal, discountAmount, taxAmount, final };
+  };
+
+  const updateTotals = () => {
+    const { subtotal, final } = calculateTotals();
+    setFormData((prev) => ({ ...prev, totalAmount: subtotal, finalAmount: final }));
+  };
+
+  useEffect(updateTotals, [selectedProducts, formData.discount, formData.tax]);
+
   const columns: ColumnDef<Sale>[] = [
-    {
-      accessorKey: "saleDate",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="px-0 pt-0 pb-0"
-          >
-            Sale Date
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ row }) => {
-        const date = new Date(row.original.saleDate);
-        return format(date, "dd/MM/yyyy");
-      },
-    },
     {
       accessorKey: "customerId",
       header: ({ column }) => {
@@ -146,14 +229,17 @@ export default function SaleTable({ data }: SaleTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="px-0 pt-0 pb-0"
+            className="px-0 pt-0 pb-0 font-medium"
           >
+            <User className="mr-2 h-4 w-4" />
             Customer
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
-      cell: ({ row }) => row.original.customerId,
+      cell: ({ row }) => (
+        <span className="font-medium">{getCustomerName(row.original.customerId)}</span>
+      ),
     },
     {
       accessorKey: "salesPersonId",
@@ -162,27 +248,64 @@ export default function SaleTable({ data }: SaleTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="px-0 pt-0 pb-0"
+            className="px-0 pt-0 pb-0 font-medium"
           >
-            Sales Person
+            <User className="mr-2 h-4 w-4" />
+            Salesperson
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
-      cell: ({ row }) => row.original.salesPersonId,
+      cell: ({ row }) => (
+        <span className="text-sm text-muted-foreground">
+          {getSalespersonName(row.original.salesPersonId)}
+        </span>
+      ),
     },
     {
-      accessorKey: "totalAmount",
+      accessorKey: "saleDate",
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="px-0 pt-0 pb-0"
+            className="px-0 pt-0 pb-0 font-medium"
           >
-            Total Amount
+            <Calendar className="mr-2 h-4 w-4" />
+            Sale Date
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
+        );
+      },
+      cell: ({ row }) => {
+        const date = new Date(row.original.saleDate);
+        return (
+          <span className="text-sm">
+            {format(date, "dd/MM/yyyy")}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "finalAmount",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="px-0 pt-0 pb-0 font-medium"
+          >
+            <DollarSign className="mr-2 h-4 w-4" />
+            Final Amount
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <span className="font-semibold text-green-600">
+            ₺{row.original.finalAmount.toFixed(2)}
+          </span>
         );
       },
     },
@@ -193,31 +316,25 @@ export default function SaleTable({ data }: SaleTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="px-0 pt-0 pb-0"
+            className="px-0 pt-0 pb-0 font-medium"
           >
             Status
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
-    },
-    {
-      accessorKey: "invoiceNumber",
-      header: ({ column }) => {
+      cell: ({ row }) => {
+        const status = getStatusText(row.original.status);
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="px-0 pt-0 pb-0"
-          >
-            Invoice Number
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+          <Badge variant={getStatusBadgeVariant(row.original.status)} className="font-medium">
+            {status}
+          </Badge>
         );
       },
     },
     {
       id: "actions",
+      header: "Actions",
       cell: ({ row }) => {
         const sale = row.original;
 
@@ -230,17 +347,15 @@ export default function SaleTable({ data }: SaleTableProps) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() => handleUpdate(sale)}
-                className="cursor-pointer"
-              >
-                <Pencil className="mr-2 h-4 w-4" />
-                Update
+              <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleRowClick(sale); }}>
+                <Eye className="mr-2 h-4 w-4" />
+                View Details
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleDeleteClick(sale)}
-                className="cursor-pointer text-red-600"
-              >
+              <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleUpdate(sale); }}>
+                <Pencil className="mr-2 h-4 w-4" />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleDeleteClick(sale); }}>
                 <Trash className="mr-2 h-4 w-4" />
                 Delete
               </DropdownMenuItem>
@@ -254,163 +369,364 @@ export default function SaleTable({ data }: SaleTableProps) {
   const table = useReactTable({
     data,
     columns,
-    state: {
-      sorting,
-    },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      sorting,
+    },
   });
 
   return (
-    <>
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </TableHead>
+    <div className="space-y-4">
+      <div className="rounded-md border overflow-hidden">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id} className="bg-muted/50">
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id} className="font-semibold">
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
               ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    className="cursor-pointer hover:bg-muted/30 transition-colors"
+                    onClick={() => handleRowClick(row.original)}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id} className="py-3">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-32 text-center"
+                  >
+                    <div className="flex flex-col items-center justify-center space-y-2">
+                      <Receipt className="h-8 w-8 text-muted-foreground" />
+                      <p className="text-muted-foreground font-medium">No sales found</p>
+                      <p className="text-sm text-muted-foreground">Create your first sale to get started</p>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+
+      {/* Sale Details Modal */}
+      <Dialog open={isDetailModalOpen} onOpenChange={setIsDetailModalOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Package className="h-5 w-5" />
+              Sale Details
+            </DialogTitle>
+          </DialogHeader>
+          {selectedSale && (
+            <div className="space-y-6">
+              {/* Basic Information */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Sale Information</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Invoice Number</label>
+                      <p className="text-sm font-mono mt-1">
+                        {selectedSale.invoiceNumber || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Status</label>
+                      <div className="mt-1">
+                        <Badge variant={getStatusBadgeVariant(selectedSale.status)}>
+                          {getStatusText(selectedSale.status)}
+                        </Badge>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Customer</label>
+                      <p className="text-sm font-medium mt-1">
+                        {getCustomerName(selectedSale.customerId)}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Salesperson</label>
+                      <p className="text-sm mt-1">
+                        {getSalespersonName(selectedSale.salesPersonId)}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">Sale Date</label>
+                      <p className="text-sm mt-1">
+                        {format(new Date(selectedSale.saleDate), "dd/MM/yyyy HH:mm")}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Products */}
+              {selectedSale.saleProducts && selectedSale.saleProducts.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Products</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {selectedSale.saleProducts.map((product, index) => (
+                        <div key={index} className="flex justify-between items-center p-3 border rounded-lg bg-muted/30">
+                          <div className="flex-1">
+                            <span className="text-sm font-medium">{product.productName || `Product ${index + 1}`}</span>
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            {product.quantity} x ₺{product.unitPrice} = ₺{product.totalPrice}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Financial Summary */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Financial Summary</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Subtotal:</span>
+                      <span className="text-sm font-medium">₺{selectedSale.totalAmount.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Discount ({selectedSale.discount}%):</span>
+                      <span className="text-sm font-medium text-green-600">
+                        -₺{(selectedSale.totalAmount * selectedSale.discount / 100).toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Tax ({selectedSale.tax}%):</span>
+                      <span className="text-sm font-medium text-red-600">
+                        +₺{((selectedSale.totalAmount - (selectedSale.totalAmount * selectedSale.discount / 100)) * selectedSale.tax / 100).toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="border-t pt-3 flex justify-between text-lg font-bold">
+                      <span>Final Total:</span>
+                      <span className="text-green-600">₺{selectedSale.finalAmount.toFixed(2)}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Update Modal */}
       <Dialog open={isUpdateModalOpen} onOpenChange={setIsUpdateModalOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Update Sale</DialogTitle>
+            <DialogTitle>Edit Sale</DialogTitle>
           </DialogHeader>
-          {selectedSale && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="form-field">
-                  <label className="text-sm font-medium">Sale Date</label>
-                  <input
-                    type="text"
-                    name="saleDate"
-                    value={formData.saleDate}
-                    onChange={handleFormChange}
-                    className="w-full p-2 border rounded"
-                  />
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2 form-field">
+                <label className="text-sm font-medium">Customer</label>
+                <SearchableSelect
+                  options={customers.map((c: any) => ({
+                    value: c.id,
+                    label: c.fullName || `${c.firstName} ${c.lastName}`,
+                  }))}
+                  value={formData.customerId}
+                  onChange={(val) => setFormData((f) => ({ ...f, customerId: val }))}
+                  placeholder="Select customer"
+                  emptyText="No customer matched."
+                  searchable={true}
+                />
+              </div>
+              <div className="col-span-2 form-field">
+                <label className="text-sm font-medium">Sales Person</label>
+                <SearchableSelect
+                  options={employees.map((employee: any) => ({
+                    value: employee.id,
+                    label: employee.user.firstName && employee.user.lastName ? `${employee.user.firstName} ${employee.user.lastName}` : employee.user.email,
+                  }))}
+                  value={formData.salesPersonId}
+                  onChange={(val) => setFormData((f) => ({ ...f, salesPersonId: val }))}
+                  placeholder="Select sales person"
+                  emptyText="No employee matched."
+                  searchable={true}
+                />
+              </div>
+              <div className="form-field">
+                <label className="text-sm font-medium">Sale Date</label>
+                <input
+                  type="datetime-local"
+                  name="saleDate"
+                  value={formData.saleDate}
+                  onChange={handleFormChange}
+                  className="w-full p-2 border rounded mt-1"
+                />
+              </div>
+              <div className="form-field">
+                <label className="text-sm font-medium">Invoice Number</label>
+                <input
+                  type="text"
+                  name="invoiceNumber"
+                  value={formData.invoiceNumber || ""}
+                  onChange={handleFormChange}
+                  className="w-full p-2 border rounded mt-1"
+                />
+              </div>
+            </div>
+            <div className="form-field">
+              <label className="text-sm font-medium">Products</label>
+              <div className="flex gap-2 mb-2">
+                <SearchableSelect
+                  options={products
+                    .filter((p: any) => !selectedProducts.some((sp) => sp.productId === p.id))
+                    .map((p: any) => ({ value: p.id, label: p.name }))}
+                  value=""
+                  onChange={handleAddProduct}
+                  placeholder="Add product..."
+                  searchable={true}
+                />
+              </div>
+              <div className="space-y-2">
+                {selectedProducts.map((sp) => {
+                  const product = products.find((p: any) => p.id === sp.productId);
+                  return (
+                    <div key={sp.productId} className="flex items-center gap-2 border rounded p-2">
+                      <span className="flex-1">{product?.name}</span>
+                      <input
+                        type="number"
+                        value={sp.quantity}
+                        onChange={(e) => handleProductChange(sp.productId, "quantity", parseInt(e.target.value) || 1)}
+                        className="w-20"
+                        placeholder="Qty"
+                      />
+                      <input
+                        type="number"
+                        value={sp.unitPrice}
+                        onChange={(e) => handleProductChange(sp.productId, "unitPrice", parseInt(e.target.value) || 0)}
+                        className="w-24"
+                        placeholder="Unit Price"
+                      />
+                      <Button variant="destructive" size="sm" onClick={() => handleRemoveProduct(sp.productId)}>
+                        Remove
+                      </Button>
+                    </div>
+                  );
+                })}
+                {selectedProducts.length === 0 && <div className="text-muted-foreground text-sm">No products added.</div>}
+              </div>
+            </div>
+            {/* Summary Box */}
+            {selectedProducts.length > 0 && (
+              <div className="border rounded p-4 space-y-2">
+                <div className="flex justify-between">
+                  <span>Subtotal:</span>
+                  <span className="font-medium">₺{calculateTotals().subtotal.toFixed(2)}</span>
                 </div>
-                <div className="form-field">
-                  <label className="text-sm font-medium">Customer ID</label>
-                  <input
-                    type="text"
-                    name="customerId"
-                    value={formData.customerId}
-                    onChange={handleFormChange}
-                    className="w-full p-2 border rounded"
-                  />
+                <div className="flex justify-between">
+                  <span>Discount ({formData.discount}%):</span>
+                  <span className="font-medium text-green-600">-₺{calculateTotals().discountAmount.toFixed(2)}</span>
                 </div>
-                <div className="form-field">
-                  <label className="text-sm font-medium">Sales Person ID</label>
-                  <input
-                    type="text"
-                    name="salesPersonId"
-                    value={formData.salesPersonId}
-                    onChange={handleFormChange}
-                    className="w-full p-2 border rounded"
-                  />
+                <div className="flex justify-between">
+                  <span>Tax ({formData.tax}%):</span>
+                  <span className="font-medium text-red-600">+₺{calculateTotals().taxAmount.toFixed(2)}</span>
                 </div>
-                <div className="form-field">
-                  <label className="text-sm font-medium">Total Amount</label>
-                  <input
-                    type="number"
-                    name="totalAmount"
-                    value={formData.totalAmount}
-                    onChange={(e) => handleFormChange({ ...e, target: { ...e.target, value: e.target.valueAsNumber.toString() } })}
-                    className="w-full p-2 border rounded"
-                  />
+                <div className="border-t pt-2 flex justify-between text-lg font-bold">
+                  <span>Final Total:</span>
+                  <span>₺{calculateTotals().final.toFixed(2)}</span>
                 </div>
-                <div className="form-field">
-                  <label className="text-sm font-medium">Discount</label>
+              </div>
+            )}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="form-field">
+                <label className="text-sm font-medium">Discount (%)</label>
+                <div className="flex items-center gap-2">
                   <input
                     type="number"
                     name="discount"
                     value={formData.discount}
-                    onChange={(e) => handleFormChange({ ...e, target: { ...e.target, value: e.target.valueAsNumber.toString() } })}
-                    className="w-full p-2 border rounded"
+                    onChange={handleFormChange}
+                    min="0"
+                    max="50"
+                    step="0.1"
+                    className="flex-1"
                   />
+                  <span className="text-sm text-muted-foreground">0-50%</span>
                 </div>
-                <div className="form-field">
-                  <label className="text-sm font-medium">Tax</label>
+              </div>
+              <div className="form-field">
+                <label className="text-sm font-medium">Tax (%)</label>
+                <div className="flex items-center gap-2">
                   <input
                     type="number"
                     name="tax"
                     value={formData.tax}
-                    onChange={(e) => handleFormChange({ ...e, target: { ...e.target, value: e.target.valueAsNumber.toString() } })}
-                    className="w-full p-2 border rounded"
-                  />
-                </div>
-                <div className="form-field">
-                  <label className="text-sm font-medium">Final Amount</label>
-                  <input
-                    type="number"
-                    name="finalAmount"
-                    value={formData.finalAmount}
-                    onChange={(e) => handleFormChange({ ...e, target: { ...e.target, value: e.target.valueAsNumber.toString() } })}
-                    className="w-full p-2 border rounded"
-                  />
-                </div>
-                <div className="form-field">
-                  <label className="text-sm font-medium">Status</label>
-                  <input
-                    type="text"
-                    name="status"
-                    value={formData.status ?? ''}
                     onChange={handleFormChange}
-                    className="w-full p-2 border rounded"
+                    min="0"
+                    max="20"
+                    step="0.1"
+                    className="flex-1"
                   />
+                  <span className="text-sm text-muted-foreground">0-20%</span>
                 </div>
-                <div className="form-field">
-                  <label className="text-sm font-medium">Invoice Number</label>
-                  <input
-                    type="text"
-                    name="invoiceNumber"
-                    value={formData.invoiceNumber ?? ''}
-                    onChange={handleFormChange}
-                    className="w-full p-2 border rounded"
-                  />
-                </div>
-              </div>
-              <div className="flex justify-end space-x-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsUpdateModalOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleSubmit}
-                  disabled={updateSale.isPending}
-                >
-                  {updateSale.isPending ? "Updating..." : "Update"}
-                </Button>
               </div>
             </div>
-          )}
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsUpdateModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={async () => {
+                if (!selectedSale) return;
+                try {
+                  await updateSale.mutateAsync({
+                    id: selectedSale.id,
+                    data: {
+                      ...formData,
+                      status: selectedSale.status,
+                    },
+                  });
+                  toast.success("Sale updated successfully");
+                  setIsUpdateModalOpen(false);
+                } catch (error) {
+                  toast.error("Error updating sale");
+                }
+              }}>Save Changes</Button>
+            </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -424,22 +740,15 @@ export default function SaleTable({ data }: SaleTableProps) {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsDeleteModalOpen(false)}
-            >
+            <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>
               Cancel
             </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={deleteSale.isPending}
-            >
-              {deleteSale.isPending ? "Deleting..." : "Yes, Delete"}
+            <Button variant="destructive" onClick={handleDelete}>
+              Delete
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 } 

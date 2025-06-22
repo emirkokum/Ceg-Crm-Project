@@ -5,6 +5,7 @@ using CegCRMAPI.Domain.Entities;
 using CegCRMAPI.Application.Repositories;
 using MediatR;
 using System.Collections.Generic;
+using static CegCRMAPI.Domain.Entities.Sale;
 
 namespace CegCRMAPI.Application.Features.Commands.Sales.UpdateSale;
 
@@ -18,7 +19,7 @@ public record UpdateSaleCommand : IRequest<ApiResponse<SaleDto>>
     public decimal Discount { get; init; }
     public decimal Tax { get; init; }
     public decimal FinalAmount { get; init; }
-    public string Status { get; init; } = string.Empty;
+    public SaleStatus Status { get; init; }
     public string InvoiceNumber { get; init; } = string.Empty;
     public ICollection<SaleProductItemDto> Products { get; init; } = new List<SaleProductItemDto>();
 }

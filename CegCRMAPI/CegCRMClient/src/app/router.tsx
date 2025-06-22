@@ -31,6 +31,7 @@ import CreateTicketPage from "@/features/tickets/pages/CreateTicketPage";
 import TasksPage from "@/features/tasks/pages/TasksPage";
 import InteractionsPage from "@/features/interactions/pages/InteractionsPage";
 import CustomerDetailsPage from "@/features/customers/pages/CustomerDetailsPage";
+import { ProductsPage } from "@/features/products/pages/ProductsPage";
 
 interface NavigationItem {
   title: string;
@@ -93,6 +94,12 @@ export const navigationItems: NavigationItem[] = [
     url: "/admin",
     icon: Settings,
     allowedRoles: ["Admin"],
+  },
+  {
+    title: "Products",
+    url: "/products",
+    icon: ShoppingCart,
+    allowedRoles: ["Admin", "Manager"],
   },
 ];
 
@@ -190,6 +197,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={["Admin", "Manager", "SalesPerson", "Support"]}>
             <InteractionsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "products",
+        element: (
+          <ProtectedRoute allowedRoles={["Admin", "Manager"]}>
+            <ProductsPage />
           </ProtectedRoute>
         ),
       },

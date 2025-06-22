@@ -22,7 +22,7 @@ namespace CegCRMAPI.Persistence.Repositories
             return await _dbSet.Where(x => x.Id == id && x.DeletedDate == null).FirstOrDefaultAsync(cancellationToken);  
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
+        public virtual async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             return await _dbSet.Where(x => x.DeletedDate == null).ToListAsync(cancellationToken);
         }

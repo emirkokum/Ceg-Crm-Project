@@ -1,22 +1,20 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import * as saleApi from "@/api/sale";
 import { Sale, CreateSale } from "@/types/sale";
-import { AxiosResponse } from "axios";
 
 export const useSales = () => {
-  return useQuery<AxiosResponse<Sale[]>, Error, Sale[], ["sales"]>({
+  return useQuery({
     queryKey: ["sales"],
     queryFn: saleApi.getAllSales,
-    select: (response) => response.data,
   });
 };
 
 export const useSaleById = (id: string) => {
-  return useQuery<AxiosResponse<Sale>, Error, Sale, ["sales", string]>({
+  return useQuery({
     queryKey: ["sales", id],
     queryFn: () => saleApi.getSaleById(id),
     enabled: !!id,
-    select: (response) => response.data,
+    select: (response) => response.data.data,
   });
 };
 

@@ -77,8 +77,12 @@ public class MappingProfile : Profile
 
         // Sale mappings
         CreateMap<Sale, SaleDto>();
-        CreateMap<CreateSaleCommand, Sale>();
-        CreateMap<UpdateSaleCommand, Sale>();
+        CreateMap<CreateSaleCommand, Sale>()
+            .ForMember(dest => dest.Customer, opt => opt.Ignore())
+            .ForMember(dest => dest.SalesPerson, opt => opt.Ignore());
+        CreateMap<UpdateSaleCommand, Sale>()
+            .ForMember(dest => dest.Customer, opt => opt.Ignore())
+            .ForMember(dest => dest.SalesPerson, opt => opt.Ignore()); 
         CreateMap<SaleProduct, SaleProductDto>()
             .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name));
 

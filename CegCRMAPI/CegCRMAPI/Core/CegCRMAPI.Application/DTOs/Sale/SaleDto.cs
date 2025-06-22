@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CegCRMAPI.Application.DTOs.Product;
+using static CegCRMAPI.Domain.Entities.Sale;
 
 namespace CegCRMAPI.Application.DTOs.Sale
 {
@@ -14,7 +15,7 @@ namespace CegCRMAPI.Application.DTOs.Sale
         public decimal Discount { get; set; }
         public decimal Tax { get; set; }
         public decimal FinalAmount { get; set; }
-        public string Status { get; set; } = string.Empty;
+        public SaleStatus Status { get; set; }
         public string InvoiceNumber { get; set; } = string.Empty;
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
