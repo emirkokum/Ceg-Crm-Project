@@ -42,6 +42,15 @@ import { useEmployees } from "@/features/hooks/useEmployeeApi";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import SearchableSelect from "@/components/SearchableSelect";
 import { useProducts } from "@/features/hooks/useProductApi";
+import DateTimePicker from "@/components/DateTimePicker";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 interface SaleTableProps {
   data: Sale[];
@@ -82,22 +91,22 @@ export default function SaleTable({ data }: SaleTableProps) {
     if (typeof statusValue === 'number') {
       switch (statusValue) {
         case SaleStatus.Pending:
-          return "secondary"; // Yellow badge
+          return "secondary"; 
         case SaleStatus.Completed:
-          return "default"; // Green badge
+          return "default"; 
         case SaleStatus.Cancelled:
-          return "destructive"; // Red badge
+          return "destructive"; 
         default:
           return "outline";
       }
     } else {
       switch (statusValue) {
         case "Pending":
-          return "secondary"; // Yellow badge
+          return "secondary"; 
         case "Completed":
-          return "default"; // Green badge
+          return "default"; 
         case "Cancelled":
-          return "destructive"; // Red badge
+          return "destructive"; 
         default:
           return "outline";
       }
@@ -221,6 +230,60 @@ export default function SaleTable({ data }: SaleTableProps) {
 
   useEffect(updateTotals, [selectedProducts, formData.discount, formData.tax]);
 
+  const handleStatusChange = async (sale: Sale, newStatus: string) => {
+    try {
+      // Convert status string to number as expected by API
+      const statusNumber = newStatus === "Pending" ? 0 : newStatus === "Completed" ? 1 : newStatus === "Cancelled" ? 2 : 0;
+      
+      await updateSale.mutateAsync({
+        id: sale.id,
+        data: {
+          saleDate: sale.saleDate,
+          customerId: sale.customerId,
+          salesPersonId: sale.salesPersonId,
+          totalAmount: sale.totalAmount,
+          discount: sale.discount,
+          tax: sale.tax,
+          finalAmount: sale.finalAmount,
+          status: statusNumber,
+          invoiceNumber: sale.invoiceNumber,
+        },
+      });
+      toast.success("Sale status updated successfully");
+    } catch (error) {
+      console.error("Status update error:", error);
+      toast.error("Error updating sale status");
+    }
+  };
+
+  const getNextStatus = (currentStatus: SaleStatus | string | null) => {
+    const statusValue = typeof currentStatus === 'number' ? currentStatus : String(currentStatus || "Pending");
+    
+    if (typeof statusValue === 'number') {
+      switch (statusValue) {
+        case SaleStatus.Pending:
+          return "Completed";
+        case SaleStatus.Completed:
+          return "Cancelled";
+        case SaleStatus.Cancelled:
+          return "Pending";
+        default:
+          return "Pending";
+      }
+    } else {
+      switch (statusValue) {
+        case "Pending":
+          return "Completed";
+        case "Completed":
+          return "Cancelled";
+        case "Cancelled":
+          return "Pending";
+        default:
+          return "Pending";
+      }
+    }
+  };
+
   const columns: ColumnDef<Sale>[] = [
     {
       accessorKey: "customerId",
@@ -325,10 +388,46 @@ export default function SaleTable({ data }: SaleTableProps) {
       },
       cell: ({ row }) => {
         const status = getStatusText(row.original.status);
+        
         return (
-          <Badge variant={getStatusBadgeVariant(row.original.status)} className="font-medium">
-            {status}
-          </Badge>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="cursor-pointer">
+                <Badge 
+                  variant={getStatusBadgeVariant(row.original.status)} 
+                  className="font-medium hover:opacity-80 transition-opacity"
+                >
+                  {status}
+                </Badge>
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleStatusChange(row.original, "Pending");
+                }}
+              >
+                <Badge variant="secondary" className="mr-2">Pending</Badge>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleStatusChange(row.original, "Completed");
+                }}
+              >
+                <Badge variant="default" className="mr-2">Completed</Badge>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleStatusChange(row.original, "Cancelled");
+                }}
+              >
+                <Badge variant="destructive" className="mr-2">Cancelled</Badge>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         );
       },
     },
@@ -589,22 +688,21 @@ export default function SaleTable({ data }: SaleTableProps) {
               </div>
               <div className="form-field">
                 <label className="text-sm font-medium">Sale Date</label>
-                <input
-                  type="datetime-local"
-                  name="saleDate"
+                <DateTimePicker
                   value={formData.saleDate}
-                  onChange={handleFormChange}
-                  className="w-full p-2 border rounded mt-1"
+                  onChange={(val) =>
+                    setFormData((prev) => ({ ...prev, saleDate: val || '' }))
+                  }
+                  placeholder="Select date and time"
                 />
               </div>
               <div className="form-field">
                 <label className="text-sm font-medium">Invoice Number</label>
-                <input
+                <Input
                   type="text"
                   name="invoiceNumber"
                   value={formData.invoiceNumber || ""}
                   onChange={handleFormChange}
-                  className="w-full p-2 border rounded mt-1"
                 />
               </div>
             </div>
@@ -675,7 +773,7 @@ export default function SaleTable({ data }: SaleTableProps) {
               <div className="form-field">
                 <label className="text-sm font-medium">Discount (%)</label>
                 <div className="flex items-center gap-2">
-                  <input
+                  <Input
                     type="number"
                     name="discount"
                     value={formData.discount}
@@ -683,7 +781,6 @@ export default function SaleTable({ data }: SaleTableProps) {
                     min="0"
                     max="50"
                     step="0.1"
-                    className="flex-1"
                   />
                   <span className="text-sm text-muted-foreground">0-50%</span>
                 </div>
@@ -691,7 +788,7 @@ export default function SaleTable({ data }: SaleTableProps) {
               <div className="form-field">
                 <label className="text-sm font-medium">Tax (%)</label>
                 <div className="flex items-center gap-2">
-                  <input
+                  <Input
                     type="number"
                     name="tax"
                     value={formData.tax}
@@ -699,11 +796,29 @@ export default function SaleTable({ data }: SaleTableProps) {
                     min="0"
                     max="20"
                     step="0.1"
-                    className="flex-1"
                   />
                   <span className="text-sm text-muted-foreground">0-20%</span>
                 </div>
               </div>
+            </div>
+            <div className="form-field">
+              <label className="text-sm font-medium">Status</label>
+              <Select
+                name="status"
+                value={getStatusText(formData.status)}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, status: value || null }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Pending">Pending</SelectItem>
+                  <SelectItem value="Completed">Completed</SelectItem>
+                  <SelectItem value="Cancelled">Cancelled</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsUpdateModalOpen(false)}>
@@ -711,12 +826,23 @@ export default function SaleTable({ data }: SaleTableProps) {
               </Button>
               <Button onClick={async () => {
                 if (!selectedSale) return;
+
+                const { saleDate, customerId, salesPersonId, totalAmount, discount, tax, finalAmount, status, invoiceNumber } = formData;
+                const statusNumber = status === "Pending" ? 0 : status === "Completed" ? 1 : status === "Cancelled" ? 2 : selectedSale.status;
+                
                 try {
                   await updateSale.mutateAsync({
                     id: selectedSale.id,
                     data: {
-                      ...formData,
-                      status: selectedSale.status,
+                      saleDate,
+                      customerId,
+                      salesPersonId,
+                      totalAmount,
+                      discount,
+                      tax,
+                      finalAmount,
+                      status: statusNumber as unknown as SaleStatus,
+                      invoiceNumber,
                     },
                   });
                   toast.success("Sale updated successfully");

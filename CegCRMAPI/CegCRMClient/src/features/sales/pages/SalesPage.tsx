@@ -12,7 +12,7 @@ import { useSales, useCreateSale } from "@/features/hooks/useSaleApi";
 import { CreateSale, SaleProductItem, SaleStatus } from "@/types/sale";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Search, Download, Receipt } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import DateTimePicker from "@/components/DateTimePicker";
@@ -169,11 +169,18 @@ export function SalesPage() {
 
   const { subtotal, discountAmount, taxAmount, final } = calculateTotals();
 
+  const handleExport = () => {
+    toast.info("Export functionality coming soon!");
+  };
+
   if (isLoading || isLoadingCustomers || isLoadingEmployees || isLoadingProducts) return (
-    <div className="flex flex-col gap-4">
+    <div className="space-y-6 p-6">
       <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
         <Skeleton className="w-full md:w-1/2 h-10" />
-        <Skeleton className="w-32 h-10" />
+        <div className="flex gap-2">
+          <Skeleton className="w-32 h-10" />
+          <Skeleton className="w-32 h-10" />
+        </div>
       </div>
       <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
         <Skeleton className="w-full md:w-48 h-10" />
@@ -187,43 +194,73 @@ export function SalesPage() {
     </div>
   );
 
-  if (isError) return <div>Error fetching data.</div>;
+  if (isError) return (
+    <Card className="p-6">
+      <CardContent className="flex flex-col items-center justify-center space-y-4">
+        <div className="text-red-500 text-xl">Error fetching data</div>
+        <Button variant="outline" onClick={() => window.location.reload()}>
+          Try Again
+        </Button>
+      </CardContent>
+    </Card>
+  );
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Sales</h1>
-        <Button onClick={() => setIsCreateModalOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Sale
-        </Button>
+    <div className="space-y-6 p-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex items-center gap-2">
+          <Receipt className="h-6 w-6" />
+          <h1 className="text-2xl font-bold">Sales</h1>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleExport}>
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
+          <Button onClick={() => setIsCreateModalOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            New Sale
+          </Button>
+        </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4 md:items-center justify-between mb-4">
-        <Input
-          placeholder="Search by Customer Name..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full md:w-1/2"
-        />
-        
-        <Select
-          onValueChange={(val) => setStatusFilter(val === "all" ? "" : val)}
-          value={statusFilter || "all"}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="Pending">Pending</SelectItem>
-            <SelectItem value="Completed">Completed</SelectItem>
-            <SelectItem value="Cancelled">Cancelled</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <Card>
+        <CardContent className="px-10 py-5">
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
+            <div className="relative w-full md:w-1/2">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search by Customer Name..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <div className="flex gap-2 w-full md:w-auto">
+              <Select
+                onValueChange={(val) => setStatusFilter(val === "all" ? "" : val)}
+                value={statusFilter || "all"}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="Pending">Pending</SelectItem>
+                  <SelectItem value="Completed">Completed</SelectItem>
+                  <SelectItem value="Cancelled">Cancelled</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-      <SaleTable data={filteredSales} />
+      <Card>
+        <CardContent className="px-10 py-5">
+          <SaleTable data={filteredSales} />
+        </CardContent>
+      </Card>
 
       {/* Create Modal */}
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
