@@ -3,6 +3,7 @@ using System;
 using CegCRMAPI.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CegCRMAPI.Persistence.Migrations
 {
     [DbContext(typeof(CegCrmDbContext))]
-    partial class CegCrmDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250622220503_ChangedTasksEmployeeId")]
+    partial class ChangedTasksEmployeeId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -442,6 +445,9 @@ namespace CegCRMAPI.Persistence.Migrations
                     b.Property<Guid>("AssignedEmployeeId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("AssignedUserId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -457,6 +463,9 @@ namespace CegCRMAPI.Persistence.Migrations
 
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("EmployeeId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Priority")
                         .HasMaxLength(20)
@@ -479,9 +488,11 @@ namespace CegCRMAPI.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssignedEmployeeId");
+                    b.HasIndex("AssignedUserId");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("EmployeeId");
 
                     b.ToTable("Tasks");
                 });
@@ -846,9 +857,9 @@ namespace CegCRMAPI.Persistence.Migrations
 
             modelBuilder.Entity("CegCRMAPI.Domain.Entities.TaskItem", b =>
                 {
-                    b.HasOne("CegCRMAPI.Domain.Entities.Employee", "AssignedEmployee")
-                        .WithMany("AssignedTasks")
-                        .HasForeignKey("AssignedEmployeeId")
+                    b.HasOne("CegCRMAPI.Domain.Entities.User", "AssignedUser")
+                        .WithMany()
+                        .HasForeignKey("AssignedUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -856,7 +867,11 @@ namespace CegCRMAPI.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("CustomerId");
 
-                    b.Navigation("AssignedEmployee");
+                    b.HasOne("CegCRMAPI.Domain.Entities.Employee", null)
+                        .WithMany("AssignedTasks")
+                        .HasForeignKey("EmployeeId");
+
+                    b.Navigation("AssignedUser");
 
                     b.Navigation("Customer");
                 });

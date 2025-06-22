@@ -9,14 +9,14 @@ namespace CegCRMAPI.Application.Features.Commands.Tasks.CreateTask;
 
 public record CreateTaskCommand : IRequest<ApiResponse<TaskDto>>
 {
-    public Guid AssignedUserId { get; init; }
+    public Guid AssignedEmployeeId { get; init; }
     public Guid? CustomerId { get; init; }
     public string Title { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
     public DateTime DueDate { get; init; }
-    public string Priority { get; init; } = string.Empty;
-    public string Status { get; init; } = string.Empty;
-    public string Type { get; init; } = string.Empty;
+    public TaskPriority Priority { get; init; }
+    public Domain.Entities.TaskStatus Status { get; init; }
+    public TaskType Type { get; init; }
 }
 
 public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, ApiResponse<TaskDto>>

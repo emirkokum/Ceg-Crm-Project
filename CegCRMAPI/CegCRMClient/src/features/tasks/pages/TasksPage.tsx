@@ -1,93 +1,73 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   useTasks,
-  useCreateTask,
 } from "@/features/hooks/useTaskApi";
 import TaskTable from "../components/TaskTable";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import {  Users, Search, Download } from "lucide-react";
 import { toast } from "sonner";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useUsers } from "../../hooks/useUserApi";
-import type { User } from "../../hooks/useUserApi";
 import { useCustomers } from "@/features/hooks/userCustomerApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import SearchableSelect from "@/components/SearchableSelect";
-import DateTimePicker from "@/components/DateTimePicker";
+import { TaskModal } from "../components/TaskModal";
+import { Card, CardContent } from "@/components/ui/card";
+import { useEnum } from "@/features/hooks/useEnums";
+import { EnumSelect } from "@/components/EnumSelect";
 
 export default function TasksPage() {
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    assignedUserId: "",
-    customerId: "",
-    title: "",
-    description: "",
-    dueDate: "",
-    priority: "",
-    status: "",
-    type: "",
-  });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<number | null>(null);
+  const [priorityFilter, setPriorityFilter] = useState<number | null>(null);
 
-  const [titleFilter, setTitleFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [priorityFilter, setPriorityFilter] = useState("");
-
-  const { data: tasks = [], isLoading } = useTasks();
-  const { data: users = [], isLoading: isLoadingUsers } = useUsers();
+  const {
+    data: tasks = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useTasks();
   const { data: customers = [], isLoading: isLoadingCustomers } = useCustomers();
-  const createTask = useCreateTask();
+  const { data: taskStatusOptions } = useEnum("task-status");
+  const { data: taskPriorityOptions } = useEnum("task-priority");
 
-  const handleFormChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async () => {
-    try {
-      await createTask.mutateAsync(formData);
-      toast.success("Task created successfully");
-      setIsCreateModalOpen(false);
-      setFormData({
-        assignedUserId: "",
-        customerId: "",
-        title: "",
-        description: "",
-        dueDate: "",
-        priority: "",
-        status: "",
-        type: "",
-      });
-    } catch (error) {
-      toast.error("Error creating task");
+  const filteredTasks = useMemo(() => {
+    if (!Array.isArray(tasks)) {
+      return [];
     }
+    return tasks.filter((task) => {
+      const title = task.title ?? "";
+      const description = task.description ?? "";
+      const status = task.status;
+      const priority = task.priority;
+
+      const matchesSearch =
+        title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        description.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesStatus = statusFilter === null || status === statusFilter;
+      const matchesPriority = priorityFilter === null || priority === priorityFilter;
+
+      return matchesSearch && matchesStatus && matchesPriority;
+    });
+  }, [tasks, searchTerm, statusFilter, priorityFilter]);
+
+  const handleExport = () => {
+    toast.info("Export functionality coming soon!");
   };
 
-  if (isLoading || isLoadingUsers || isLoadingCustomers) {
+  if (isLoading || isLoadingCustomers) {
     return (
-      <div className="container mx-auto py-10">
-        <div className="flex justify-between items-center mb-6">
-          <Skeleton className="h-8 w-32" />
-          <Skeleton className="h-10 w-32" />
+      <div className="space-y-6 p-6">
+        <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
+          <Skeleton className="w-full md:w-1/2 h-10" />
+          <div className="flex gap-2">
+            <Skeleton className="w-32 h-10" />
+            <Skeleton className="w-32 h-10" />
+          </div>
+        </div>
+        <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
+          <Skeleton className="w-full md:w-48 h-10" />
+          <Skeleton className="w-full md:w-48 h-10" />
+          <Skeleton className="w-full md:w-48 h-10" />
         </div>
         <div className="space-y-2">
           <Skeleton className="w-full h-10" />
@@ -99,223 +79,83 @@ export default function TasksPage() {
     );
   }
 
-  const filteredTasks = tasks.filter((task) => {
-    const title = task.title ?? "";
-    const status = task.status ?? "";
-    const priority = task.priority ?? "";
+  if (isError)
+    return (
+      <Card className="p-6">
+        <CardContent className="flex flex-col items-center justify-center space-y-4">
+          <div className="text-red-500 text-xl">Error fetching data</div>
+          <Button variant="outline" onClick={() => refetch()}>
+            Try Again
+          </Button>
+        </CardContent>
+      </Card>
+    );
 
-    const matchesTitle = title
-      .toLowerCase()
-      .includes(titleFilter.toLowerCase());
-    const matchesStatus = statusFilter === "" || status === statusFilter;
-    const matchesPriority = priorityFilter === "" || priority === priorityFilter;
+  const allStatusOptions = [
+    { value: 0, label: "All Statuses" },
+    ...(taskStatusOptions || []),
+  ];
 
-    return matchesTitle && matchesStatus && matchesPriority;
-  });
+  const allPriorityOptions = [
+    { value: 0, label: "All Priorities" },
+    ...(taskPriorityOptions || []),
+  ];
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Tasks</h1>
-        <Button onClick={() => setIsCreateModalOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Task
-        </Button>
+    <div className="space-y-6 p-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex items-center gap-2">
+          <Users className="h-6 w-6" />
+          <h1 className="text-2xl font-bold">Tasks</h1>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleExport}>
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
+          <TaskModal onSuccess={refetch} />
+        </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between mb-4">
-        <Input
-          placeholder="Search With Title..."
-          value={titleFilter}
-          onChange={(e) => setTitleFilter(e.target.value)}
-          className="w-full md:w-1/3"
-        />
-        <Select
-          onValueChange={(val) => setStatusFilter(val === "all" ? "" : val)}
-          value={statusFilter || "all"}
-        >
-          <SelectTrigger className="w-full md:w-48">
-            <SelectValue placeholder="Select status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="Not Started">Not Started</SelectItem>
-            <SelectItem value="In Progress">In Progress</SelectItem>
-            <SelectItem value="Completed">Completed</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select
-          onValueChange={(val) => setPriorityFilter(val === "all" ? "" : val)}
-          value={priorityFilter || "all"}
-        >
-          <SelectTrigger className="w-full md:w-48">
-            <SelectValue placeholder="Select priority" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="Low">Low</SelectItem>
-            <SelectItem value="Medium">Medium</SelectItem>
-            <SelectItem value="High">High</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <TaskTable data={filteredTasks} />
-
-      {/* Create Modal */}
-      <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>New Task</DialogTitle>
-          </DialogHeader>
-
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2">
-                <label className="text-sm font-medium">Assigned User</label>
-                <SearchableSelect
-                  options={users.map((u: User) => ({
-                    value: u.id,
-                    label: `${u.firstName} ${u.lastName}`,
-                  }))}
-                  value={formData.assignedUserId}
-                  onChange={(val) =>
-                    setFormData((f) => ({ ...f, assignedUserId: val }))
-                  }
-                  placeholder="Select user"
-                  emptyText="No user matched."
-                  searchable={true}
-                />
-              </div>
-
-              <div className="col-span-2">
-                <label className="text-sm font-medium">Customer (Optional)</label>
-                <SearchableSelect
-                  options={customers.map((c) => ({
-                    value: c.id,
-                    label: `${c.firstName} ${c.lastName}`,
-                  }))}
-                  value={formData.customerId}
-                  onChange={(val) =>
-                    setFormData((f) => ({ ...f, customerId: val }))
-                  }
-                  placeholder="Select customer"
-                  emptyText="No customer matched."
-                  searchable={true}
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium">Priority</label>
-                <Select
-                  value={formData.priority}
-                  onValueChange={(val) =>
-                    setFormData((f) => ({ ...f, priority: val }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Priority" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Low">Low</SelectItem>
-                    <SelectItem value="Medium">Medium</SelectItem>
-                    <SelectItem value="High">High</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium">Status</label>
-                <Select
-                  value={formData.status}
-                  onValueChange={(val) =>
-                    setFormData((f) => ({ ...f, status: val }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Not Started">Not Started</SelectItem>
-                    <SelectItem value="In Progress">In Progress</SelectItem>
-                    <SelectItem value="Completed">Completed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium">Type</label>
-                <Select
-                  value={formData.type}
-                  onValueChange={(val) =>
-                    setFormData((f) => ({ ...f, type: val }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Meeting">Meeting</SelectItem>
-                    <SelectItem value="Call">Call</SelectItem>
-                    <SelectItem value="Email">Email</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium">Due Date</label>
-                <DateTimePicker
-                  value={formData.dueDate}
-                  onChange={(val) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      dueDate: val,
-                    }))
-                  }
-                  placeholder="Select date and time"
-                />
-              </div>
-
-              <div className="col-span-2">
-                <label className="text-sm font-medium">Title</label>
-                <input
-                  name="title"
-                  value={formData.title}
-                  onChange={handleFormChange}
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-
-              <div className="col-span-2">
-                <label className="text-sm font-medium">Description</label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleFormChange}
-                  className="w-full p-2 border rounded"
-                  rows={4}
-                />
-              </div>
+      <Card>
+        <CardContent className="px-10 py-5">
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
+            <div className="relative w-full md:w-1/2">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search (title or description)"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
             </div>
-
-            <div className="flex justify-end space-x-2">
-              <Button
-                variant="outline"
-                onClick={() => setIsCreateModalOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleSubmit}
-                disabled={createTask.isPending}
-              >
-                {createTask.isPending ? "Creating..." : "Create"}
-              </Button>
+            <div className="flex gap-2 w-full md:w-auto">
+              <EnumSelect
+                options={allStatusOptions}
+                value={statusFilter ?? 0}
+                onValueChange={(value) =>
+                  setStatusFilter(value === 0 ? null : value)
+                }
+                placeholder="Filter by status"
+              />
+              <EnumSelect
+                options={allPriorityOptions}
+                value={priorityFilter ?? 0}
+                onValueChange={(value) =>
+                  setPriorityFilter(value === 0 ? null : value)
+                }
+                placeholder="Filter by priority"
+              />
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="px-10 py-5">
+          <TaskTable data={filteredTasks} onUpdateTask={refetch} />
+        </CardContent>
+      </Card>
     </div>
   );
 } 

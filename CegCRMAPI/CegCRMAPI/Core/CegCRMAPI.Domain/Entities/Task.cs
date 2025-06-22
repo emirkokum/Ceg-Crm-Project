@@ -7,7 +7,7 @@ namespace CegCRMAPI.Domain.Entities
 {
     public class TaskItem : BaseEntity
     {
-        public Guid AssignedUserId { get; set; }
+        public Guid AssignedEmployeeId { get; set; }
         public Guid? CustomerId { get; set; }
 
         public string Title { get; set; } = string.Empty;
@@ -19,7 +19,7 @@ namespace CegCRMAPI.Domain.Entities
         public TaskType Type { get; set; }
 
         // Navigation
-        public User AssignedUser { get; set; } = null!;
+        public Employee AssignedEmployee { get; set; } = null!;
         public Customer? Customer { get; set; }
     }
 

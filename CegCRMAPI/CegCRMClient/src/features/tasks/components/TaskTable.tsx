@@ -23,7 +23,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash, Eye, CalendarIcon, ArrowUpDown } from "lucide-react";
+import { MoreHorizontal, Trash, Eye, ArrowUpDown, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -33,77 +33,36 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import {
-  useUpdateTask,
-  useDeleteTask,
-} from "../../hooks/useTaskApi";
+import { useDeleteTask } from "../../hooks/useTaskApi";
 import { toast } from "sonner";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { format } from "date-fns";
-import DateTimePicker from "@/components/DateTimePicker";
+import { TaskModal } from "./TaskModal";
+import { useEnum } from "@/features/hooks/useEnums";
 
 interface TaskTableProps {
   data: Task[];
+  onUpdateTask: () => void;
 }
 
-interface UpdateFormData {
-  assignedUserId: string;
-  customerId: string;
-  title: string;
-  description: string;
-  dueDate: string;
-  priority: string;
-  status: string;
-  type: string;
-}
-
-export default function TaskTable({ data }: TaskTableProps) {
+export default function TaskTable({ data, onUpdateTask }: TaskTableProps) {
   const [sorting, setSorting] = useState<SortingState>([
     {
       id: "dueDate",
-      desc: true
-    }
+      desc: true,
+    },
   ]);
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isInspectModalOpen, setIsInspectModalOpen] = useState(false);
-  const [selectedTaskForInspect, setSelectedTaskForInspect] = useState<Task | null>(null);
-  const [formData, setFormData] = useState<UpdateFormData>({
-    assignedUserId: "",
-    customerId: "",
-    title: "",
-    description: "",
-    dueDate: "",
-    priority: "",
-    status: "",
-    type: "",
-  });
+  const [selectedTaskForInspect, setSelectedTaskForInspect] =
+    useState<Task | null>(null);
+  const [editModalTask, setEditModalTask] = useState<Task | null>(null);
 
-  const updateTask = useUpdateTask();
   const deleteTask = useDeleteTask();
-
-  const handleUpdate = (task: Task) => {
-    setSelectedTask(task);
-    setFormData({
-      assignedUserId: task.assignedUserId,
-      customerId: task.customerId || "",
-      title: task.title,
-      description: task.description,
-      dueDate: task.dueDate,
-      priority: task.priority,
-      status: task.status,
-      type: task.type,
-    });
-    setIsUpdateModalOpen(true);
-  };
+  const { data: taskStatusOptions } = useEnum("task-status");
+  const { data: taskPriorityOptions } = useEnum("task-priority");
+  const { data: taskTypeOptions } = useEnum("task-type");
 
   const handleDeleteClick = (task: Task) => {
     setSelectedTask(task);
@@ -127,31 +86,11 @@ export default function TaskTable({ data }: TaskTableProps) {
     setIsInspectModalOpen(true);
   };
 
-  const handleFormChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async () => {
-    if (!selectedTask) return;
-
-    try {
-      await updateTask.mutateAsync({
-        id: selectedTask.id,
-        data: formData as Omit<Task, "id">,
-      });
-      toast.success("Task updated successfully");
-      setIsUpdateModalOpen(false);
-    } catch (error) {
-      toast.error("Error updating task");
-    }
+  // Helper function to get enum label by value
+  const getEnumLabel = (options: any[] | undefined, value: number) => {
+    if (!options) return value.toString();
+    const option = options.find((opt) => opt.value === value);
+    return option?.label || value.toString();
   };
 
   const columns: ColumnDef<Task>[] = [
@@ -187,85 +126,25 @@ export default function TaskTable({ data }: TaskTableProps) {
       },
       cell: ({ row }) => {
         const task = row.original;
+        const priorityLabel = getEnumLabel(taskPriorityOptions, task.priority);
         const priorityStyles = {
           Low: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-          Medium: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
+          Medium:
+            "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
           High: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+          Critical:
+            "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
         };
-        
+
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className={`h-8 px-2 hover:bg-muted cursor-pointer ${priorityStyles[task.priority as keyof typeof priorityStyles]}`}
-              >
-                {task.priority}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              <DropdownMenuItem
-                onClick={() => {
-                  updateTask.mutate(
-                    {
-                      id: task.id,
-                      data: { ...task, priority: "Low" },
-                    },
-                    {
-                      onSuccess: () => {
-                        toast.success("Priority updated successfully");
-                      },
-                      onError: () => {
-                        toast.error("Error updating priority");
-                      },
-                    }
-                  );
-                }}
-              >
-                Low
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  updateTask.mutate(
-                    {
-                      id: task.id,
-                      data: { ...task, priority: "Medium" },
-                    },
-                    {
-                      onSuccess: () => {
-                        toast.success("Priority updated successfully");
-                      },
-                      onError: () => {
-                        toast.error("Error updating priority");
-                      },
-                    }
-                  );
-                }}
-              >
-                Medium
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  updateTask.mutate(
-                    {
-                      id: task.id,
-                      data: { ...task, priority: "High" },
-                    },
-                    {
-                      onSuccess: () => {
-                        toast.success("Priority updated successfully");
-                      },
-                      onError: () => {
-                        toast.error("Error updating priority");
-                      },
-                    }
-                  );
-                }}
-              >
-                High
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-medium ${
+              priorityStyles[priorityLabel as keyof typeof priorityStyles] ||
+              "bg-gray-100 text-gray-800"
+            }`}
+          >
+            {priorityLabel}
+          </span>
         );
       },
     },
@@ -285,79 +164,51 @@ export default function TaskTable({ data }: TaskTableProps) {
       },
       cell: ({ row }) => {
         const task = row.original;
+        const statusLabel = getEnumLabel(taskStatusOptions, task.status);
+        const statusStyles = {
+          Todo: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+          InProgress:
+            "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
+          Completed:
+            "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
+          Cancelled:
+            "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+        };
+
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="h-8 px-2 hover:bg-muted cursor-pointer"
-              >
-                {task.status}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              <DropdownMenuItem
-                onClick={() => {
-                  updateTask.mutate(
-                    {
-                      id: task.id,
-                      data: { ...task, status: "Not Started" },
-                    },
-                    {
-                      onSuccess: () => {
-                        toast.success("Status updated successfully");
-                      },
-                      onError: () => {
-                        toast.error("Error updating status");
-                      },
-                    }
-                  );
-                }}
-              >
-                Not Started
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  updateTask.mutate(
-                    {
-                      id: task.id,
-                      data: { ...task, status: "In Progress" },
-                    },
-                    {
-                      onSuccess: () => {
-                        toast.success("Status updated successfully");
-                      },
-                      onError: () => {
-                        toast.error("Error updating status");
-                      },
-                    }
-                  );
-                }}
-              >
-                In Progress
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  updateTask.mutate(
-                    {
-                      id: task.id,
-                      data: { ...task, status: "Completed" },
-                    },
-                    {
-                      onSuccess: () => {
-                        toast.success("Status updated successfully");
-                      },
-                      onError: () => {
-                        toast.error("Error updating status");
-                      },
-                    }
-                  );
-                }}
-              >
-                Completed
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-medium ${
+              statusStyles[statusLabel as keyof typeof statusStyles] ||
+              "bg-gray-100 text-gray-800"
+            }`}
+          >
+            {statusLabel}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "type",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="px-0 pt-0 pb-0"
+          >
+            Type
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        const task = row.original;
+        const typeLabel = getEnumLabel(taskTypeOptions, task.type);
+
+        return (
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+            {typeLabel}
+          </span>
         );
       },
     },
@@ -411,7 +262,7 @@ export default function TaskTable({ data }: TaskTableProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
-                onClick={() => handleUpdate(task)}
+                onClick={() => setEditModalTask(task)}
                 className="cursor-pointer"
               >
                 <Pencil className="mr-2 h-4 w-4" />
@@ -465,7 +316,16 @@ export default function TaskTable({ data }: TaskTableProps) {
             <TableRow key={row.id}>
               {row.getVisibleCells().map((cell) => (
                 <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  {cell.column.id === "actions" ? (
+                    <div className="flex items-center gap-2">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </div>
+                  ) : (
+                    flexRender(cell.column.columnDef.cell, cell.getContext())
+                  )}
                 </TableCell>
               ))}
             </TableRow>
@@ -473,129 +333,14 @@ export default function TaskTable({ data }: TaskTableProps) {
         </TableBody>
       </Table>
 
-      {/* Update Modal */}
-      <Dialog open={isUpdateModalOpen} onOpenChange={setIsUpdateModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Update Task</DialogTitle>
-          </DialogHeader>
-          {selectedTask && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium">Priority</label>
-                  <Select
-                    value={formData.priority}
-                    onValueChange={(val) =>
-                      setFormData((f) => ({ ...f, priority: val }))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Priority" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Low">Low</SelectItem>
-                      <SelectItem value="Medium">Medium</SelectItem>
-                      <SelectItem value="High">High</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Status</label>
-                  <Select
-                    value={formData.status}
-                    onValueChange={(val) =>
-                      setFormData((f) => ({ ...f, status: val }))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Not Started">Not Started</SelectItem>
-                      <SelectItem value="In Progress">In Progress</SelectItem>
-                      <SelectItem value="Completed">Completed</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Type</label>
-                  <Select
-                    value={formData.type}
-                    onValueChange={(val) =>
-                      setFormData((f) => ({ ...f, type: val }))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Meeting">Meeting</SelectItem>
-                      <SelectItem value="Call">Call</SelectItem>
-                      <SelectItem value="Email">Email</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Due Date</label>
-                  <DateTimePicker
-                    value={formData.dueDate}
-                    onChange={(val) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        dueDate: val,
-                      }))
-                    }
-                    placeholder="Select date and time"
-                  />
-                </div>
-                <div className="col-span-2">
-                  <label className="text-sm font-medium">Title</label>
-                  <input
-                    name="title"
-                    value={formData.title}
-                    onChange={handleFormChange}
-                    className="w-full p-2 border rounded"
-                  />
-                </div>
-                <div className="col-span-2">
-                  <label className="text-sm font-medium">Description</label>
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleFormChange}
-                    className="w-full p-2 border rounded"
-                    rows={4}
-                  />
-                </div>
-              </div>
-              <div className="flex justify-end space-x-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsUpdateModalOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleSubmit}
-                  disabled={updateTask.isPending}
-                >
-                  {updateTask.isPending ? "Updating..." : "Update"}
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
       {/* Delete Confirmation Modal */}
       <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete Task</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this task? This action cannot be undone.
+              Are you sure you want to delete this task? This action cannot be
+              undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -642,21 +387,27 @@ export default function TaskTable({ data }: TaskTableProps) {
               <div className="space-y-1">
                 <p className="text-muted-foreground">Priority</p>
                 <div className="bg-muted px-3 py-2 rounded">
-                  {selectedTaskForInspect.priority}
+                  {getEnumLabel(
+                    taskPriorityOptions,
+                    selectedTaskForInspect.priority
+                  )}
                 </div>
               </div>
 
               <div className="space-y-1">
                 <p className="text-muted-foreground">Status</p>
                 <div className="bg-muted px-3 py-2 rounded">
-                  {selectedTaskForInspect.status}
+                  {getEnumLabel(
+                    taskStatusOptions,
+                    selectedTaskForInspect.status
+                  )}
                 </div>
               </div>
 
               <div className="space-y-1">
                 <p className="text-muted-foreground">Type</p>
                 <div className="bg-muted px-3 py-2 rounded">
-                  {selectedTaskForInspect.type}
+                  {getEnumLabel(taskTypeOptions, selectedTaskForInspect.type)}
                 </div>
               </div>
 
@@ -673,6 +424,23 @@ export default function TaskTable({ data }: TaskTableProps) {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Edit Modal */}
+      {editModalTask && (
+        <TaskModal
+          task={editModalTask}
+          onSuccess={() => {
+            setEditModalTask(null);
+            onUpdateTask();
+          }}
+          isOpen={true}
+          onOpenChange={(open) => {
+            if (!open) {
+              setEditModalTask(null);
+            }
+          }}
+        />
+      )}
     </>
   );
-} 
+}

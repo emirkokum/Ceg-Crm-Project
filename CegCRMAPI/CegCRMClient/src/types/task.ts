@@ -1,6 +1,6 @@
 export interface Task {
   id: string;
-  assignedUserId: string;
+  assignedEmployeeId: string;
   customerId: string | null;
   title: string;
   description: string;
@@ -11,12 +11,12 @@ export interface Task {
 }
 
 export interface CreateTask {
-  assignedUserId: string;
+  assignedEmployeeId: string;
   customerId: string | null;
   title: string;
   description: string;
   dueDate: string;
-  priority: string;
-  status: string;
-  type: string;
+  priority: number;
+  status: number;
+  type: number;
 } 
