@@ -29,5 +29,20 @@ namespace CegCRMAPI.Application.Services.Ai
 
             return $"AI servis hatası: {response.StatusCode}";
         }
+
+        public async Task<bool> UploadKnowledgeBaseAsync(Stream fileStream, string fileName)
+        {
+            var content = new MultipartFormDataContent();
+            content.Add(new StreamContent(fileStream), "file", fileName);
+
+            var response = await _httpClient.PostAsync("http://localhost:8000/upload", content);
+
+            var body = await response.Content.ReadAsStringAsync(); // 🔍 bu satır eklendi
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"AI servisi hatası: {response.StatusCode} - {body}");
+
+            return true;
+        }
     }
 }
