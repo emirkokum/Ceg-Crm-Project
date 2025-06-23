@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { 
   CheckCircle2, 
   Clock, 
@@ -14,43 +13,55 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getAllTasks } from "@/api/task";
-import { Task } from "@/types/task";
 import { Progress } from "@/components/ui/progress";
+import { useTasks } from "@/features/hooks/useTaskApi";
+import { useEnum } from "@/features/hooks/useEnums";
+import { Task } from "@/types/task";
+import { useAuth } from "@/hooks/useAuth";
 
 export function TasksTodayCard() {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await getAllTasks();
-        if (response.data?.success) {
-          setTasks(response.data.data || []);
-        }
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTasks();
-  }, []);
+  const { data: tasks = [], isLoading } = useTasks();
+  const { data: taskStatusOptions } = useEnum("task-status");
+  const { user } = useAuth();
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const todayTasks = tasks.filter(task => {
+  // Find the numeric value for "Completed" status
+  const completedStatusId = taskStatusOptions?.find(status => status.label.toLowerCase() === "completed")?.value;
+
+  // Filter tasks based on user role
+  let visibleTasks: Task[] = tasks;
+  if (user && user.role !== "Admin" && user.role !== "Manager") {
+    visibleTasks = tasks.filter((task: Task) => task.assignedEmployeeId === user.id);
+  }
+
+  const todayTasks = visibleTasks.filter((task: Task) => {
     const taskDate = new Date(task.dueDate);
     taskDate.setHours(0, 0, 0, 0);
     return taskDate.getTime() === today.getTime();
   });
 
-  const completedTasks = todayTasks.filter(task => task.status === "Completed").length;
+  const completedTasks = todayTasks.filter((task: Task) => task.status === completedStatusId).length;
   const pendingTasks = todayTasks.length - completedTasks;
   const completionRate = todayTasks.length > 0 ? (completedTasks / todayTasks.length) * 100 : 0;
+
+  if (isLoading) {
+    return (
+      <Card className="overflow-hidden">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold">Today's Tasks</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="animate-pulse space-y-4">
+            <div className="h-10 bg-muted rounded" />
+            <div className="h-10 bg-muted rounded" />
+            <div className="h-10 bg-muted rounded" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="overflow-hidden">

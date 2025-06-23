@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { 
   Users, 
   TrendingUp, 
@@ -14,34 +13,39 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getAllLeads } from "@/api/lead";
-import { Lead } from "@/types/lead";
 import { Progress } from "@/components/ui/progress";
+import { useLeads } from "@/features/hooks/useLeadApi";
+import { useEnum } from "@/features/hooks/useEnums";
+import { Lead } from "@/types/lead";
 
 export function LeadsSummary() {
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: leads = [], isLoading } = useLeads();
+  const { data: leadStatusOptions } = useEnum("lead-status");
 
-  useEffect(() => {
-    const fetchLeads = async () => {
-      try {
-        const response = await getAllLeads();
-        if (response.data?.success) {
-          setLeads(response.data.data || []);
-        }
-      } catch (error) {
-        console.error("Error fetching leads:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Find status IDs for "New" and "Converted" from enum options
+  const newStatusId = leadStatusOptions?.find(status => status.label.toLowerCase() === "new")?.value;
+  const convertedStatusId = leadStatusOptions?.find(status => status.label.toLowerCase() === "converted")?.value;
 
-    fetchLeads();
-  }, []);
-
-  const newLeads = leads.filter(lead => lead.status === "New").length;
-  const convertedLeads = leads.filter(lead => lead.status === "Converted").length;
+  const newLeads = leads.filter((lead: Lead) => lead.status === newStatusId).length;
+  const convertedLeads = leads.filter((lead: Lead) => lead.status === convertedStatusId).length;
   const conversionRate = leads.length > 0 ? (convertedLeads / leads.length) * 100 : 0;
+
+  if (isLoading) {
+    return (
+      <Card className="overflow-hidden">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold">Lead Overview</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="animate-pulse space-y-4">
+            <div className="h-10 bg-muted rounded" />
+            <div className="h-10 bg-muted rounded" />
+            <div className="h-10 bg-muted rounded" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="overflow-hidden">

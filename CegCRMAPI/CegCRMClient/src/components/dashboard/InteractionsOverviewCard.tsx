@@ -14,8 +14,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Interaction } from "@/types/interaction";
 import { Progress } from "@/components/ui/progress";
+import { useEnum } from "@/features/hooks/useEnums";
+import { Interaction } from "@/types/interaction";
 
 interface InteractionsOverviewCardProps {
   interactions: Interaction[];
@@ -23,6 +24,7 @@ interface InteractionsOverviewCardProps {
   description?: string;
   showDistribution?: boolean;
   filterByDate?: boolean;
+  isLoading?: boolean;
 }
 
 export function InteractionsOverviewCard({ 
@@ -30,27 +32,52 @@ export function InteractionsOverviewCard({
   title = "Customer Interactions", 
   description = "Today's interaction overview",
   showDistribution = true,
-  filterByDate = true
+  filterByDate = true,
+  isLoading = false
 }: InteractionsOverviewCardProps) {
+  const { data: interactionTypeOptions } = useEnum("interaction-type");
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
+  // Find numeric values for Message, Call, Email
+  const messageTypeId = interactionTypeOptions?.find(t => t.label.toLowerCase() === "message")?.value;
+  const callTypeId = interactionTypeOptions?.find(t => t.label.toLowerCase() === "call")?.value;
+  const emailTypeId = interactionTypeOptions?.find(t => t.label.toLowerCase() === "email")?.value;
+
   const filteredInteractions = filterByDate 
-    ? interactions.filter(interaction => {
+    ? interactions.filter((interaction: Interaction) => {
         const interactionDate = new Date(interaction.interactionDate);
         interactionDate.setHours(0, 0, 0, 0);
         return interactionDate.getTime() === today.getTime();
       })
     : interactions;
 
-  const messageInteractions = filteredInteractions.filter(i => i.type === "Message").length;
-  const callInteractions = filteredInteractions.filter(i => i.type === "Call").length;
-  const emailInteractions = filteredInteractions.filter(i => i.type === "Email").length;
+  const messageInteractions = filteredInteractions.filter((i: Interaction) => i.type === messageTypeId).length;
+  const callInteractions = filteredInteractions.filter((i: Interaction) => i.type === callTypeId).length;
+  const emailInteractions = filteredInteractions.filter((i: Interaction) => i.type === emailTypeId).length;
   const totalInteractions = filteredInteractions.length;
 
   const messagePercentage = totalInteractions > 0 ? (messageInteractions / totalInteractions) * 100 : 0;
   const callPercentage = totalInteractions > 0 ? (callInteractions / totalInteractions) * 100 : 0;
   const emailPercentage = totalInteractions > 0 ? (emailInteractions / totalInteractions) * 100 : 0;
+
+  if (isLoading) {
+    return (
+      <Card className="overflow-hidden">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold">{title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="animate-pulse space-y-4">
+            <div className="h-10 bg-muted rounded" />
+            <div className="h-10 bg-muted rounded" />
+            <div className="h-10 bg-muted rounded" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="overflow-hidden">

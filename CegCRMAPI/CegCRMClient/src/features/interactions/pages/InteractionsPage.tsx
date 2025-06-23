@@ -25,6 +25,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import SearchableSelect from "@/components/SearchableSelect";
 import DateTimePicker from "@/components/DateTimePicker";
+import { InteractionsOverviewCard } from "@/components/dashboard/InteractionsOverviewCard";
 
 export default function InteractionsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -95,7 +96,7 @@ export default function InteractionsPage() {
     const matchesCustomerName = customerName
       .toLowerCase()
       .includes(customerNameFilter.toLowerCase());
-    const matchesType = typeFilter === "" || type === typeFilter;
+    const matchesType = typeFilter === "" || type === Number(typeFilter);
 
     return matchesCustomerName && matchesType;
   });
@@ -109,6 +110,9 @@ export default function InteractionsPage() {
           New Interaction
         </Button>
       </div>
+
+      {/* Overview Card with filtered data */}
+      <InteractionsOverviewCard interactions={filteredInteractions} isLoading={isLoading || isLoadingCustomers} />
 
       <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between mb-4">
         <Input
@@ -148,7 +152,7 @@ export default function InteractionsPage() {
               <div className="col-span-2">
                 <label className="text-sm font-medium">Customer</label>
                 <SearchableSelect
-                  options={customers.map((c) => ({
+                  options={customers.map((c: any) => ({
                     value: c.id,
                     label: c.fullName,
                   }))}
