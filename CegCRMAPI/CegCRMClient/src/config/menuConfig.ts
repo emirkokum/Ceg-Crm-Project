@@ -14,6 +14,12 @@ export const menuItems: MenuItem[] = [
     allowedRoles: ['Admin', 'SalesPerson', 'Support'],
   },
   {
+    path: '/employees',
+    label: 'Employees',
+    icon: 'people',
+    allowedRoles: ['Admin', 'Manager'],
+  },
+  {
     path: '/leads',
     label: 'Leads',
     icon: 'trending_up',

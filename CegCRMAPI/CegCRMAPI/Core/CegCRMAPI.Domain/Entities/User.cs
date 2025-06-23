@@ -7,5 +7,6 @@ namespace CegCRMAPI.Domain.Entities
         // Temel bilgiler
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
+        public DateTime? DeletedDate { get; set; }
     }
 }

@@ -1,3 +1,11 @@
+export interface UserDto {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+}
+
 export interface Employee {
   id: string;
   userId: string;
@@ -12,13 +20,5 @@ export interface Employee {
   emergencyPhone: string;
   bankAccount: string;
   taxNumber: string;
-  user: {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    department: string;
-    position: string;
-    role: string;
-  };
+  user: UserDto;
 } 

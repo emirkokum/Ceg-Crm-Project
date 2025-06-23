@@ -30,7 +30,6 @@ export interface Employee {
 
 export interface CreateEmployeeCommand {
   userId: string;
-  employeeNumber?: string;
   hireDate: string;
   workEmail?: string;
   workPhone?: string;
@@ -40,6 +39,7 @@ export interface CreateEmployeeCommand {
   emergencyContact?: string;
   emergencyPhone?: string;
   bankAccount?: string;
+  salary: number;
   taxNumber?: string;
 }
 

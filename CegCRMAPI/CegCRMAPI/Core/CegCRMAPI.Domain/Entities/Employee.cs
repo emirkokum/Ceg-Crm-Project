@@ -10,8 +10,6 @@ namespace CegCRMAPI.Domain.Entities
         public Guid UserId { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; }
-        
-        // İş süreçleri için gerekli alanlar
         public string EmployeeNumber { get; set; }
         public DateTime HireDate { get; set; }
         public decimal Salary { get; set; }
@@ -24,7 +22,6 @@ namespace CegCRMAPI.Domain.Entities
 
 
         
-        // Performans ve izin bilgileri
         public int AnnualLeaveDays { get; set; }
         public int UsedLeaveDays { get; set; }
         public decimal PerformanceScore { get; set; }

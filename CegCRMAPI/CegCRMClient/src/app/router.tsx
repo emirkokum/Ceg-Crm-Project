@@ -32,6 +32,7 @@ import TasksPage from "@/features/tasks/pages/TasksPage";
 import InteractionsPage from "@/features/interactions/pages/InteractionsPage";
 import CustomerDetailsPage from "@/features/customers/pages/CustomerDetailsPage";
 import { ProductsPage } from "@/features/products/pages/ProductsPage";
+import { EmployeesPage } from "@/features/employees/pages/EmployeesPage";
 
 interface NavigationItem {
   title: string;
@@ -52,6 +53,12 @@ export const navigationItems: NavigationItem[] = [
     url: "/customers",
     icon: Users,
     allowedRoles: ["Admin", "Manager", "SalesPerson", "Support"],
+  },
+  {
+    title: "Employees",
+    url: "/employees",
+    icon: Users,
+    allowedRoles: ["Admin", "Manager"],
   },
   {
     title: "Leads",
@@ -149,6 +156,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={["Admin", "Manager", "SalesPerson", "Support"]}>
             <CustomerDetailsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "employees",
+        element: (
+          <ProtectedRoute allowedRoles={["Admin", "Manager"]}>
+            <EmployeesPage />
           </ProtectedRoute>
         ),
       },

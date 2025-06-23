@@ -9,7 +9,6 @@ namespace CegCRMAPI.Application.Features.Commands.Employees.UpdateEmployee;
 public record UpdateEmployeeCommand : IRequest<EmployeeDto>
 {
     public Guid Id { get; set; }
-    public string EmployeeNumber { get; set; }
     public DateTime HireDate { get; set; }
     public string WorkEmail { get; set; }
     public string WorkPhone { get; set; }
@@ -19,6 +18,7 @@ public record UpdateEmployeeCommand : IRequest<EmployeeDto>
     public string EmergencyContact { get; set; }
     public string EmergencyPhone { get; set; }
     public string BankAccount { get; set; }
+    public decimal Salary { get; set; }
     public string TaxNumber { get; set; }
 }
 
