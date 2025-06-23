@@ -11,6 +11,7 @@ using CegCRMAPI.Application.DTOs.User;
 using CegCRMAPI.Application.Features.Queries.User.GetUsers;
 using CegCRMAPI.Application.Features.Commands.User.UpdateUser;
 using CegCRMAPI.Application.Features.Commands.User.DeleteUser;
+using CegCRMAPI.Application.Features.Commands.User.ResetUserPassword;
 
 namespace CegCRMAPI.API.Controllers
 {
@@ -85,6 +86,14 @@ namespace CegCRMAPI.API.Controllers
         {
             var result = await _mediator.Send(new DeleteUserCommand { Id = id });
             return Ok(ApiResponse<bool>.CreateSuccess(result, "User deleted successfully"));
+        }
+
+        [HttpPost("admin-reset-password")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AdminResetPassword([FromBody] AdminResetUserPasswordCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return Ok(new { Success = result });
         }
     }
 } 

@@ -37,7 +37,6 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UserD
             throw new NotFoundException("User", request.Id);
         }
 
-        // Update basic information
         user.Email = request.Email;
         user.UserName = request.Email;
         user.FirstName = request.FirstName;
@@ -53,7 +52,6 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UserD
             throw new ValidationException(errors);
         }
 
-        // Update role if provided
         if (!string.IsNullOrEmpty(request.Role))
         {
             var currentRoles = await _userManager.GetRolesAsync(user);

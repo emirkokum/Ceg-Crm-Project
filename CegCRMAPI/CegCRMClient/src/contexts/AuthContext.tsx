@@ -11,7 +11,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Initialize auth state from localStorage on mount
     const initializeAuth = () => {
       try {
         const storedRole = localStorage.getItem('role') as UserRole | null;

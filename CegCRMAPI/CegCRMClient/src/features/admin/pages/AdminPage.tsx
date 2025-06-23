@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUsers, useCreateUser, useUpdateUser, useDeleteUser, User, CreateUserData, UpdateUserData } from "@/features/hooks/useUserApi";
+import { useUsers, useCreateUser, useUpdateUser, useDeleteUser, useResetUserPassword, User, CreateUserData, UpdateUserData } from "@/features/hooks/useUserApi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -21,11 +21,15 @@ export function AdminPage() {
   const [roleFilter, setRoleFilter] = useState("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [userToEdit, setUserToEdit] = useState<User | null>(null);
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [userToReset, setUserToReset] = useState<User | null>(null);
+  const [resetPassword, setResetPassword] = useState("");
 
   const { data: users = [], isLoading } = useUsers();
   const createUser = useCreateUser();
   const updateUser = useUpdateUser();
   const deleteUser = useDeleteUser();
+  const resetUserPassword = useResetUserPassword();
 
   const [newUser, setNewUser] = useState<CreateUserData>({
     email: "",
@@ -94,6 +98,19 @@ export function AdminPage() {
       }
     } catch (error) {
       toast.error("Failed to delete user");
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!userToReset) return;
+    try {
+      await resetUserPassword.mutateAsync({ email: userToReset.email, newPassword: resetPassword });
+      setIsResetModalOpen(false);
+      setUserToReset(null);
+      setResetPassword("");
+      toast.success("Password reset successfully");
+    } catch (error) {
+      toast.error("Failed to reset password");
     }
   };
 
@@ -182,6 +199,15 @@ export function AdminPage() {
                     }}
                   >
                     Edit
+                  </Button>
+                  <Button variant="secondary" size="sm" className="mr-2"
+                    onClick={() => {
+                      setUserToReset(user);
+                      setIsResetModalOpen(true);
+                      setResetPassword("");
+                    }}
+                  >
+                    Reset Password
                   </Button>
                   <Button variant="destructive" size="sm"
                     onClick={() => handleDeleteUser(user.id)}
@@ -346,6 +372,50 @@ export function AdminPage() {
                 </Button>
               </div>
             </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Reset Password Modal */}
+      <Dialog open={isResetModalOpen} onOpenChange={setIsResetModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reset Password</DialogTitle>
+          </DialogHeader>
+          {userToReset && (
+            <form onSubmit={e => { e.preventDefault(); handleResetPassword(); }} className="space-y-4">
+              <div className="grid gap-2">
+                <Label htmlFor="resetEmail">Email</Label>
+                <Input id="resetEmail" value={userToReset.email} disabled />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="resetPassword">New Password</Label>
+                <Input
+                  id="resetPassword"
+                  type="password"
+                  value={resetPassword}
+                  onChange={e => setResetPassword(e.target.value)}
+                  required
+                  placeholder="Enter new password"
+                />
+              </div>
+              <div className="flex justify-end space-x-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsResetModalOpen(false)}
+                  disabled={resetUserPassword.isPending}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={resetUserPassword.isPending || !resetPassword}
+                >
+                  {resetUserPassword.isPending ? "Resetting..." : "Reset Password"}
+                </Button>
+              </div>
+            </form>
           )}
         </DialogContent>
       </Dialog>

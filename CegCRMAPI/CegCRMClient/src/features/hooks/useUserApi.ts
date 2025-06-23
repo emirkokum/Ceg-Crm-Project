@@ -77,4 +77,17 @@ export const useDeleteUser = () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });
+};
+
+export const useResetUserPassword = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ email, newPassword }: { email: string; newPassword: string }) => {
+      const response = await API.post("/Auth/admin-reset-password", { email, newPassword });
+      return response.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
 }; 
