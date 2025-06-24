@@ -44,5 +44,20 @@ namespace CegCRMAPI.Application.Services.Ai
 
             return true;
         }
+
+        public async Task<string> GetAllDocumentsAsync()
+        {
+            var response = await _httpClient.GetAsync("http://localhost:8000/documents");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<string> DeleteDocumentByFileNameAsync(string fileName)
+        {
+            var response = await _httpClient.DeleteAsync($"http://localhost:8000/documents/{fileName}");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+        }
+
     }
 }

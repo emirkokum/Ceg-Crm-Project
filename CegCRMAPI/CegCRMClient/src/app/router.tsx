@@ -17,12 +17,12 @@ import {
   MessageSquare,
   Settings,
   PlusCircle,
-  type LucideIcon
+  type LucideIcon,
+  FileText
 } from "lucide-react";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Navigate } from "react-router-dom";
 
-// Import other page components
 import CustomersPage from "@/features/customers/pages/CustomersPage";
 import { LeadsPage } from "@/features/leads/pages/LeadsPage";
 import { SalesPage } from "@/features/sales/pages/SalesPage";
@@ -33,6 +33,7 @@ import InteractionsPage from "@/features/interactions/pages/InteractionsPage";
 import CustomerDetailsPage from "@/features/customers/pages/CustomerDetailsPage";
 import { ProductsPage } from "@/features/products/pages/ProductsPage";
 import { EmployeesPage } from "@/features/employees/pages/EmployeesPage";
+import UploadDocumentation from "@/features/admin/pages/UploadDocumentation";
 
 interface NavigationItem {
   title: string;
@@ -106,6 +107,12 @@ export const navigationItems: NavigationItem[] = [
     title: "Products",
     url: "/products",
     icon: ShoppingCart,
+    allowedRoles: ["Admin", "Manager"],
+  },
+  {
+    title: "Upload Documentation",
+    url: "/upload-documentation",
+    icon: FileText,
     allowedRoles: ["Admin", "Manager"],
   },
 ];
@@ -220,6 +227,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={["Admin", "Manager"]}>
             <ProductsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "upload-documentation",
+        element: (
+          <ProtectedRoute allowedRoles={["Admin", "Manager"]}>
+            <UploadDocumentation />
           </ProtectedRoute>
         ),
       },

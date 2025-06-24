@@ -20,13 +20,14 @@ namespace CegCRMAPI.API.Controllers
         }
 
         [HttpPost("upload-doc")]
+        [Authorize(Roles = "Admin")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UploadKnowledgeBase([FromForm] FileUploadDto request)
         {
             var file = request.File;
 
             if (file == null || file.Length == 0)
-                return BadRequest("Geçerli bir dosya yüklenmedi.");
+                return BadRequest("File is empty or null.");
 
             using var stream = file.OpenReadStream();
             var result = await _aiService.UploadKnowledgeBaseAsync(stream, file.FileName);
@@ -35,5 +36,36 @@ namespace CegCRMAPI.API.Controllers
                 ? Ok("Dosya başarıyla yüklendi.")
                 : StatusCode(500, "AI servisine dosya gönderilirken bir hata oluştu.");
         }
+
+        [HttpGet("documents")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllDocuments()
+        {
+            try
+            {
+                var result = await _aiService.GetAllDocumentsAsync();
+                return Content(result, "application/json");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error fetching documents: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("documents/{fileName}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteDocumentByFileName(string fileName)
+        {
+            try
+            {
+                var result = await _aiService.DeleteDocumentByFileNameAsync(fileName);
+                return Content(result, "application/json");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error deleting document: {ex.Message}");
+            }
+        }
+
     }
 }

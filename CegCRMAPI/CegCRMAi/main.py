@@ -1,6 +1,7 @@
 import os
 from typing import Any
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlmodel import SQLModel, Field, create_engine, Session
@@ -84,9 +85,13 @@ async def upload(file: UploadFile = File(...)):
     splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     chunks = splitter.split_text(text)
 
+    metadatas = [{"source_file": file.filename} for _ in chunks]
+
     with Session(engine) as session:
-        vectorstore.add_texts(texts=chunks)
-    return {"chunks": len(chunks), "status": "indexed"}
+        vectorstore.add_texts(texts=chunks, metadatas=metadatas)
+
+    return {"chunks": len(chunks), "status": "indexed", "source_file": file.filename}
+
 
 class PredictRequest(BaseModel):
     text: str
@@ -99,19 +104,47 @@ async def predict(request: PredictRequest):
     result = qa_chain.invoke({"question": request.text, "chat_history": []})
     return PredictResponse(suggestion=result["answer"])
 
-@app.delete("/delete-all-docs")
-def delete_all_docs():
-    with engine.connect() as connection:
-        result = connection.execute(
-            sa_text("SELECT id FROM langchain_pg_collection WHERE name = 'docchunk'")
-        ).fetchone()
 
-        if not result:
-            return {"status": "no collection found"}
+@app.get("/documents")
+def list_documents():
+    with engine.connect() as conn:
+        result = conn.execute(sa_text("""
+            SELECT 
+                cmetadata->>'source_file' AS file_name,
+                MIN(created_at) AS first_uploaded,
+                COUNT(*) AS chunk_count
+            FROM langchain_pg_embedding
+            WHERE cmetadata->>'source_file' IS NOT NULL
+            GROUP BY cmetadata->>'source_file'
+            ORDER BY first_uploaded DESC
+        """)).fetchall()
 
-        cid = result[0]
-        connection.execute(sa_text("DELETE FROM langchain_pg_embedding WHERE collection_id = :cid"), {"cid": cid})
-        connection.execute(sa_text("DELETE FROM langchain_pg_collection WHERE id = :cid"), {"cid": cid})
-        connection.commit()
+    return {
+        "documents": [
+            {
+                "file_name": row[0],
+                "uploaded_at": row[1].isoformat() if row[1] else None,
+                "chunk_count": row[2]
+            }
+            for row in result
+        ]
+    }
 
-    return {"status": "all embeddings and collection deleted"}
+@app.delete("/documents/{file_name}")
+def delete_document_by_file_name(file_name: str):
+    with engine.connect() as conn:
+        check = conn.execute(sa_text("""
+            SELECT COUNT(*) FROM langchain_pg_embedding
+            WHERE cmetadata->>'source_file' = :file_name
+        """), {"file_name": file_name}).scalar()
+
+        if check == 0:
+            raise HTTPException(status_code=404, detail="No document found with the given file name.")
+
+        conn.execute(sa_text("""
+            DELETE FROM langchain_pg_embedding
+            WHERE cmetadata->>'source_file' = :file_name
+        """), {"file_name": file_name})
+        conn.commit()
+
+        return {"status": f"All embeddings for '{file_name}' have been deleted."}

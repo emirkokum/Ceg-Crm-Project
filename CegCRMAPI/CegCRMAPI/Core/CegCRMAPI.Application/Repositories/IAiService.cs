@@ -4,5 +4,7 @@ namespace CegCRMAPI.Application.Interfaces.Services
     {
         Task<string> GetSolutionAsync(string ticketDescription);
         Task<bool> UploadKnowledgeBaseAsync(Stream fileStream, string fileName);
+        Task<string> GetAllDocumentsAsync();
+        Task<string> DeleteDocumentByFileNameAsync(string fileName);
     }
 }
