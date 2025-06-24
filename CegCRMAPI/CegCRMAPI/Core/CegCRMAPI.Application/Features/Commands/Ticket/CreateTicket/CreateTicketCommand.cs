@@ -5,6 +5,8 @@ using CegCRMAPI.Domain.Entities;
 using CegCRMAPI.Application.Repositories;
 using MediatR;
 using CegCRMAPI.Application.Interfaces.Services;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace CegCRMAPI.Application.Features.Commands.Tickets.CreateTicket;
 
@@ -23,28 +25,39 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, A
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IAiService _aiService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ICustomerRepository _customerRepository;
 
     public CreateTicketCommandHandler(
         ITicketRepository ticketRepository,
         IUnitOfWork unitOfWork,
         IMapper mapper,
-        IAiService aiService)
+        IAiService aiService,
+        IHttpContextAccessor httpContextAccessor,
+        ICustomerRepository customerRepository )
     {
         _ticketRepository = ticketRepository;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _aiService = aiService;
+        _httpContextAccessor = httpContextAccessor;
+        _customerRepository = customerRepository;
     }
 
     public async Task<ApiResponse<TicketDto>> Handle(CreateTicketCommand request, CancellationToken cancellationToken)
     {
         try
         {
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrWhiteSpace(userId))
+                return ApiResponse<TicketDto>.CreateError("Unauthorized");
+
+
             var aiSuggestion = await _aiService.GetSolutionAsync(request.Description);
 
             var ticket = new Domain.Entities.Ticket
             {
-                CustomerId = request.CustomerId,
+                UserId = Guid.Parse(userId),
                 Description = request.Description,
                 AiSuggestedSolution = aiSuggestion,
                 FinalSolution = aiSuggestion,

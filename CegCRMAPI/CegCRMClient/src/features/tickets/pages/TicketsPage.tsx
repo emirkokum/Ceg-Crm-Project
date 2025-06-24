@@ -20,31 +20,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCustomers } from "@/features/hooks/userCustomerApi";
 import { useEmployees } from "@/features/hooks/useEmployeeApi";
 import { Skeleton } from "@/components/ui/skeleton";
-import SearchableSelect from "@/components/SearchableSelect";
 import { Ticket } from "@/types/ticket";
-import { Customer } from "@/types/customer";
 import { TicketStatus } from "@/constants/enums";
 import { EnumSelect } from "@/components/EnumSelect";
 
 const ticketStatusOptions = [
   { value: TicketStatus.Open, label: "Open" },
-  { value: TicketStatus.ResolvedByAI, label: "Resolved" },
-  { value: TicketStatus.AssignedToEmployee, label: "Assigned" },
+  { value: TicketStatus.ResolvedByAI, label: "Resolved by AI" },
+  { value: TicketStatus.AssignedToEmployee, label: "Assigned to Employee" },
   { value: TicketStatus.Closed, label: "Closed" },
 ];
 
 export default function TicketsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [formData, setFormData] = useState<{
-    customerId: string;
     assignedEmployeeId: string | null;
     status: number;
     description: string;
   }>({
-    customerId: "",
     assignedEmployeeId: null,
     status: TicketStatus.Open,
     description: "",
@@ -53,7 +48,6 @@ export default function TicketsPage() {
   const [statusFilter, setStatusFilter] = useState<number | null>(null);
 
   const { data: tickets = [], isLoading } = useTickets();
-  const { data: customers = [], isLoading: isLoadingCustomers } = useCustomers();
   const { data: employees = [], isLoading: isLoadingEmployees } = useEmployees();
   const createTicket = useCreateTicket();
 
@@ -71,11 +65,12 @@ export default function TicketsPage() {
 
   const handleSubmit = async () => {
     try {
-      await createTicket.mutateAsync(formData);
+      await createTicket.mutateAsync({
+        description: formData.description,
+      });
       toast.success("Ticket created successfully");
       setIsCreateModalOpen(false);
       setFormData({
-        customerId: "",
         assignedEmployeeId: null,
         status: TicketStatus.Open,
         description: "",
@@ -85,7 +80,7 @@ export default function TicketsPage() {
     }
   };
 
-  if (isLoading || isLoadingCustomers || isLoadingEmployees) {
+  if (isLoading || isLoadingEmployees) {
     return (
       <div className="container mx-auto py-10">
         <div className="flex justify-between items-center mb-6">
@@ -104,6 +99,17 @@ export default function TicketsPage() {
 
   const filteredTickets = tickets.filter((ticket: Ticket) => {
     if (statusFilter === null) return true;
+    
+    if (typeof ticket.status === 'string') {
+      const statusMap: { [key: number]: string } = {
+        [TicketStatus.Open]: 'Open',
+        [TicketStatus.ResolvedByAI]: 'ResolvedByAI',
+        [TicketStatus.AssignedToEmployee]: 'AssignedToEmployee',
+        [TicketStatus.Closed]: 'Closed'
+      };
+      return statusMap[statusFilter] === ticket.status;
+    }
+    
     return ticket.status === statusFilter;
   });
 
@@ -140,23 +146,6 @@ export default function TicketsPage() {
 
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2">
-                <label className="text-sm font-medium">Customer</label>
-                <SearchableSelect
-                  options={customers.map((c: Customer) => ({
-                    value: c.id,
-                    label: `${c.firstName} ${c.lastName}`,
-                  }))}
-                  value={formData.customerId}
-                  onChange={(val) =>
-                    setFormData((f) => ({ ...f, customerId: val }))
-                  }
-                  placeholder="Select customer"
-                  emptyText="No customer matched."
-                  searchable={true}
-                />
-              </div>
-
               <div>
                 <label className="text-sm font-medium">Status</label>
                 <EnumSelect

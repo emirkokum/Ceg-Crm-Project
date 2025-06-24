@@ -18,7 +18,7 @@ namespace CegCRMAPI.Infrastructure.Repositories
         public async Task<List<Ticket>> GetByCustomerIdAsync(Guid customerId, CancellationToken cancellationToken = default)
         {
             return await _context.Tickets
-                .Where(t => t.CustomerId == customerId)
+                .Where(t => t.UserId == customerId)
                 .ToListAsync(cancellationToken);
         }
     }

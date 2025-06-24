@@ -10,7 +10,7 @@ namespace CegCRMAPI.Domain.Entities
 {
     public class Ticket : BaseEntity
     {
-        public Guid CustomerId { get; set; }
+        public Guid UserId { get; set; }
         public Guid? AssignedEmployeeId { get; set; }
         public TicketStatus Status { get; set; } = TicketStatus.Open;
         public string Description { get; set; } = string.Empty;
@@ -18,7 +18,7 @@ namespace CegCRMAPI.Domain.Entities
         public string? FinalSolution { get; set; }
 
         // Navigation
-        public Customer Customer { get; set; } = null!;
+        public User User { get; set; } = null!;
         public Employee? AssignedEmployee { get; set; }
     }
 

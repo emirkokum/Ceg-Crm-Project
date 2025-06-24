@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ColumnDef,
   flexRender,
@@ -17,7 +18,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Ticket } from "@/types/ticket";
-import { Employee } from "@/types/employee";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,15 +49,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEmployees } from "@/features/hooks/useEmployeeApi";
-import { useCustomers } from "@/features/hooks/userCustomerApi";
+import { useUsers } from "@/features/hooks/useUserApi";
 import { Badge } from "@/components/ui/badge";
 import { TicketStatus } from "@/constants/enums";
 import { EnumSelect } from "@/components/EnumSelect";
 
 const ticketStatusOptions = [
   { value: TicketStatus.Open, label: "Open" },
-  { value: TicketStatus.ResolvedByAI, label: "Resolved" },
-  { value: TicketStatus.AssignedToEmployee, label: "Assigned" },
+  { value: TicketStatus.ResolvedByAI, label: "Resolved by AI" },
+  { value: TicketStatus.AssignedToEmployee, label: "Assigned to Employee" },
   { value: TicketStatus.Closed, label: "Closed" },
 ];
 
@@ -66,13 +66,13 @@ interface TicketTableProps {
 }
 
 interface UpdateFormData {
-  customerId: string;
   assignedEmployeeId: string | null;
   status: number;
   description: string;
 }
 
 export default function TicketTable({ data }: TicketTableProps) {
+  const navigate = useNavigate();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -81,14 +81,13 @@ export default function TicketTable({ data }: TicketTableProps) {
   const [selectedTicketForInspect, setSelectedTicketForInspect] =
     useState<Ticket | null>(null);
   const [formData, setFormData] = useState<UpdateFormData>({
-    customerId: "",
     assignedEmployeeId: null,
     status: TicketStatus.Open,
     description: "",
   });
 
   const { data: employees = [] } = useEmployees();
-  const { data: customers = [] } = useCustomers();
+  const { data: users = [] } = useUsers();
   const updateTicket = useUpdateTicket();
   const deleteTicket = useDeleteTicket();
   const assignTicket = useAssignTicket();
@@ -97,9 +96,12 @@ export default function TicketTable({ data }: TicketTableProps) {
   const handleUpdate = (ticket: Ticket) => {
     setSelectedTicket(ticket);
     setFormData({
-      customerId: ticket.customerId,
       assignedEmployeeId: ticket.assignedEmployeeId,
-      status: ticket.status,
+      status: typeof ticket.status === 'string' ? 
+        (ticket.status === 'Open' ? TicketStatus.Open :
+         ticket.status === 'ResolvedByAI' ? TicketStatus.ResolvedByAI :
+         ticket.status === 'AssignedToEmployee' ? TicketStatus.AssignedToEmployee :
+         ticket.status === 'Closed' ? TicketStatus.Closed : TicketStatus.Open) : ticket.status,
       description: ticket.description,
     });
     setIsUpdateModalOpen(true);
@@ -123,8 +125,7 @@ export default function TicketTable({ data }: TicketTableProps) {
   };
 
   const handleInspectClick = (ticket: Ticket) => {
-    setSelectedTicketForInspect(ticket);
-    setIsInspectModalOpen(true);
+    navigate(`/tickets/${ticket.id}`);
   };
 
   const handleFormChange = (
@@ -146,12 +147,9 @@ export default function TicketTable({ data }: TicketTableProps) {
       await updateTicket.mutateAsync({
         id: selectedTicket.id,
         data: {
-          customerId: formData.customerId,
           assignedEmployeeId: formData.assignedEmployeeId,
           status: formData.status,
           description: formData.description,
-          createdAt: selectedTicket.createdAt,
-          updatedAt: selectedTicket.updatedAt,
         },
       });
       toast.success("Ticket updated successfully");
@@ -206,9 +204,9 @@ export default function TicketTable({ data }: TicketTableProps) {
         case 'Open':
           return "Open";
         case 'ResolvedByAI':
-          return "Resolved";
+          return "Resolved by AI";
         case 'AssignedToEmployee':
-          return "Assigned";
+          return "Assigned to Employee";
         case 'Closed':
           return "Closed";
         default:
@@ -220,9 +218,9 @@ export default function TicketTable({ data }: TicketTableProps) {
       case TicketStatus.Open:
         return "Open";
       case TicketStatus.ResolvedByAI:
-        return "Resolved";
+        return "Resolved by AI";
       case TicketStatus.AssignedToEmployee:
-        return "Assigned";
+        return "Assigned to Employee";
       case TicketStatus.Closed:
         return "Closed";
       default:
@@ -255,7 +253,7 @@ export default function TicketTable({ data }: TicketTableProps) {
         );
       },
       cell: ({ row }) => {
-        const status = row.getValue("status") as number;
+        const status = row.getValue("status") as number | string;
         const ticket = row.original;
         return (
           <DropdownMenu>
@@ -281,6 +279,30 @@ export default function TicketTable({ data }: TicketTableProps) {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+        );
+      },
+    },
+    {
+      accessorKey: "userId",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="px-0 pt-0 pb-0"
+          >
+            User
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        const userId = row.getValue("userId") as string;
+        const user = users.find(u => u.id === userId);
+        return (
+          <span>
+            {user ? `${user.firstName} ${user.lastName}` : 'Unknown User'}
+          </span>
         );
       },
     },
@@ -534,6 +556,22 @@ export default function TicketTable({ data }: TicketTableProps) {
                   {selectedTicketForInspect.description}
                 </div>
               </div>
+              {selectedTicketForInspect.aiSuggestedSolution && (
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <label className="text-right font-medium">AI Solution</label>
+                  <div className="col-span-3">
+                    {selectedTicketForInspect.aiSuggestedSolution}
+                  </div>
+                </div>
+              )}
+              {selectedTicketForInspect.finalSolution && (
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <label className="text-right font-medium">Final Solution</label>
+                  <div className="col-span-3">
+                    {selectedTicketForInspect.finalSolution}
+                  </div>
+                </div>
+              )}
               <div className="grid grid-cols-4 items-center gap-4">
                 <label className="text-right font-medium">Assigned Employee</label>
                 <div className="col-span-3">

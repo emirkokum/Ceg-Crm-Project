@@ -14,6 +14,8 @@ using CegCRMAPI.Application.Features.Commands.Tickets.AssignTicketToEmployee;
 using CegCRMAPI.Application.Features.Commands.Ticket;
 using CegCRMAPI.Application.Features.Commands.Tickets.ChangeTicketStatus;
 using CegCRMAPI.Application.Features.Queries.Ticket.GetTicketsByCustomers;
+using CegCRMAPI.Application.Features.Commands.Ticket.AssignTicketToRandomEmployee;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CegCRMAPI.API.Controllers
 {
@@ -109,5 +111,14 @@ namespace CegCRMAPI.API.Controllers
             return Ok(result);
         }
 
+        [HttpPost("{ticketId}/assign-random-employee")]
+        public async Task<IActionResult> AssignRandomEmployee(Guid ticketId)
+        {
+            var result = await _mediator.Send(new AssignTicketToRandomEmployeeCommand(ticketId));
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
     }
 } 

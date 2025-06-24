@@ -1,21 +1,26 @@
 export interface Ticket {
   id: string;
-  customerId: string;
+  userId: string;
   assignedEmployeeId: string | null;
-  status: number;
+  status: number | string;
   description: string;
+  aiSuggestedSolution?: string;
+  finalSolution?: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface CreateTicket {
-  customerId: string;
-  assignedEmployeeId: string | null;
-  status: number;
   description: string;
 }
 
 export interface UpdateTicket {
   id: string;
-  data: Partial<CreateTicket>;
+  data: Partial<{
+    assignedEmployeeId: string | null;
+    status: number | string;
+    description: string;
+    aiSuggestedSolution?: string;
+    finalSolution?: string;
+  }>;
 } 

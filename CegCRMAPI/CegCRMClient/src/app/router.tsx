@@ -28,6 +28,7 @@ import { LeadsPage } from "@/features/leads/pages/LeadsPage";
 import { SalesPage } from "@/features/sales/pages/SalesPage";
 import TicketsPage from "@/features/tickets/pages/TicketsPage";
 import CreateTicketPage from "@/features/tickets/pages/CreateTicketPage";
+import TicketDetailPage from "@/features/tickets/pages/TicketDetailPage";
 import TasksPage from "@/features/tasks/pages/TasksPage";
 import InteractionsPage from "@/features/interactions/pages/InteractionsPage";
 import CustomerDetailsPage from "@/features/customers/pages/CustomerDetailsPage";
@@ -195,6 +196,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={["Admin", "Manager", "Support"]}>
             <TicketsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "tickets/:ticketId",
+        element: (
+          <ProtectedRoute allowedRoles={["Admin", "Manager", "Support", "Customer"]}>
+            <TicketDetailPage />
           </ProtectedRoute>
         ),
       },

@@ -3,6 +3,7 @@ using System;
 using CegCRMAPI.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CegCRMAPI.Persistence.Migrations
 {
     [DbContext(typeof(CegCrmDbContext))]
-    partial class CegCrmDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250624220939_TicketChanged")]
+    partial class TicketChanged
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -7,8 +7,10 @@ import {
   deleteTicket,
   assignTicket,
   updateTicketStatus,
+  getTicketsByCustomer,
+  assignRandomEmployee,
 } from "@/api/ticket";
-import { Ticket, CreateTicket, TicketStatus } from "@/types/ticket";
+import { Ticket, CreateTicket, UpdateTicket } from "@/types/ticket";
 
 export const useTickets = () => {
   return useQuery({
@@ -52,7 +54,7 @@ export const useUpdateTicket = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Omit<Ticket, "id"> }) =>
+    mutationFn: ({ id, data }: { id: string; data: UpdateTicket["data"] }) =>
       updateTicket(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tickets"] });
@@ -83,12 +85,37 @@ export const useAssignTicket = () => {
   });
 };
 
+export const useTicketsByCustomer = (customerId: string) => {
+  return useQuery({
+    queryKey: ["tickets-by-customer", customerId],
+    queryFn: async () => {
+      const response = await getTicketsByCustomer(customerId);
+      if (response?.data?.data && Array.isArray(response.data.data)) {
+        return response.data.data as Ticket[];
+      }
+      return [];
+    },
+    enabled: !!customerId,
+  });
+};
+
 export const useUpdateTicketStatus = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ ticketId, newStatus }: { ticketId: string; newStatus: TicketStatus }) =>
+    mutationFn: ({ ticketId, newStatus }: { ticketId: string; newStatus: number }) =>
       updateTicketStatus(ticketId, newStatus),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tickets"] });
+    },
+  });
+};
+
+export const useAssignRandomEmployee = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: assignRandomEmployee,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tickets"] });
     },
