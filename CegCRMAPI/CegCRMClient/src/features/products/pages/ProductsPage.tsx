@@ -4,12 +4,14 @@ import { Product, CreateProduct, UpdateProduct } from "@/types/product";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Plus, Edit, Trash2} from "lucide-react";
+import { Plus, Edit, Trash2, Search } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
+import { Card, CardContent } from "@/components/ui/card";
+import { Package } from "lucide-react";
 
 export function ProductsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -114,7 +116,7 @@ export function ProductsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="space-y-6 p-6">
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
           <Skeleton className="w-full md:w-1/2 h-10" />
           <Skeleton className="w-32 h-10" />
@@ -130,76 +132,95 @@ export function ProductsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Products</h1>
-        <Button onClick={() => setIsCreateModalOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Product
-        </Button>
+    <div className="space-y-6 p-6">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex items-center gap-2">
+          <Package className="h-6 w-6" />
+          <h1 className="text-2xl font-bold">Products</h1>
+        </div>
+        <div className="flex gap-2">
+          <Button onClick={() => setIsCreateModalOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            New Product
+          </Button>
+        </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between mb-4">
-        <Input
-          placeholder="Search products..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full md:w-1/2"
-        />
-      </div>
+      {/* Search Bar */}
+      <Card>
+        <CardContent className="px-10 py-5">
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between mb-4">
+            <div className="relative w-full md:w-1/2">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-      <div className="border rounded-lg">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b">
-              <th className="text-left p-4">Name</th>
-              <th className="text-left p-4">Description</th>
-              <th className="text-left p-4">Price</th>
-              <th className="text-left p-4">Stock</th>
-              <th className="text-left p-4">Status</th>
-              <th className="text-left p-4">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredProducts.map((product) => (
-              <tr key={product.id} className="border-b">
-                <td className="p-4 font-medium">{product.name}</td>
-                <td className="p-4 text-sm text-muted-foreground max-w-xs truncate">
-                  {product.description}
-                </td>
-                <td className="p-4">${product.price.toFixed(2)}</td>
-                <td className="p-4">{product.stockQuantity}</td>
-                <td className="p-4">
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    product.isActive 
-                      ? "bg-green-100 text-green-800" 
-                      : "bg-red-100 text-red-800"
-                  }`}>
-                    {product.isActive ? "Active" : "Inactive"}
-                  </span>
-                </td>
-                <td className="p-4">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="mr-2"
-                    onClick={() => openEditModal(product)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button 
-                    variant="destructive" 
-                    size="sm"
-                    onClick={() => openDeleteDialog(product)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {/* Product Table */}
+      <Card>
+        <CardContent className="px-10 py-5">
+          <div className="border rounded-lg overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left p-4">Name</th>
+                  <th className="text-left p-4">Description</th>
+                  <th className="text-left p-4">Price</th>
+                  <th className="text-left p-4">Stock</th>
+                  <th className="text-left p-4">Status</th>
+                  <th className="text-left p-4">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredProducts.map((product) => (
+                  <tr key={product.id} className="border-b">
+                    <td className="p-4 font-medium">{product.name}</td>
+                    <td className="p-4 text-sm text-muted-foreground max-w-xs truncate">
+                      {product.description}
+                    </td>
+                    <td className="p-4">${product.price.toFixed(2)}</td>
+                    <td className="p-4">{product.stockQuantity}</td>
+                    <td className="p-4">
+                      <span className={`px-2 py-1 rounded-full text-xs ${
+                        product.isActive 
+                          ? "bg-green-100 text-green-800" 
+                          : "bg-red-100 text-red-800"
+                      }`}>
+                        {product.isActive ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="mr-2"
+                        onClick={() => openEditModal(product)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        variant="destructive" 
+                        size="sm"
+                        onClick={() => openDeleteDialog(product)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Create Product Modal */}
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>

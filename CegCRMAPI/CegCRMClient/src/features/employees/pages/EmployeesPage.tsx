@@ -17,6 +17,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AddEmployeeModal } from "../components/AddEmployeeModal";
 import DateTimePicker from '@/components/DateTimePicker';
 import { cn } from "@/lib/utils";
+import { Users as UsersIcon, Search } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 const noSpinnerClass = "appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
@@ -86,7 +88,7 @@ export function EmployeesPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="space-y-6 p-6">
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
           <Skeleton className="w-full md:w-1/2 h-10" />
           <Skeleton className="w-32 h-10" />
@@ -102,95 +104,116 @@ export function EmployeesPage() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Employees</h1>
-        <AddEmployeeModal onSuccess={refetch} />
+    <div className="space-y-6 p-6">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex items-center gap-2">
+          <UsersIcon className="h-6 w-6" />
+          <h1 className="text-2xl font-bold">Employees</h1>
+        </div>
+        <div className="flex gap-2">
+          <AddEmployeeModal onSuccess={refetch} />
+        </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between mb-4">
-        <Input
-          placeholder="Search employees..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full md:w-1/2"
-        />
-        <Select
-          onValueChange={(val) => setRoleFilter(val === "all" ? "" : val)}
-          value={roleFilter || "all"}
-        >
-          <SelectTrigger className="w-full md:w-48">
-            <SelectValue placeholder="Select role" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Roles</SelectItem>
-            <SelectItem value="Admin">Admin</SelectItem>
-            <SelectItem value="Manager">Manager</SelectItem>
-            <SelectItem value="Employee">Employee</SelectItem>
-            <SelectItem value="SalesPerson">Sales Person</SelectItem>
-            <SelectItem value="Support">Support</SelectItem>
-            <SelectItem value="Customer">Customer</SelectItem>
-            <SelectItem value="BaseUser">Base User</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      {/* Search & Filter Bar */}
+      <Card>
+        <CardContent className="px-10 py-5">
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between mb-4">
+            <div className="relative w-full md:w-1/2">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search employees..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <div className="w-full md:w-48">
+              <Select
+                onValueChange={(val) => setRoleFilter(val === "all" ? "" : val)}
+                value={roleFilter || "all"}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Roles</SelectItem>
+                  <SelectItem value="Admin">Admin</SelectItem>
+                  <SelectItem value="Manager">Manager</SelectItem>
+                  <SelectItem value="Employee">Employee</SelectItem>
+                  <SelectItem value="SalesPerson">Sales Person</SelectItem>
+                  <SelectItem value="Support">Support</SelectItem>
+                  <SelectItem value="Customer">Customer</SelectItem>
+                  <SelectItem value="BaseUser">Base User</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-      <div className="border rounded-lg">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b">
-              <th className="text-left p-4">Name</th>
-              <th className="text-left p-4">Email</th>
-              <th className="text-left p-4">Role</th>
-              <th className="text-left p-4">Employee Number</th>
-              <th className="text-left p-4">Hire Date</th>
-              <th className="text-left p-4">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredEmployees.map((employee) => (
-              <tr key={employee.id} className="border-b">
-                <td className="p-4">{`${employee.user?.firstName || ""} ${employee.user?.lastName || ""}`}</td>
-                <td className="p-4">{employee.user?.email || "-"}</td>
-                <td className="p-4">{employee.user?.role || "-"}</td>
-                <td className="p-4">{employee.employeeNumber || "-"}</td>
-                <td className="p-4">{employee.hireDate ? new Date(employee.hireDate).toLocaleDateString() : "-"}</td>
-                <td className="p-4">
-                  <Button variant="outline" size="sm" className="mr-2"
-                    onClick={() => {
-                      setEmployeeToEdit(employee);
-                      setIsEditModalOpen(true);
-                      setEditedEmployee({
-                        id: employee.id,
-                        hireDate: employee.hireDate ? employee.hireDate.split('T')[0] : '',
-                        workEmail: employee.workEmail || "",
-                        workPhone: employee.workPhone || "",
-                        annualLeaveDays: employee.annualLeaveDays,
-                        usedLeaveDays: employee.usedLeaveDays,
-                        performanceScore: employee.performanceScore,
-                        emergencyContact: employee.emergencyContact || "",
-                        emergencyPhone: employee.emergencyPhone || "",
-                        bankAccount: employee.bankAccount || "",
-                        taxNumber: employee.taxNumber || "",
-                      });
-                    }}
-                  >
-                    Edit
-                  </Button>
-                  <Button variant="destructive" size="sm"
-                    onClick={() => {
-                      setEmployeeToDelete(employee);
-                      setIsDeleteModalOpen(true);
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {/* Employee Table */}
+      <Card>
+        <CardContent className="px-10 py-5">
+          <div className="border rounded-lg overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left p-4">Name</th>
+                  <th className="text-left p-4">Email</th>
+                  <th className="text-left p-4">Role</th>
+                  <th className="text-left p-4">Employee Number</th>
+                  <th className="text-left p-4">Hire Date</th>
+                  <th className="text-left p-4">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredEmployees.map((employee) => (
+                  <tr key={employee.id} className="border-b">
+                    <td className="p-4">{`${employee.user?.firstName || ""} ${employee.user?.lastName || ""}`}</td>
+                    <td className="p-4">{employee.user?.email || "-"}</td>
+                    <td className="p-4">{employee.user?.role || "-"}</td>
+                    <td className="p-4">{employee.employeeNumber || "-"}</td>
+                    <td className="p-4">{employee.hireDate ? new Date(employee.hireDate).toLocaleDateString() : "-"}</td>
+                    <td className="p-4">
+                      <Button variant="outline" size="sm" className="mr-2"
+                        onClick={() => {
+                          setEmployeeToEdit(employee);
+                          setIsEditModalOpen(true);
+                          setEditedEmployee({
+                            id: employee.id,
+                            hireDate: employee.hireDate ? employee.hireDate.split('T')[0] : '',
+                            workEmail: employee.workEmail || "",
+                            workPhone: employee.workPhone || "",
+                            annualLeaveDays: employee.annualLeaveDays,
+                            usedLeaveDays: employee.usedLeaveDays,
+                            performanceScore: employee.performanceScore,
+                            emergencyContact: employee.emergencyContact || "",
+                            emergencyPhone: employee.emergencyPhone || "",
+                            bankAccount: employee.bankAccount || "",
+                            taxNumber: employee.taxNumber || "",
+                          });
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button variant="destructive" size="sm"
+                        onClick={() => {
+                          setEmployeeToDelete(employee);
+                          setIsDeleteModalOpen(true);
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
 
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
         <DialogContent className="max-h-[90vh] overflow-y-auto">

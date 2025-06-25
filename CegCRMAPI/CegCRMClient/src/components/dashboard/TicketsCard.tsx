@@ -16,13 +16,7 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Ticket } from "@/types/ticket";
-
-const TicketStatus = {
-  Open: 1,
-  ResolvedByAI: 2,
-  AssignedToEmployee: 3,
-  Closed: 4,
-} as const;
+import { TicketStatus } from "@/constants/enums";
 
 interface TicketsCardProps {
   tickets: Ticket[];
@@ -38,15 +32,15 @@ export function TicketsCard({
   showResolutionRate = true,
 }: TicketsCardProps) {
   const openTickets = tickets.filter(
-    (ticket) => ticket.status === TicketStatus.Open
+    (ticket) => ticket.status === TicketStatus.Open || ticket.status === "Open"
   ).length;
 
   const resolvedTickets = tickets.filter(
-    (ticket) => ticket.status === TicketStatus.ResolvedByAI
+    (ticket) => ticket.status === TicketStatus.ResolvedByAI || ticket.status === "ResolvedByAI"
   ).length;
 
   const assignedTickets = tickets.filter(
-    (ticket) => ticket.status === TicketStatus.AssignedToEmployee
+    (ticket) => ticket.status === TicketStatus.AssignedToEmployee || ticket.status === "AssignedToEmployee"
   ).length;
 
   const totalTickets = tickets.length;

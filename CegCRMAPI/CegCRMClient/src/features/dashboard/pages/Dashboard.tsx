@@ -20,8 +20,8 @@ export default function Dashboard() {
           <div className="md:col-span-2 lg:col-span-1 2xl:col-span-1">
             <TicketsCard 
               tickets={tickets}
-              title="Destek Ticketları"
-              description="Ticket yönetimi genel bakış"
+              title="Tickets Overview"
+              description="Ticket management general view"
             />
           </div>
         )}

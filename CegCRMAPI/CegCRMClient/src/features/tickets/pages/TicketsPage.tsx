@@ -25,6 +25,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Ticket } from "@/types/ticket";
 import { TicketStatus } from "@/constants/enums";
 import { EnumSelect } from "@/components/EnumSelect";
+import { Ticket as TicketIcon } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 const ticketStatusOptions = [
   { value: TicketStatus.Open, label: "Open" },
@@ -82,10 +84,10 @@ export default function TicketsPage() {
 
   if (isLoading || isLoadingEmployees) {
     return (
-      <div className="container mx-auto py-10">
-        <div className="flex justify-between items-center mb-6">
-          <Skeleton className="h-8 w-32" />
-          <Skeleton className="h-10 w-32" />
+      <div className="space-y-6 p-6">
+        <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
+          <Skeleton className="w-full md:w-1/2 h-10" />
+          <Skeleton className="w-32 h-10" />
         </div>
         <div className="space-y-2">
           <Skeleton className="w-full h-10" />
@@ -114,28 +116,46 @@ export default function TicketsPage() {
   });
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Tickets</h1>
-        <Button onClick={() => setIsCreateModalOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Ticket
-        </Button>
+    <div className="space-y-6 p-6">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex items-center gap-2">
+          <TicketIcon className="h-6 w-6" />
+          <h1 className="text-2xl font-bold">Tickets</h1>
+        </div>
+        <div className="flex gap-2">
+          <Button onClick={() => setIsCreateModalOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            New Ticket
+          </Button>
+        </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between mb-4">
-        <EnumSelect
-          options={[
-            { value: 0, label: "All" },
-            ...ticketStatusOptions
-          ]}
-          value={statusFilter ?? 0}
-          onValueChange={(value) => setStatusFilter(value === 0 ? null : value)}
-          placeholder="Filter by status"
-        />
-      </div>
+      {/* Filter Bar */}
+      <Card>
+        <CardContent className="px-10 py-5">
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between mb-4">
+            <div className="relative w-full md:w-1/2">
+              <EnumSelect
+                options={[
+                  { value: 0, label: "All" },
+                  ...ticketStatusOptions
+                ]}
+                value={statusFilter ?? 0}
+                onValueChange={(value) => setStatusFilter(value === 0 ? null : value)}
+                placeholder="Filter by status"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-      <TicketTable data={filteredTickets} />
+      {/* Ticket Table */}
+      <Card>
+        <CardContent className="px-10 py-5">
+          <TicketTable data={filteredTickets} />
+        </CardContent>
+      </Card>
 
       {/* Create Modal */}
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
