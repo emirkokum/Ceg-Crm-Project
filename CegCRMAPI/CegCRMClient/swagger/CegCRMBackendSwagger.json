@@ -1,10 +1,79 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.0.4",
   "info": {
     "title": "CegCRMAPI.API",
     "version": "1.0"
   },
   "paths": {
+    "/api/Ai/upload-doc": {
+      "post": {
+        "tags": [
+          "Ai"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "File"
+                ],
+                "type": "object",
+                "properties": {
+                  "File": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "File": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Ai/documents": {
+      "get": {
+        "tags": [
+          "Ai"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Ai/documents/{fileName}": {
+      "delete": {
+        "tags": [
+          "Ai"
+        ],
+        "parameters": [
+          {
+            "name": "fileName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Auth/register": {
       "post": {
         "tags": [
@@ -31,7 +100,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "OK"
           }
         }
       }
@@ -62,7 +131,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "OK"
           }
         }
       }
@@ -74,7 +143,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "OK"
           }
         }
       },
@@ -103,7 +172,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "OK"
           }
         }
       }
@@ -125,7 +194,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "OK"
           }
         }
       }
@@ -137,7 +206,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -196,7 +265,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -234,7 +303,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -256,6 +325,37 @@
         }
       }
     },
+    "/api/Auth/admin-reset-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminResetUserPasswordCommand"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminResetUserPasswordCommand"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminResetUserPasswordCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/": {
       "get": {
         "tags": [
@@ -263,7 +363,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "OK"
           }
         }
       }
@@ -275,7 +375,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -321,7 +421,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -361,7 +461,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -418,7 +518,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -456,7 +556,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -485,7 +585,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -531,7 +631,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -571,7 +671,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -628,7 +728,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -666,7 +766,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -688,6 +788,35 @@
         }
       }
     },
+    "/api/Enums/customer-type": {
+      "get": {
+        "tags": [
+          "Enums"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnumDtoListApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnumDtoListApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnumDtoListApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Enums/lead-status": {
       "get": {
         "tags": [
@@ -695,7 +824,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -724,7 +853,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -753,7 +882,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -782,7 +911,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -811,7 +940,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -840,7 +969,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -869,7 +998,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -898,7 +1027,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -927,7 +1056,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -956,7 +1085,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1002,7 +1131,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1041,7 +1170,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1081,7 +1210,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1138,7 +1267,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1176,7 +1305,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1205,7 +1334,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1251,7 +1380,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1291,7 +1420,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1348,7 +1477,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1386,7 +1515,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1415,7 +1544,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1461,7 +1590,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1501,7 +1630,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1558,7 +1687,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1596,7 +1725,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1625,7 +1754,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1671,7 +1800,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1711,7 +1840,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1768,7 +1897,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1806,7 +1935,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1835,7 +1964,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1881,7 +2010,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1921,7 +2050,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -1978,7 +2107,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -2016,7 +2145,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -2045,7 +2174,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -2091,7 +2220,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -2130,7 +2259,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -2170,7 +2299,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -2227,7 +2356,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -2265,7 +2394,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "text/plain": {
                 "schema": {
@@ -2324,7 +2453,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "OK"
           }
         }
       }
@@ -2366,7 +2495,30 @@
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Tickets/{ticketId}/assign-random-employee": {
+      "post": {
+        "tags": [
+          "Tickets"
+        ],
+        "parameters": [
+          {
+            "name": "ticketId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -2374,6 +2526,20 @@
   },
   "components": {
     "schemas": {
+      "AdminResetUserPasswordCommand": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "newPassword": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "AssignTicketToEmployeeCommand": {
         "type": "object",
         "properties": {
@@ -2400,6 +2566,10 @@
           },
           "data": {
             "type": "boolean"
+          },
+          "errorDetails": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -2453,10 +2623,6 @@
             "type": "string",
             "format": "uuid"
           },
-          "employeeNumber": {
-            "type": "string",
-            "nullable": true
-          },
           "hireDate": {
             "type": "string",
             "format": "date-time"
@@ -2492,6 +2658,10 @@
           "bankAccount": {
             "type": "string",
             "nullable": true
+          },
+          "salary": {
+            "type": "number",
+            "format": "double"
           },
           "taxNumber": {
             "type": "string",
@@ -2542,16 +2712,13 @@
             "nullable": true
           },
           "source": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/LeadSource"
           },
           "status": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/LeadStatus"
           },
           "industry": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/IndustryType"
           },
           "notes": {
             "type": "string",
@@ -2627,8 +2794,7 @@
             "format": "double"
           },
           "status": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/SaleStatus"
           },
           "invoiceNumber": {
             "type": "string",
@@ -2647,7 +2813,7 @@
       "CreateTaskCommand": {
         "type": "object",
         "properties": {
-          "assignedUserId": {
+          "assignedEmployeeId": {
             "type": "string",
             "format": "uuid"
           },
@@ -2669,16 +2835,13 @@
             "format": "date-time"
           },
           "priority": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/TaskPriority"
           },
           "status": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/TaskStatus"
           },
           "type": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/TaskType"
           }
         },
         "additionalProperties": false
@@ -2755,6 +2918,10 @@
           },
           "data": {
             "$ref": "#/components/schemas/CustomerDto"
+          },
+          "errorDetails": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -2774,6 +2941,10 @@
             "items": {
               "$ref": "#/components/schemas/CustomerDto"
             },
+            "nullable": true
+          },
+          "errorDetails": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -2860,6 +3031,10 @@
           },
           "data": {
             "$ref": "#/components/schemas/EmployeeDto"
+          },
+          "errorDetails": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -2879,6 +3054,10 @@
             "items": {
               "$ref": "#/components/schemas/EmployeeDto"
             },
+            "nullable": true
+          },
+          "errorDetails": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -2914,9 +3093,25 @@
               "$ref": "#/components/schemas/EnumDto"
             },
             "nullable": true
+          },
+          "errorDetails": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
+      },
+      "IndustryType": {
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "type": "integer",
+        "format": "int32"
       },
       "InteractionDto": {
         "type": "object",
@@ -2960,6 +3155,10 @@
           },
           "data": {
             "$ref": "#/components/schemas/InteractionDto"
+          },
+          "errorDetails": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -2979,6 +3178,10 @@
             "items": {
               "$ref": "#/components/schemas/InteractionDto"
             },
+            "nullable": true
+          },
+          "errorDetails": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -3008,28 +3211,16 @@
             "nullable": true
           },
           "source": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/LeadSource"
           },
           "status": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/LeadStatus"
           },
           "industry": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/IndustryType"
           },
           "notes": {
             "type": "string",
-            "nullable": true
-          },
-          "createdDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedDate": {
-            "type": "string",
-            "format": "date-time",
             "nullable": true
           }
         },
@@ -3047,6 +3238,10 @@
           },
           "data": {
             "$ref": "#/components/schemas/LeadDto"
+          },
+          "errorDetails": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -3067,9 +3262,37 @@
               "$ref": "#/components/schemas/LeadDto"
             },
             "nullable": true
+          },
+          "errorDetails": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
+      },
+      "LeadSource": {
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "LeadStatus": {
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "type": "integer",
+        "format": "int32"
       },
       "LoginCommand": {
         "type": "object",
@@ -3135,6 +3358,10 @@
           },
           "data": {
             "$ref": "#/components/schemas/ProductDto"
+          },
+          "errorDetails": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -3154,6 +3381,10 @@
             "items": {
               "$ref": "#/components/schemas/ProductDto"
             },
+            "nullable": true
+          },
+          "errorDetails": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -3217,8 +3448,7 @@
             "format": "double"
           },
           "status": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/SaleStatus"
           },
           "invoiceNumber": {
             "type": "string",
@@ -3255,6 +3485,10 @@
           },
           "data": {
             "$ref": "#/components/schemas/SaleDto"
+          },
+          "errorDetails": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -3274,6 +3508,10 @@
             "items": {
               "$ref": "#/components/schemas/SaleDto"
             },
+            "nullable": true
+          },
+          "errorDetails": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -3323,6 +3561,17 @@
         },
         "additionalProperties": false
       },
+      "SaleStatus": {
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
       "TaskDto": {
         "type": "object",
         "properties": {
@@ -3330,7 +3579,7 @@
             "type": "string",
             "format": "uuid"
           },
-          "assignedUserId": {
+          "assignedEmployeeId": {
             "type": "string",
             "format": "uuid"
           },
@@ -3352,16 +3601,13 @@
             "format": "date-time"
           },
           "priority": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/TaskPriority"
           },
           "status": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/TaskStatus"
           },
           "type": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/TaskType"
           }
         },
         "additionalProperties": false
@@ -3378,6 +3624,10 @@
           },
           "data": {
             "$ref": "#/components/schemas/TaskDto"
+          },
+          "errorDetails": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -3398,9 +3648,44 @@
               "$ref": "#/components/schemas/TaskDto"
             },
             "nullable": true
+          },
+          "errorDetails": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
+      },
+      "TaskPriority": {
+        "enum": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "TaskStatus": {
+        "enum": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "TaskType": {
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "type": "integer",
+        "format": "int32"
       },
       "TicketDto": {
         "type": "object",
@@ -3409,7 +3694,7 @@
             "type": "string",
             "format": "uuid"
           },
-          "customerId": {
+          "userId": {
             "type": "string",
             "format": "uuid"
           },
@@ -3449,6 +3734,10 @@
           },
           "data": {
             "$ref": "#/components/schemas/TicketDto"
+          },
+          "errorDetails": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -3468,6 +3757,10 @@
             "items": {
               "$ref": "#/components/schemas/TicketDto"
             },
+            "nullable": true
+          },
+          "errorDetails": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -3519,10 +3812,6 @@
             "type": "string",
             "format": "uuid"
           },
-          "employeeNumber": {
-            "type": "string",
-            "nullable": true
-          },
           "hireDate": {
             "type": "string",
             "format": "date-time"
@@ -3558,6 +3847,10 @@
           "bankAccount": {
             "type": "string",
             "nullable": true
+          },
+          "salary": {
+            "type": "number",
+            "format": "double"
           },
           "taxNumber": {
             "type": "string",
@@ -3616,16 +3909,13 @@
             "nullable": true
           },
           "source": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/LeadSource"
           },
           "status": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/LeadStatus"
           },
           "industry": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/IndustryType"
           },
           "notes": {
             "type": "string",
@@ -3699,8 +3989,7 @@
             "format": "double"
           },
           "status": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/SaleStatus"
           },
           "invoiceNumber": {
             "type": "string",
@@ -3723,7 +4012,7 @@
             "type": "string",
             "format": "uuid"
           },
-          "assignedUserId": {
+          "assignedEmployeeId": {
             "type": "string",
             "format": "uuid"
           },
@@ -3745,16 +4034,13 @@
             "format": "date-time"
           },
           "priority": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/TaskPriority"
           },
           "status": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/TaskStatus"
           },
           "type": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/TaskType"
           }
         },
         "additionalProperties": false
@@ -3766,7 +4052,7 @@
             "type": "string",
             "format": "uuid"
           },
-          "customerId": {
+          "userId": {
             "type": "string",
             "format": "uuid"
           },
@@ -3853,6 +4139,10 @@
           },
           "data": {
             "$ref": "#/components/schemas/UserDto"
+          },
+          "errorDetails": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -3872,6 +4162,10 @@
             "items": {
               "$ref": "#/components/schemas/UserDto"
             },
+            "nullable": true
+          },
+          "errorDetails": {
+            "type": "string",
             "nullable": true
           }
         },

@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 import MyTicketsTable from "../components/MyTicketsTable";
+import { TicketStatus } from "@/constants/enums";
 
 export default function CreateTicketPage() {
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ export default function CreateTicketPage() {
         newStatus: 4 
       });
       toast.success("Ticket marked as resolved");
-      navigate("/tickets");
+      navigate("/");
     } catch (error) {
       console.error("Error marking ticket as resolved:", error);
       toast.error("Error marking ticket as resolved");
@@ -75,9 +76,12 @@ export default function CreateTicketPage() {
     if (!createdTicket) return;
     
     try {
-      await assignRandom.mutateAsync(createdTicket.id);
+      await updateStatus.mutateAsync({
+        ticketId: createdTicket.id,
+        newStatus: TicketStatus.AssignedToEmployee
+      });
       toast.success("Ticket assigned to an employee");
-      navigate("/tickets");
+      navigate("/");
     } catch (error) {
       console.error("Error assigning ticket:", error);
       toast.error("Error assigning ticket to employee");
@@ -88,7 +92,6 @@ export default function CreateTicketPage() {
 
   return (
     <div className="container mx-auto py-10 max-w-4xl">
-      {/* User's Previous Tickets */}
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>My Previous Tickets</CardTitle>
@@ -104,7 +107,6 @@ export default function CreateTicketPage() {
         </CardContent>
       </Card>
 
-      {/* Create New Ticket Form */}
       <Card>
         <CardHeader>
           <CardTitle>Create New Support Ticket</CardTitle>
@@ -139,7 +141,7 @@ export default function CreateTicketPage() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => navigate("/tickets")}
+                  onClick={() => navigate("/tickets/create")}
                   disabled={isLoading}
                 >
                   Cancel
@@ -237,7 +239,7 @@ export default function CreateTicketPage() {
               <div className="flex justify-center">
                 <Button
                   variant="ghost"
-                  onClick={() => navigate("/tickets")}
+                  onClick={() => navigate("/tickets/create/create")}
                   disabled={isLoading}
                 >
                   Back to Tickets

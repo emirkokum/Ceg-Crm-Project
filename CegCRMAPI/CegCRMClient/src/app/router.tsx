@@ -81,7 +81,7 @@ export const navigationItems: NavigationItem[] = [
     allowedRoles: ["Admin", "Manager", "Support"],
   },
   {
-    title: "Create Ticket",
+    title: "My Tickets",
     url: "/tickets/create",
     icon: PlusCircle,
     allowedRoles: ["Admin","Customer"],

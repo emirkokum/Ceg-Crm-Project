@@ -6,12 +6,32 @@ import { useAuth } from "@/hooks/useAuth";
 import { InteractionsOverviewCard } from "@/components/dashboard/InteractionsOverviewCard";
 import { useTickets } from "@/features/hooks/useTicketApi";
 import { useInteractions } from "@/features/hooks/useInteractionApi";
+import MyTicketsTable from "@/features/tickets/components/MyTicketsTable";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTicketsByCustomer } from "@/features/hooks/useTicketApi";
 
 export default function Dashboard() {
   const { user } = useAuth();
   const role = user?.role || localStorage.getItem("role") || "BaseUser";
   const { data: tickets = [] } = useTickets();
   const { data: interactions = [] } = useInteractions();
+
+  const { data: userTickets = [], isLoading: isLoadingTickets } = useTicketsByCustomer(user?.id || "");
+
+  if (role === "Customer") {
+    return (
+      <div className="space-y-4 p-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>My Tickets</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <MyTicketsTable tickets={userTickets} isLoading={isLoadingTickets} />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4 p-4">

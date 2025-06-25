@@ -31,7 +31,7 @@ export default function TicketDetailPage() {
         newStatus: TicketStatus.Closed
       });
       toast.success("Ticket marked as resolved");
-      navigate("/tickets");
+      navigate("/tickets/create");
     } catch (error) {
       console.error("Error marking ticket as resolved:", error);
       toast.error("Error marking ticket as resolved");
@@ -44,7 +44,7 @@ export default function TicketDetailPage() {
     try {
       await assignToSupport.mutateAsync(ticket.id);
       toast.success("Ticket assigned to support team");
-      navigate("/tickets");
+      navigate("/tickets/create");
     } catch (error) {
       console.error("Error assigning ticket to support:", error);
       toast.error("Error assigning ticket to support team");
@@ -141,7 +141,7 @@ export default function TicketDetailPage() {
         <div className="flex items-center gap-4 mb-6">
           <Button
             variant="ghost"
-            onClick={() => navigate("/tickets")}
+            onClick={() => navigate("/tickets/create")}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -156,7 +156,7 @@ export default function TicketDetailPage() {
               The ticket you're looking for doesn't exist or you don't have permission to view it.
             </p>
             <Button
-              onClick={() => navigate("/tickets")}
+              onClick={() => navigate("/tickets/create")}
               className="mt-4"
             >
               Back to Tickets
@@ -173,7 +173,7 @@ export default function TicketDetailPage() {
       <div className="flex items-center gap-4 mb-6">
         <Button
           variant="ghost"
-          onClick={() => navigate("/tickets")}
+          onClick={() => navigate("/tickets/create")}
           className="flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
