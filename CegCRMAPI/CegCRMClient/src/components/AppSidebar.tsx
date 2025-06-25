@@ -66,23 +66,6 @@ const data = {
       ],
     },
   ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "/settings",
-      icon: SettingsIcon,
-    },
-    {
-      title: "Get Help",
-      url: "/help",
-      icon: HelpCircleIcon,
-    },
-    {
-      title: "Search",
-      url: "/search",
-      icon: SearchIcon,
-    },
-  ]
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -119,10 +102,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={filteredNavigationItems} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
-      </SidebarContent>
       <SidebarFooter>
         <div className="flex flex-col gap-5 p-1.5">
           <div className="flex items-center gap-2">

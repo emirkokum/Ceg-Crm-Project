@@ -50,7 +50,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, UserDto>
             throw new ValidationException(errors);
         }
 
-        var roleResult = await _userManager.AddToRoleAsync(user, "BaseUser");
+        var roleResult = await _userManager.AddToRoleAsync(user, "Customer");
 
         if (!roleResult.Succeeded)
         {
