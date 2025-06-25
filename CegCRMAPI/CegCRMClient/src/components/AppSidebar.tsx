@@ -102,6 +102,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
+      <SidebarContent>
+        <NavMain items={filteredNavigationItems} />
+      </SidebarContent>
       <SidebarFooter>
         <div className="flex flex-col gap-5 p-1.5">
           <div className="flex items-center gap-2">
