@@ -159,15 +159,6 @@ export default function TicketTable({ data }: TicketTableProps) {
     }
   };
 
-  const handleAssignEmployee = async (ticketId: string, employeeId: string) => {
-    try {
-      await assignTicket.mutateAsync({ ticketId, employeeId });
-      toast.success("Ticket assigned successfully");
-    } catch (error) {
-      toast.error("Error assigning ticket");
-    }
-  };
-
   const getStatusColor = (status: number | string) => {
     if (typeof status === 'string') {
       switch (status) {

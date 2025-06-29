@@ -1,5 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useTicket, useUpdateTicketWithSolution, useAssignRandomEmployee } from "@/features/hooks/useTicketApi";
+import { useTicket, useUpdateTicketWithSolution, useAssignRandomEmployee, useUpdateTicketStatus } from "@/features/hooks/useTicketApi";
+import { useEmployees } from "@/features/hooks/useEmployeeApi";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,27 +13,32 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle, XCircle, Loader2, ArrowLeft, AlertCircle } from "lucide-react";
 import { TicketStatus } from "@/constants/enums";
+import { useState } from "react";
 
 export default function TicketDetailPage() {
   const { ticketId } = useParams<{ ticketId: string }>();
   const navigate = useNavigate();
+  const { userInfo } = useAuth();
+  
+  const [finalSolutionText, setFinalSolutionText] = useState("");
+  const [showFinalSolutionInput, setShowFinalSolutionInput] = useState(false);
   
   const { data: ticket, isLoading, error } = useTicket(ticketId || "");
+  const { data: employees = [] } = useEmployees();
   const updateTicketWithSolution = useUpdateTicketWithSolution();
   const assignToSupport = useAssignRandomEmployee();
+  const updateTicketStatus = useUpdateTicketStatus();
 
   const handleSolutionWorked = async () => {
     if (!ticket) return;
     
     try {
-      await updateTicketWithSolution.mutateAsync({
-        id: ticket.id,
-        data: {
-          status: TicketStatus.Closed,
-          finalSolution: ticket.aiSuggestedSolution
-        }
+      await updateTicketStatus.mutateAsync({
+        ticketId: ticket.id,
+        newStatus: TicketStatus.Closed
       });
       toast.success("Ticket marked as resolved");
     } catch (error) {
@@ -44,11 +51,43 @@ export default function TicketDetailPage() {
     if (!ticket) return;
     
     try {
+      // First assign random employee
       await assignToSupport.mutateAsync(ticket.id);
+      
+      // Then update status to AssignedToEmployee
+      await updateTicketStatus.mutateAsync({
+        ticketId: ticket.id,
+        newStatus: TicketStatus.AssignedToEmployee
+      });
+      
+      setShowFinalSolutionInput(true);
       toast.success("Ticket assigned to support team");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error assigning ticket to support:", error);
-      toast.error("Error assigning ticket to support team");
+      toast.error("Error assigning ticket to support team: " + (error.response?.data?.message || error.message));
+    }
+  };
+
+  const handleSubmitFinalSolution = async () => {
+    if (!ticket || !finalSolutionText.trim()) return;
+    
+    try {
+      await updateTicketWithSolution.mutateAsync({
+        id: ticket.id,
+        data: {
+          status: TicketStatus.Closed,
+          finalSolution: finalSolutionText.trim()
+        }
+      });
+      
+      // Reset state immediately for UI responsiveness
+      setShowFinalSolutionInput(false);
+      setFinalSolutionText("");
+      
+      toast.success("Final solution submitted and ticket closed");
+    } catch (error) {
+      console.error("Error submitting final solution:", error);
+      toast.error("Error submitting final solution");
     }
   };
 
@@ -112,9 +151,26 @@ export default function TicketDetailPage() {
     }
   };
 
-  const isLoadingActions = updateTicketWithSolution.isPending || assignToSupport.isPending;
+  const isLoadingActions = updateTicketWithSolution.isPending || assignToSupport.isPending || updateTicketStatus.isPending;
 
-  const shouldShowActionButtons = ticket && (ticket.status === TicketStatus.ResolvedByAI || ticket.status === 'ResolvedByAI');
+  // Find current user's employee record
+  const currentUserEmployee = employees.find(emp => emp.user.id === userInfo?.id);
+  const isAssignedEmployee = ticket?.assignedEmployeeId === currentUserEmployee?.id;
+
+  const shouldShowActionButtons = ticket && 
+    (ticket.status === TicketStatus.ResolvedByAI || ticket.status === 'ResolvedByAI') &&
+    !ticket.finalSolution &&
+    !showFinalSolutionInput;
+
+  // Show input if ticket is assigned to employee and current user is the assigned employee
+  const shouldShowFinalSolutionInput = ticket && 
+    isAssignedEmployee && 
+    (ticket.status === TicketStatus.AssignedToEmployee || ticket.status === 'AssignedToEmployee') &&
+    !ticket.finalSolution;
+  
+
+  
+
 
   if (isLoading) {
     return (
@@ -144,7 +200,7 @@ export default function TicketDetailPage() {
         <div className="flex items-center gap-4 mb-6">
           <Button
             variant="ghost"
-            onClick={() => navigate("/tickets/create")}
+            onClick={() => navigate("/")}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -159,7 +215,7 @@ export default function TicketDetailPage() {
               The ticket you're looking for doesn't exist or you don't have permission to view it.
             </p>
             <Button
-              onClick={() => navigate("/tickets/create")}
+              onClick={() => navigate("/")}
               className="mt-4"
             >
               Back to Tickets
@@ -176,7 +232,7 @@ export default function TicketDetailPage() {
       <div className="flex items-center gap-4 mb-6">
         <Button
           variant="ghost"
-          onClick={() => navigate("/tickets/create")}
+          onClick={() => navigate("/")}
           className="flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -306,7 +362,7 @@ export default function TicketDetailPage() {
                   disabled={isLoadingActions}
                   className="flex-1 bg-green-600 hover:bg-green-700"
                 >
-                  {updateTicketWithSolution.isPending ? (
+                  {updateTicketStatus.isPending ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Processing...
@@ -333,6 +389,50 @@ export default function TicketDetailPage() {
                     <>
                       <XCircle className="mr-2 h-4 w-4" />
                       Didn't Work
+                    </>
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        
+
+        {/* Final Solution Input - Only show for assigned employee */}
+        {shouldShowFinalSolutionInput && (
+          <Card className="border-orange-200 bg-orange-50">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-orange-800">
+                <AlertCircle className="h-5 w-5" />
+                Final Solution Input
+              </CardTitle>
+              <CardDescription className="text-orange-700">
+                Enter your final solution for this ticket and close it.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <Textarea
+                  placeholder="Enter your final solution here..."
+                  value={finalSolutionText}
+                  onChange={(e) => setFinalSolutionText(e.target.value)}
+                  className="min-h-[100px] text-black placeholder:text-gray-500"
+                />
+                <Button
+                  onClick={handleSubmitFinalSolution}
+                  disabled={!finalSolutionText.trim() || updateTicketWithSolution.isPending}
+                  className="w-full bg-orange-600 hover:bg-orange-700"
+                >
+                  {updateTicketWithSolution.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="mr-2 h-4 w-4" />
+                      Submit Final Solution
                     </>
                   )}
                 </Button>

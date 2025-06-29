@@ -57,8 +57,10 @@ export const useUpdateTicket = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateTicket["data"] }) =>
       updateTicket(id, data),
-    onSuccess: () => {
+    onSuccess: (data, { id }) => {
+      // Invalidate both general tickets list and specific ticket
       queryClient.invalidateQueries({ queryKey: ["tickets"] });
+      queryClient.invalidateQueries({ queryKey: ["ticket", id] });
     },
   });
 };
@@ -80,8 +82,10 @@ export const useAssignTicket = () => {
   return useMutation({
     mutationFn: ({ ticketId, employeeId }: { ticketId: string; employeeId: string }) =>
       assignTicket(ticketId, employeeId),
-    onSuccess: () => {
+    onSuccess: (data, { ticketId }) => {
+      // Invalidate both general tickets list and specific ticket
       queryClient.invalidateQueries({ queryKey: ["tickets"] });
+      queryClient.invalidateQueries({ queryKey: ["ticket", ticketId] });
     },
   });
 };
@@ -107,8 +111,10 @@ export const useUpdateTicketStatus = () => {
   return useMutation({
     mutationFn: ({ ticketId, newStatus }: { ticketId: string; newStatus: number }) =>
       updateTicketStatus(ticketId, newStatus),
-    onSuccess: () => {
+    onSuccess: (data, { ticketId }) => {
+      // Invalidate both general tickets list and specific ticket
       queryClient.invalidateQueries({ queryKey: ["tickets"] });
+      queryClient.invalidateQueries({ queryKey: ["ticket", ticketId] });
     },
   });
 };
@@ -117,10 +123,17 @@ export const useAssignRandomEmployee = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: assignRandomEmployee,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tickets"] });
+    mutationFn: (ticketId: string) => {
+      return assignRandomEmployee(ticketId);
     },
+    onSuccess: (data, ticketId) => {
+      // Invalidate both general tickets list and specific ticket
+      queryClient.invalidateQueries({ queryKey: ["tickets"] });
+      queryClient.invalidateQueries({ queryKey: ["ticket", ticketId] });
+    },
+    onError: (error, ticketId) => {
+      console.error('Assignment failed for ticket:', ticketId, 'Error:', error);
+    }
   });
 };
 
@@ -130,8 +143,10 @@ export const useUpdateTicketWithSolution = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: { status?: number; finalSolution?: string; assignedEmployeeId?: string } }) =>
       updateTicketWithSolution(id, data),
-    onSuccess: () => {
+    onSuccess: (data, { id }) => {
+      // Invalidate both general tickets list and specific ticket
       queryClient.invalidateQueries({ queryKey: ["tickets"] });
+      queryClient.invalidateQueries({ queryKey: ["ticket", id] });
     },
   });
 }; 

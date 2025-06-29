@@ -4,7 +4,7 @@ import authReducer from "@/features/auth/authSlice"; // default import olduğund
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer, // burada `undefined` geçilirse hata olur
+    auth: authReducer, // passing `undefined` here would cause an error
   },
 });
 

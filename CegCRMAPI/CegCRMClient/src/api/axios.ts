@@ -20,8 +20,11 @@ API.interceptors.response.use(
   (error) => {
     console.error('API Error:', {
       status: error.response?.status,
+      statusText: error.response?.statusText,
       data: error.response?.data,
-      message: error.message
+      message: error.message,
+      url: error.config?.url,
+      method: error.config?.method
     });
 
     if (error.response?.status === 401) {

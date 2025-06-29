@@ -14,8 +14,9 @@ export const updateTicketStatus = (ticketId: string, newStatus: number) =>
 
 export const getTicketsByCustomer = (customerId: string) => API.get(`/Tickets/ByCustomer?customerId=${customerId}`);
 
-export const assignRandomEmployee = (ticketId: string) => 
-  API.post(`/Tickets/${ticketId}/assign-random-employee`);
+export const assignRandomEmployee = (ticketId: string) => {
+  return API.post(`/Tickets/${ticketId}/assign-random-employee`);
+};
 
 export const updateTicketWithSolution = (id: string, data: {
   status?: number;

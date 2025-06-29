@@ -23,7 +23,7 @@ export default function CustomerDetailsPage() {
     try {
       return format(parseISO(dateString), "dd MMMM yyyy", { locale: tr });
     } catch {
-      return "Tarih bilgisi mevcut değil";
+      return "Date information not available";
     }
   };
 
@@ -40,10 +40,10 @@ export default function CustomerDetailsPage() {
   }
 
   if (!customer) {
-    toast.error("Müşteri bilgileri yüklenirken bir hata oluştu");
+    toast.error("Error loading customer information");
     return (
       <div className="flex flex-col items-center justify-center space-y-4 p-6">
-        <p className="text-red-500">Müşteri bilgileri yüklenemedi</p>
+                  <p className="text-red-500">Failed to load customer information</p>
         <Button onClick={() => navigate(-1)}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Geri Dön
@@ -64,7 +64,7 @@ export default function CustomerDetailsPage() {
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Temel Bilgiler</CardTitle>
+                          <CardTitle>Basic Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center space-x-2">
@@ -92,13 +92,13 @@ export default function CustomerDetailsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Ek Bilgiler</CardTitle>
+                          <CardTitle>Additional Information</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
               <p>
-                <span className="font-medium">Müşteri Tipi:</span>{" "}
-                {customer.type === "Person" ? "Bireysel" : "Kurumsal"}
+                <span className="font-medium">Customer Type:</span>{" "}
+                                  {customer.type === "Person" ? "Individual" : "Corporate"}
               </p>
             </div>
           </CardContent>

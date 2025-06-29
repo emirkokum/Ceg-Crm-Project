@@ -59,7 +59,7 @@ namespace CegCRMAPI.Application.Features.Commands.Ticket.AssignTicketToRandomEmp
                 return ApiResponse<TicketDto>.CreateError("No matching employee found for selected support user");
 
             ticket.AssignedEmployeeId = employee.Id;
-            ticket.Status = TicketStatus.Open;
+            ticket.Status = TicketStatus.AssignedToEmployee;
 
             _ticketRepository.Update(ticket);
             await _unitOfWork.SaveChangesAsync();
