@@ -14,16 +14,16 @@ export default function Dashboard() {
   const { user } = useAuth();
   const role = user?.role || localStorage.getItem("role") || "BaseUser";
   const { data: tickets = [] } = useTickets();
-  const { data: interactions = [] } = useInteractions();
+  const { data: interactions = [], isLoading: isLoadingInteractions } = useInteractions();
 
   const { data: userTickets = [], isLoading: isLoadingTickets } = useTicketsByCustomer(user?.id || "");
 
   if (role === "Customer") {
     return (
-      <div className="space-y-4 p-4">
+      <div className="space-y-4 p-2 sm:p-4">
         <Card>
-          <CardHeader>
-            <CardTitle>My Tickets</CardTitle>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg sm:text-xl lg:text-2xl">My Tickets</CardTitle>
           </CardHeader>
           <CardContent>
             <MyTicketsTable tickets={userTickets} isLoading={isLoadingTickets} />
@@ -34,10 +34,10 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-4 p-4">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4">
+    <div className="space-y-3 sm:space-y-4 p-2 sm:p-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 lg:grid-cols-2">
         {["Admin", "Support"].includes(role) && (
-          <div className="md:col-span-2 lg:col-span-1 2xl:col-span-1">
+          <div className="col-span-1">
             <TicketsCard 
               tickets={tickets}
               title="Tickets Overview"
@@ -48,28 +48,29 @@ export default function Dashboard() {
 
         {["Admin", "SalesPerson", "Manager"].includes(role) && (
           <>
-            <div className="md:col-span-2 lg:col-span-1 2xl:col-span-1">
+            <div className="col-span-1">
               <SalesOverviewCard />
             </div>
-            <div className="md:col-span-2 lg:col-span-1 2xl:col-span-1">
+            <div className="col-span-1">
               <LeadsSummary />
             </div>
           </>
         )}
 
         {["Assistant", "Admin"].includes(role) && (
-          <div className="md:col-span-2 lg:col-span-1 2xl:col-span-1">
+          <div className="col-span-1">
             <TasksTodayCard />
           </div>
         )}
 
-        <div className="md:col-span-2 lg:col-span-2 2xl:col-span-4">
+        <div className="col-span-1 lg:col-span-2">
           <InteractionsOverviewCard 
             interactions={interactions}
-            title="Müşteri Etkileşimleri"
-            description="Günlük etkileşim genel bakış"
+            title="Interactions With Customers"
+            description="General view to Interactions"
             showDistribution={true}
-            filterByDate={true}
+            filterByDate={false}
+            isLoading={isLoadingInteractions}
           />
         </div>
       </div>

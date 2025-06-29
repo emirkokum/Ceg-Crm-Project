@@ -1,5 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useCustomerById, useCustomerTickets, useCustomerInteractions } from "@/features/hooks/userCustomerApi";
+import { useCustomerById } from "@/features/hooks/userCustomerApi";
+import { useInteractionsByCustomer } from "@/features/hooks/useInteractionApi";
+import { useTicketsByCustomer } from "@/features/hooks/useTicketApi";
 import { format, parseISO } from "date-fns";
 import { tr } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
@@ -7,20 +9,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { ArrowLeft, Mail, Phone, MapPin, Calendar } from "lucide-react";
-import { TicketsCard } from "@/components/dashboard/TicketsCard";
-import { InteractionsOverviewCard } from "@/components/dashboard/InteractionsOverviewCard";
+import { TicketsCardsForCustomer } from "@/components/dashboard/TicketsCardsForCustomer";
+import { CustomerInteractionsOverviewCard } from "@/components/dashboard/CustomerInteractionsOverviewCard";
 
 export default function CustomerDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: customer, isLoading, error } = useCustomerById(id || "");
-  const { data: tickets = [] } = useCustomerTickets(id || "");
-  const { data: interactions = [] } = useCustomerInteractions(id || "");
+  const { data: customer, isLoading } = useCustomerById(id || "");
+  const { data: tickets = [], isLoading: isLoadingTickets } = useTicketsByCustomer(id || "");
+  const { data: interactions = [], isLoading: isLoadingInteractions } = useInteractionsByCustomer(id || "");
 
   const formatDate = (dateString: string) => {
     try {
       return format(parseISO(dateString), "dd MMMM yyyy", { locale: tr });
-    } catch (error) {
+    } catch {
       return "Tarih bilgisi mevcut değil";
     }
   };
@@ -37,7 +39,7 @@ export default function CustomerDetailsPage() {
     );
   }
 
-  if (error || !customer) {
+  if (!customer) {
     toast.error("Müşteri bilgileri yüklenirken bir hata oluştu");
     return (
       <div className="flex flex-col items-center justify-center space-y-4 p-6">
@@ -104,19 +106,23 @@ export default function CustomerDetailsPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <TicketsCard 
+        <TicketsCardsForCustomer 
           tickets={tickets}
-          title="Müşteri Ticketları"
-          description="Müşteriye ait ticket geçmişi"
-          showResolutionRate={false}
+          customerName={customer.fullName}
+          title="Tickets"
+          description="Ticket History Of Customer"
+          showResolutionRate={true}
+          isLoading={isLoadingTickets}
         />
         
-        <InteractionsOverviewCard 
+        <CustomerInteractionsOverviewCard 
           interactions={interactions}
-          title="Müşteri Etkileşimleri"
-          description="Müşteri etkileşim geçmişi"
+          customerName={customer.fullName}
+          title="Interactions"
+          description="Interactions With Customer"
           showDistribution={true}
           filterByDate={false}
+          isLoading={isLoadingInteractions}
         />
       </div>
     </div>

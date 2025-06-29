@@ -88,8 +88,9 @@ export const useAssignTicket = () => {
 
 export const useTicketsByCustomer = (customerId: string) => {
   return useQuery({
-    queryKey: ["tickets-by-customer", customerId],
+    queryKey: ["tickets", "customer", customerId],
     queryFn: async () => {
+      if (!customerId) return [];
       const response = await getTicketsByCustomer(customerId);
       if (response?.data?.data && Array.isArray(response.data.data)) {
         return response.data.data as Ticket[];

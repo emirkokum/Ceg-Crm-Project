@@ -15,6 +15,21 @@ export const useInteractions = () => {
   });
 };
 
+export const useInteractionsByCustomer = (customerId: string) => {
+  return useQuery({
+    queryKey: ["interactions", "customer", customerId],
+    queryFn: async () => {
+      if (!customerId) return [];
+      const response = await interactionApi.getInteractionsByCustomer(customerId);
+      if (response?.data?.data && Array.isArray(response.data.data)) {
+        return response.data.data as Interaction[];
+      }
+      return [];
+    },
+    enabled: !!customerId,
+  });
+};
+
 export const useCreateInteraction = () => {
   const queryClient = useQueryClient();
   return useMutation({

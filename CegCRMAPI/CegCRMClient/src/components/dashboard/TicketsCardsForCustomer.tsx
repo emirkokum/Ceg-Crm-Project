@@ -18,19 +18,23 @@ import { Progress } from "@/components/ui/progress";
 import { Ticket } from "@/types/ticket";
 import { TicketStatus } from "@/constants/enums";
 
-interface TicketsCardProps {
+interface TicketsCardsForCustomerProps {
   tickets: Ticket[];
+  customerName?: string;
   title?: string;
   description?: string;
   showResolutionRate?: boolean;
+  isLoading?: boolean;
 }
 
-export function TicketsCard({
+export function TicketsCardsForCustomer({
   tickets,
-  title = "Support Tickets",
-  description = "Ticket management overview",
+  customerName = "",
+  title = "Customer Tickets",
+  description = "Customer ticket overview",
   showResolutionRate = true,
-}: TicketsCardProps) {
+  isLoading = false,
+}: TicketsCardsForCustomerProps) {
   // Null check for tickets array
   const safeTickets = tickets || [];
 
@@ -54,11 +58,30 @@ export function TicketsCard({
   const resolutionRate =
     totalTickets > 0 ? (closedTickets / totalTickets) * 100 : 0;
 
+  if (isLoading) {
+    return (
+      <Card className="overflow-hidden">
+        <CardHeader>
+          <CardTitle className="text-lg sm:text-xl lg:text-2xl font-bold">{title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="animate-pulse space-y-3 sm:space-y-4">
+            <div className="h-8 sm:h-10 bg-muted rounded" />
+            <div className="h-8 sm:h-10 bg-muted rounded" />
+            <div className="h-8 sm:h-10 bg-muted rounded" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="space-y-1 min-w-0 flex-1">
-          <CardTitle className="text-lg sm:text-xl lg:text-2xl font-bold truncate">{title}</CardTitle>
+          <CardTitle className="text-lg sm:text-xl lg:text-2xl font-bold truncate">
+            {customerName ? `${customerName} - ${title}` : title}
+          </CardTitle>
           <CardDescription className="text-xs sm:text-sm truncate">{description}</CardDescription>
         </div>
         <div className="rounded-full bg-primary/10 p-1.5 sm:p-2 flex-shrink-0">
@@ -137,4 +160,4 @@ export function TicketsCard({
       </CardContent>
     </Card>
   );
-}
+} 

@@ -18,8 +18,9 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Interaction } from "@/types/interaction";
 
-interface InteractionsOverviewCardProps {
+interface CustomerInteractionsOverviewCardProps {
   interactions: Interaction[];
+  customerName?: string;
   title?: string;
   description?: string;
   showDistribution?: boolean;
@@ -27,14 +28,15 @@ interface InteractionsOverviewCardProps {
   isLoading?: boolean;
 }
 
-export function InteractionsOverviewCard({ 
+export function CustomerInteractionsOverviewCard({ 
   interactions, 
+  customerName = "",
   title = "Customer Interactions", 
-  description = "Interaction overview",
+  description = "Customer interaction overview",
   showDistribution = true,
   filterByDate = true,
   isLoading = false
-}: InteractionsOverviewCardProps) {
+}: CustomerInteractionsOverviewCardProps) {
   // Null check for interactions array
   const safeInteractions = interactions || [];
 
@@ -98,7 +100,9 @@ export function InteractionsOverviewCard({
     <Card className="overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="space-y-1 min-w-0 flex-1">
-          <CardTitle className="text-lg sm:text-xl lg:text-2xl font-bold truncate">{title}</CardTitle>
+          <CardTitle className="text-lg sm:text-xl lg:text-2xl font-bold truncate">
+            {customerName ? `${customerName} - ${title}` : title}
+          </CardTitle>
           <CardDescription className="text-xs sm:text-sm truncate">{description}</CardDescription>
         </div>
         <div className="rounded-full bg-primary/10 p-1.5 sm:p-2 flex-shrink-0">
