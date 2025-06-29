@@ -36,7 +36,7 @@ export function RegisterForm({
 
     try {
       const { data } = await API.post('/Auth/register', registerData);
-      toast.success(data.message || 'Registration successful!');
+      toast.success(data.message || 'Kayıt başarılı!');
       setTimeout(() => {
         navigate('/login', { replace: true });
       }, 100);
@@ -50,15 +50,15 @@ export function RegisterForm({
       
       if (error instanceof AxiosError) {
         if (error.response) {
-          const errorMessage = error.response.data?.message || error.response.data?.error || 'Registration failed';
+          const errorMessage = error.response.data?.message || error.response.data?.error || 'Kayıt başarısız';
           toast.error(errorMessage);
         } else if (error.request) {
-          toast.error('No response from server. Please check your connection.');
+          toast.error('Sunucudan yanıt alınamadı. Bağlantınızı kontrol edin.');
         } else {
-          toast.error('Error setting up request. Please try again.');
+          toast.error('İstek kurulumunda hata. Lütfen tekrar deneyin.');
         }
       } else {
-        toast.error(error instanceof Error ? error.message : 'Registration failed. Please try again.');
+        toast.error(error instanceof Error ? error.message : 'Kayıt başarısız. Lütfen tekrar deneyin.');
       }
     } finally {
       setIsLoading(false);
