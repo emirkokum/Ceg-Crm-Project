@@ -10,7 +10,6 @@ namespace CegCRMAPI.Application.Features.Commands.Tickets.UpdateTicket;
 public record UpdateTicketCommand : IRequest<ApiResponse<TicketDto>>
 {
     public Guid Id { get; init; }
-    public Guid UserId { get; init; }
     public TicketStatus? Status { get; init; }
     public string? FinalSolution { get; init; }
     public Guid? AssignedEmployeeId { get; init; }

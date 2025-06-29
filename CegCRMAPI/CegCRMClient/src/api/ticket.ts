@@ -17,7 +17,6 @@ export const getTicketsByCustomer = (customerId: string) => API.get(`/Tickets/By
 export const assignRandomEmployee = (ticketId: string) => 
   API.post(`/Tickets/${ticketId}/assign-random-employee`);
 
-// Backend'deki UpdateTicketCommand'a uygun olarak ticket güncelleme
 export const updateTicketWithSolution = (id: string, data: {
   status?: number;
   finalSolution?: string;
