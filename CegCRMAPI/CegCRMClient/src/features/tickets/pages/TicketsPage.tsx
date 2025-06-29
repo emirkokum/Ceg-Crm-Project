@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEmployees } from "@/features/hooks/useEmployeeApi";
+import { useAuth } from "@/contexts/AuthContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Ticket } from "@/types/ticket";
 import { TicketStatus } from "@/constants/enums";
@@ -48,9 +49,11 @@ export default function TicketsPage() {
   });
 
   const [statusFilter, setStatusFilter] = useState<number | null>(null);
+  const [assignmentFilter, setAssignmentFilter] = useState<"all" | "myTickets">("all");
 
   const { data: tickets = [], isLoading } = useTickets();
   const { data: employees = [], isLoading: isLoadingEmployees } = useEmployees();
+  const { userInfo } = useAuth();
   const createTicket = useCreateTicket();
 
   const handleFormChange = (
@@ -99,20 +102,38 @@ export default function TicketsPage() {
     );
   }
 
+  // Find current user's employee record
+  const currentUserEmployee = employees.find(emp => emp.user.id === userInfo?.id);
+
   const filteredTickets = tickets.filter((ticket: Ticket) => {
-    if (statusFilter === null) return true;
-    
-    if (typeof ticket.status === 'string') {
-      const statusMap: { [key: number]: string } = {
-        [TicketStatus.Open]: 'Open',
-        [TicketStatus.ResolvedByAI]: 'ResolvedByAI',
-        [TicketStatus.AssignedToEmployee]: 'AssignedToEmployee',
-        [TicketStatus.Closed]: 'Closed'
-      };
-      return statusMap[statusFilter] === ticket.status;
+    // Status filter
+    if (statusFilter !== null) {
+      if (typeof ticket.status === 'string') {
+        const statusMap: { [key: number]: string } = {
+          [TicketStatus.Open]: 'Open',
+          [TicketStatus.ResolvedByAI]: 'ResolvedByAI',
+          [TicketStatus.AssignedToEmployee]: 'AssignedToEmployee',
+          [TicketStatus.Closed]: 'Closed'
+        };
+        if (statusMap[statusFilter] !== ticket.status) {
+          return false;
+        }
+      } else {
+        if (ticket.status !== statusFilter) {
+          return false;
+        }
+      }
     }
     
-    return ticket.status === statusFilter;
+    // Assignment filter
+    if (assignmentFilter === "myTickets") {
+      if (!currentUserEmployee || !ticket.assignedEmployeeId) {
+        return false;
+      }
+      return ticket.assignedEmployeeId === currentUserEmployee.id;
+    }
+    
+    return true;
   });
 
   return (
@@ -135,16 +156,32 @@ export default function TicketsPage() {
       <Card>
         <CardContent className="px-10 py-5">
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between mb-4">
-            <div className="relative w-full md:w-1/2">
-              <EnumSelect
-                options={[
-                  { value: 0, label: "All" },
-                  ...ticketStatusOptions
-                ]}
-                value={statusFilter ?? 0}
-                onValueChange={(value) => setStatusFilter(value === 0 ? null : value)}
-                placeholder="Filter by status"
-              />
+            <div className="flex flex-col md:flex-row gap-4 w-full">
+              <div className="relative w-full md:w-1/2">
+                <EnumSelect
+                  options={[
+                    { value: 0, label: "All Status" },
+                    ...ticketStatusOptions
+                  ]}
+                  value={statusFilter ?? 0}
+                  onValueChange={(value) => setStatusFilter(value === 0 ? null : value)}
+                  placeholder="Filter by status"
+                />
+              </div>
+              <div className="relative w-full md:w-1/2">
+                <Select
+                  value={assignmentFilter}
+                  onValueChange={(value: "all" | "myTickets") => setAssignmentFilter(value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Filter by assignment" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Tickets</SelectItem>
+                    <SelectItem value="myTickets">My Tickets</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
         </CardContent>

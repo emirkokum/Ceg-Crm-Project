@@ -3,7 +3,7 @@ import { useCustomerById } from "@/features/hooks/userCustomerApi";
 import { useInteractionsByCustomer } from "@/features/hooks/useInteractionApi";
 import { useTicketsByCustomer } from "@/features/hooks/useTicketApi";
 import { format, parseISO } from "date-fns";
-import { tr } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -21,7 +21,7 @@ export default function CustomerDetailsPage() {
 
   const formatDate = (dateString: string) => {
     try {
-      return format(parseISO(dateString), "dd MMMM yyyy", { locale: tr });
+      return format(parseISO(dateString), "dd MMMM yyyy", { locale: enUS });
     } catch {
       return "Date information not available";
     }
@@ -46,7 +46,7 @@ export default function CustomerDetailsPage() {
                   <p className="text-red-500">Failed to load customer information</p>
         <Button onClick={() => navigate(-1)}>
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Geri Dön
+          Go Back
         </Button>
       </div>
     );
@@ -57,7 +57,7 @@ export default function CustomerDetailsPage() {
       <div className="flex items-center justify-between">
         <Button variant="ghost" onClick={() => navigate(-1)}>
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Geri Dön
+          Go Back
         </Button>
       </div>
 
@@ -85,7 +85,7 @@ export default function CustomerDetailsPage() {
             </div>
             <div className="flex items-center space-x-2">
               <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span>Kayıt Tarihi: {formatDate(customer.createdAt)}</span>
+              <span>Registration Date: {formatDate(customer.createdAt)}</span>
             </div>
           </CardContent>
         </Card>
