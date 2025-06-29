@@ -28,8 +28,10 @@ export function AddEmployeeModal({ onSuccess }: AddEmployeeModalProps) {
   const createEmployeeMutation = useMutation({ mutationFn: createEmployee });
   const { data: users = [], isLoading: isLoadingUsers } = useUsers();
 
-  // Only show users with role 'BaseUser'
-  const baseUserOptions = users.filter(user => user.role === 'BaseUser');
+  // Only show users with role 'customer' (case-insensitive)
+  const customerOptions = users.filter(user => 
+    user.role?.toLowerCase() === 'customer'
+  );
 
   const [formData, setFormData] = useState<CreateEmployeeCommand>({
     userId: "",
@@ -74,9 +76,11 @@ export function AddEmployeeModal({ onSuccess }: AddEmployeeModalProps) {
       setIsOpen(false);
       resetFormData();
       queryClient.invalidateQueries({ queryKey: ["employees"] });
-    } catch (error: any) {
-      if (error.response?.data) {
-        toast.error(error.response.data.message || "Error creating employee");
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'response' in error && 
+          error.response && typeof error.response === 'object' && 'data' in error.response &&
+          typeof error.response.data === 'object' && error.response.data && 'message' in error.response.data) {
+        toast.error(String(error.response.data.message) || "Error creating employee");
       } else {
         toast.error("Error creating employee");
       }
@@ -122,7 +126,7 @@ export function AddEmployeeModal({ onSuccess }: AddEmployeeModalProps) {
             <div className="col-span-2 space-y-2">
               <Label>Select User *</Label>
               <SearchableSelect
-                options={baseUserOptions.map((user) => ({
+                options={customerOptions.map((user) => ({
                   value: user.id,
                   label: `${user.firstName} ${user.lastName} (${user.email})`,
                 }))}

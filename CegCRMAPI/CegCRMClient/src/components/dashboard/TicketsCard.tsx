@@ -32,20 +32,24 @@ export function TicketsCard({
   showResolutionRate = true,
 }: TicketsCardProps) {
   const openTickets = tickets.filter(
-    (ticket) => ticket.status === TicketStatus.Open || ticket.status === "Open"
+    (ticket) => (ticket.status === TicketStatus.Open || ticket.status === "Open") && !ticket.assignedEmployeeId
   ).length;
 
-  const resolvedTickets = tickets.filter(
+  const resolvedByAITickets = tickets.filter(
     (ticket) => ticket.status === TicketStatus.ResolvedByAI || ticket.status === "ResolvedByAI"
   ).length;
 
+  const closedTickets = tickets.filter(
+    (ticket) => ticket.status === TicketStatus.Closed || ticket.status === "Closed"
+  ).length;
+
   const assignedTickets = tickets.filter(
-    (ticket) => ticket.status === TicketStatus.AssignedToEmployee || ticket.status === "AssignedToEmployee"
+    (ticket) => (ticket.status === TicketStatus.Open || ticket.status === "Open") && ticket.assignedEmployeeId
   ).length;
 
   const totalTickets = tickets.length;
   const resolutionRate =
-    totalTickets > 0 ? (resolvedTickets / totalTickets) * 100 : 0;
+    totalTickets > 0 ? (closedTickets / totalTickets) * 100 : 0;
 
   return (
     <Card className="overflow-hidden">
@@ -60,7 +64,7 @@ export function TicketsCard({
       </CardHeader>
       <CardContent>
         <div className="grid gap-4">
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-4 gap-4">
             <div className="flex flex-col space-y-1.5 rounded-lg border p-3">
               <div className="flex items-center space-x-2">
                 <AlertCircle className="h-4 w-4 text-yellow-500" />
@@ -83,10 +87,19 @@ export function TicketsCard({
               <div className="flex items-center space-x-2">
                 <CheckCircle2 className="h-4 w-4 text-green-500" />
                 <span className="text-sm font-medium text-muted-foreground">
-                  Resolved
+                  AI Resolved
                 </span>
               </div>
-              <div className="text-2xl font-bold">{resolvedTickets}</div>
+              <div className="text-2xl font-bold">{resolvedByAITickets}</div>
+            </div>
+            <div className="flex flex-col space-y-1.5 rounded-lg border p-3">
+              <div className="flex items-center space-x-2">
+                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                <span className="text-sm font-medium text-muted-foreground">
+                  Closed
+                </span>
+              </div>
+              <div className="text-2xl font-bold">{closedTickets}</div>
             </div>
           </div>
 

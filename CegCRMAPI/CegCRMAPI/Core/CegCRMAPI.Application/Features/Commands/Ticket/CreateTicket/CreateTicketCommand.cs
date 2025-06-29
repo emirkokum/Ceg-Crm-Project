@@ -60,7 +60,7 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, A
                 UserId = Guid.Parse(userId),
                 Description = request.Description,
                 AiSuggestedSolution = aiSuggestion,
-                FinalSolution = aiSuggestion,
+                FinalSolution = null,
                 Status = TicketStatus.ResolvedByAI,
                 AssignedEmployeeId = null
             };

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import {
   Table,
   TableBody,
@@ -9,6 +10,8 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Ticket } from "@/types/ticket";
+import { Employee } from "@/types/employee";
+import API from "@/api/axios";
 
 interface MyTicketsTableProps {
   tickets: Ticket[];
@@ -17,6 +20,18 @@ interface MyTicketsTableProps {
 
 export default function MyTicketsTable({ tickets, isLoading }: MyTicketsTableProps) {
   const navigate = useNavigate();
+
+  // Tüm employee'leri çek
+  const { data: employees = [], isLoading: isLoadingEmployees } = useQuery({
+    queryKey: ["employees"],
+    queryFn: async () => {
+      const response = await API.get("/Employees");
+      return response.data.data as Employee[];
+    },
+  });
+
+  // Employee'leri ID'ye göre map'le
+  const employeeMap = new Map(employees.map(emp => [emp.id, emp]));
 
   const getStatusColor = (status: number | string) => {
     const statusStr = typeof status === 'string' ? status : String(status);
@@ -84,29 +99,49 @@ export default function MyTicketsTable({ tickets, isLoading }: MyTicketsTablePro
           <TableRow>
             <TableHead>Description</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Assigned Employee</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {tickets.map((ticket) => (
-            <TableRow
-              key={ticket.id}
-              className="cursor-pointer transition-colors hover:bg-muted/50 hover:border-l-2 hover:border-l-primary"
-              onClick={() => handleRowClick(ticket.id)}
-            >
-              <TableCell className="max-w-xs">
-                <div className="truncate">
-                  {ticket.description.length > 100
-                    ? `${ticket.description.substring(0, 100)}...`
-                    : ticket.description}
-                </div>
-              </TableCell>
-              <TableCell>
-                <Badge variant="secondary" className={getStatusColor(ticket.status)}>
-                  {getStatusLabel(ticket.status)}
-                </Badge>
-              </TableCell>
-            </TableRow>
-          ))}
+          {tickets.map((ticket) => {
+            const employee = ticket.assignedEmployeeId ? employeeMap.get(ticket.assignedEmployeeId) : null;
+            
+            return (
+              <TableRow
+                key={ticket.id}
+                className="cursor-pointer transition-colors hover:bg-muted/50 hover:border-l-2 hover:border-l-primary"
+                onClick={() => handleRowClick(ticket.id)}
+              >
+                <TableCell className="max-w-xs">
+                  <div className="truncate">
+                    {ticket.description.length > 100
+                      ? `${ticket.description.substring(0, 100)}...`
+                      : ticket.description}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge variant="secondary" className={getStatusColor(ticket.status)}>
+                    {getStatusLabel(ticket.status)}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  {ticket.assignedEmployeeId ? (
+                    isLoadingEmployees ? (
+                      <div className="text-sm text-muted-foreground">Loading...</div>
+                    ) : employee ? (
+                      <div className="text-sm font-medium">
+                        {employee.user.firstName} {employee.user.lastName}
+                      </div>
+                    ) : (
+                      <span className="text-muted-foreground text-sm">Employee not found</span>
+                    )
+                  ) : (
+                    <span className="text-green-600 text-sm font-medium">Resolved by AI</span>
+                  )}
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </div>

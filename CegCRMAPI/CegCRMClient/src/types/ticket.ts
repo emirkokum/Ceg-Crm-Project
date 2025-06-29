@@ -1,7 +1,10 @@
+import { Employee } from "./employee";
+
 export interface Ticket {
   id: string;
   userId: string;
   assignedEmployeeId: string | null;
+  assignedEmployee?: Employee | null;
   status: number | string;
   description: string;
   aiSuggestedSolution?: string;

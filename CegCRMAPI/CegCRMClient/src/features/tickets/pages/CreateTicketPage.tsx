@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useCreateTicket, useUpdateTicketStatus, useAssignRandomEmployee, useTicketsByCustomer } from "@/features/hooks/useTicketApi";
+import { useCreateTicket, useUpdateTicketWithSolution, useAssignRandomEmployee, useTicketsByCustomer } from "@/features/hooks/useTicketApi";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -21,7 +21,7 @@ export default function CreateTicketPage() {
   const navigate = useNavigate();
   const { userInfo } = useAuth();
   const createTicket = useCreateTicket();
-  const updateStatus = useUpdateTicketStatus();
+  const updateTicketWithSolution = useUpdateTicketWithSolution();
   const assignRandom = useAssignRandomEmployee();
   
   // Fetch user's tickets
@@ -60,12 +60,15 @@ export default function CreateTicketPage() {
     if (!createdTicket) return;
     
     try {
-      await updateStatus.mutateAsync({
-        ticketId: createdTicket.id,
-        newStatus: 4 
+      await updateTicketWithSolution.mutateAsync({
+        id: createdTicket.id,
+        data: {
+          status: TicketStatus.Closed,
+          finalSolution: createdTicket.aiSuggestedSolution
+        }
       });
       toast.success("Ticket marked as resolved");
-      navigate("/");
+      navigate(`/tickets/${createdTicket.id}`);
     } catch (error) {
       console.error("Error marking ticket as resolved:", error);
       toast.error("Error marking ticket as resolved");
@@ -76,19 +79,16 @@ export default function CreateTicketPage() {
     if (!createdTicket) return;
     
     try {
-      await updateStatus.mutateAsync({
-        ticketId: createdTicket.id,
-        newStatus: TicketStatus.AssignedToEmployee
-      });
+      await assignRandom.mutateAsync(createdTicket.id);
       toast.success("Ticket assigned to an employee");
-      navigate("/");
+      navigate(`/tickets/${createdTicket.id}`);
     } catch (error) {
       console.error("Error assigning ticket:", error);
       toast.error("Error assigning ticket to employee");
     }
   };
 
-  const isLoading = createTicket.isPending || updateStatus.isPending || assignRandom.isPending;
+  const isLoading = createTicket.isPending || updateTicketWithSolution.isPending || assignRandom.isPending;
 
   return (
     <div className="container mx-auto py-10 max-w-4xl">
@@ -201,7 +201,7 @@ export default function CreateTicketPage() {
                       disabled={isLoading}
                       className="flex-1 bg-green-600 hover:bg-green-700"
                     >
-                      {updateStatus.isPending ? (
+                      {updateTicketWithSolution.isPending ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           Processing...

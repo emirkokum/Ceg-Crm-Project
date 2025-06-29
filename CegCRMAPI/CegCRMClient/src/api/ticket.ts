@@ -1,5 +1,5 @@
 import API from "./axios";
-import { Ticket, CreateTicket, UpdateTicket } from "@/types/ticket";
+import { CreateTicket, UpdateTicket } from "@/types/ticket";
 
 export const getAllTickets = () => API.get("/Tickets");
 export const getTicketById = (id: string) => API.get(`/Tickets/${id}`);
@@ -15,4 +15,11 @@ export const updateTicketStatus = (ticketId: string, newStatus: number) =>
 export const getTicketsByCustomer = (customerId: string) => API.get(`/Tickets/ByCustomer?customerId=${customerId}`);
 
 export const assignRandomEmployee = (ticketId: string) => 
-  API.post(`/Tickets/${ticketId}/assign-random-employee`); 
+  API.post(`/Tickets/${ticketId}/assign-random-employee`);
+
+// Backend'deki UpdateTicketCommand'a uygun olarak ticket güncelleme
+export const updateTicketWithSolution = (id: string, data: {
+  status?: number;
+  finalSolution?: string;
+  assignedEmployeeId?: string;
+}) => API.put(`/Tickets/${id}`, data); 

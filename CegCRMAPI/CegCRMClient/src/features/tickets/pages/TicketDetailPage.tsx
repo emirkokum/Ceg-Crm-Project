@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useTicket, useUpdateTicketStatus, useAssignRandomEmployee } from "@/features/hooks/useTicketApi";
+import { useTicket, useUpdateTicketWithSolution, useAssignRandomEmployee } from "@/features/hooks/useTicketApi";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,19 +19,21 @@ export default function TicketDetailPage() {
   const navigate = useNavigate();
   
   const { data: ticket, isLoading, error } = useTicket(ticketId || "");
-  const updateStatus = useUpdateTicketStatus();
+  const updateTicketWithSolution = useUpdateTicketWithSolution();
   const assignToSupport = useAssignRandomEmployee();
 
   const handleSolutionWorked = async () => {
     if (!ticket) return;
     
     try {
-      await updateStatus.mutateAsync({
-        ticketId: ticket.id,
-        newStatus: TicketStatus.Closed
+      await updateTicketWithSolution.mutateAsync({
+        id: ticket.id,
+        data: {
+          status: TicketStatus.Closed,
+          finalSolution: ticket.aiSuggestedSolution
+        }
       });
       toast.success("Ticket marked as resolved");
-      navigate("/tickets/create");
     } catch (error) {
       console.error("Error marking ticket as resolved:", error);
       toast.error("Error marking ticket as resolved");
@@ -44,7 +46,6 @@ export default function TicketDetailPage() {
     try {
       await assignToSupport.mutateAsync(ticket.id);
       toast.success("Ticket assigned to support team");
-      navigate("/tickets/create");
     } catch (error) {
       console.error("Error assigning ticket to support:", error);
       toast.error("Error assigning ticket to support team");
@@ -111,7 +112,9 @@ export default function TicketDetailPage() {
     }
   };
 
-  const isLoadingActions = updateStatus.isPending || assignToSupport.isPending;
+  const isLoadingActions = updateTicketWithSolution.isPending || assignToSupport.isPending;
+
+  const shouldShowActionButtons = ticket && (ticket.status === TicketStatus.ResolvedByAI || ticket.status === 'ResolvedByAI');
 
   if (isLoading) {
     return (
@@ -198,6 +201,36 @@ export default function TicketDetailPage() {
           </CardHeader>
         </Card>
 
+        {/* Assigned Employee */}
+        {ticket.assignedEmployee && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Assigned Employee</CardTitle>
+              <CardDescription>
+                Support team member handling this ticket
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center space-x-4">
+                <div className="bg-primary/10 rounded-full p-2">
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="font-medium">
+                    {ticket.assignedEmployee.user.firstName} {ticket.assignedEmployee.user.lastName}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {ticket.assignedEmployee.user.email}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Employee #{ticket.assignedEmployee.employeeNumber}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Ticket Description */}
         <Card>
           <CardHeader>
@@ -258,7 +291,7 @@ export default function TicketDetailPage() {
         )}
 
         {/* Action Buttons - Only show if ticket is resolved by AI */}
-        {(ticket.status === TicketStatus.ResolvedByAI || ticket.status === 'ResolvedByAI') && (
+        {shouldShowActionButtons && (
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Did this solution work for you?</CardTitle>
@@ -273,7 +306,7 @@ export default function TicketDetailPage() {
                   disabled={isLoadingActions}
                   className="flex-1 bg-green-600 hover:bg-green-700"
                 >
-                  {updateStatus.isPending ? (
+                  {updateTicketWithSolution.isPending ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Processing...

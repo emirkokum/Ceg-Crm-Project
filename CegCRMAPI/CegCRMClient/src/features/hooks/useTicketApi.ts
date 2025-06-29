@@ -9,8 +9,9 @@ import {
   updateTicketStatus,
   getTicketsByCustomer,
   assignRandomEmployee,
+  updateTicketWithSolution,
 } from "@/api/ticket";
-import { Ticket, CreateTicket, UpdateTicket } from "@/types/ticket";
+import { Ticket, UpdateTicket } from "@/types/ticket";
 
 export const useTickets = () => {
   return useQuery({
@@ -116,6 +117,18 @@ export const useAssignRandomEmployee = () => {
 
   return useMutation({
     mutationFn: assignRandomEmployee,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tickets"] });
+    },
+  });
+};
+
+export const useUpdateTicketWithSolution = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: { status?: number; finalSolution?: string; assignedEmployeeId?: string } }) =>
+      updateTicketWithSolution(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tickets"] });
     },
