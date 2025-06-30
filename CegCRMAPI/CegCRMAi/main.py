@@ -47,8 +47,8 @@ vectorstore = PGVector(
 )
 
 # En hızlı LLM modeli (CPU için optimize)
-tokenizer = AutoTokenizer.from_pretrained("google/flan-t5-small")  # En küçük model, en hızlı
-model = AutoModelForSeq2SeqLM.from_pretrained("google/flan-t5-small")
+tokenizer = AutoTokenizer.from_pretrained("google/flan-t5-base")
+model = AutoModelForSeq2SeqLM.from_pretrained("google/flan-t5-base")
 pipe = pipeline(
     "text2text-generation",
     model=model,
@@ -58,7 +58,6 @@ pipe = pipeline(
     top_p=0.9,
     do_sample=True,
     truncation=True,  # Token length sorununu çöz
-    padding=True
 )
 llm = HuggingFacePipeline(pipeline=pipe)
 
@@ -108,8 +107,8 @@ async def upload(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="File decoding failed.")
     
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=500,  # Daha küçük chunk (token limit için)
-        chunk_overlap=50  # Daha az overlap
+        chunk_size=1000,
+        chunk_overlap=200
     )
     chunks = splitter.split_text(text)
 
