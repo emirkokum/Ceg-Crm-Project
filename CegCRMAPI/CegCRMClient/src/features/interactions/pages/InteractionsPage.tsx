@@ -5,7 +5,7 @@ import {
 } from "@/features/hooks/useInteractionApi";
 import InteractionTable from "../components/InteractionTable";
 import { Button } from "@/components/ui/button";
-import { Plus, CalendarIcon } from "lucide-react";
+import { Plus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -68,6 +68,7 @@ export default function InteractionsPage() {
         interactionDate: "",
       });
     } catch (error) {
+      console.error("Error creating interaction:", error);
       toast.error("Error creating interaction");
     }
   };
@@ -111,9 +112,6 @@ export default function InteractionsPage() {
         </Button>
       </div>
 
-      {/* Overview Card with filtered data */}
-      <InteractionsOverviewCard interactions={filteredInteractions} isLoading={isLoading || isLoadingCustomers} />
-
       <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between mb-4">
         <Input
           placeholder="Search With Name..."
@@ -140,6 +138,16 @@ export default function InteractionsPage() {
 
       <InteractionTable data={filteredInteractions} />
 
+      {/* Overview Card with filtered data */}
+      <InteractionsOverviewCard 
+        interactions={interactions}
+        title="Interactions With Customers"
+        description="General view to Interactions"
+        showDistribution={true}
+        filterByDate={false}
+        isLoading={isLoading || isLoadingCustomers} 
+      />
+
       {/* Create Modal */}
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
         <DialogContent>
@@ -152,7 +160,7 @@ export default function InteractionsPage() {
               <div className="col-span-2">
                 <label className="text-sm font-medium">Customer</label>
                 <SearchableSelect
-                  options={customers.map((c: any) => ({
+                  options={customers.map((c: { id: string; fullName: string }) => ({
                     value: c.id,
                     label: c.fullName,
                   }))}
