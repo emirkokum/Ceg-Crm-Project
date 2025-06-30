@@ -23,17 +23,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUserInfo(JSON.parse(storedUserInfo));
           }
         } else {
-          if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
-            handleLogout();
-          }
+          console.warn('Token veya role bulunamadı - kullanıcı giriş yapmamış olabilir');
         }
       } catch (error) {
         console.error('Error initializing auth state:', error);
-        if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
-          handleLogout();
-        } else {
-          setIsLoading(false);
-        }
+        console.warn('Auth state hatası - kullanıcı giriş yapmamış olabilir');
+        setIsLoading(false);
       } finally {
         setIsLoading(false);
       }

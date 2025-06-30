@@ -28,12 +28,7 @@ API.interceptors.response.use(
     });
 
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('role');
-      
-      if (!window.location.pathname.includes('/login')) {
-        window.location.href = '/login';
-      }
+      console.warn('401 Unauthorized - Token geçersiz olabilir');
     }
 
     return Promise.reject(error);
