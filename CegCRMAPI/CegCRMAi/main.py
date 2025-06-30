@@ -1,8 +1,6 @@
 import os
 from typing import Any
 from fastapi import FastAPI, HTTPException, UploadFile, File
-from fastapi.responses import JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlmodel import SQLModel, Field, create_engine, Session
 from sqlalchemy import Column, text as sa_text
@@ -15,74 +13,81 @@ from langchain_community.vectorstores import PGVector
 from langchain.chains import ConversationalRetrievalChain
 from langchain_core.prompts import PromptTemplate
 from langchain_community.llms import HuggingFacePipeline
-
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 
-# Load environment variables
+# Load .env
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 engine = create_engine(DATABASE_URL, echo=True)
 
-# FastAPI app initialization
+# Initialize FastAPI
 app = FastAPI()
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-# Vector DB table definition
+# Define DB Table
 class DocChunk(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     text: str
-    vector: Any = Field(sa_column=Column("vector", Vector(dim=1536)))
+    vector: Any = Field(sa_column=Column("vector", Vector(dim=768)))
 
     class Config:
         arbitrary_types_allowed = True
 
 SQLModel.metadata.create_all(engine)
 
-# Embedding & Model Initialization
-embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+# Daha güçlü embedding modeli
+embeddings = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-mpnet-base-v2",
+    model_kwargs={'device': 'cpu'},
+    encode_kwargs={'normalize_embeddings': True}
+)
 vectorstore = PGVector(
     connection_string=DATABASE_URL,
     embedding_function=embeddings,
     collection_name="docchunk"
 )
 
-tokenizer = AutoTokenizer.from_pretrained("google/flan-t5-small")
+# En hızlı LLM modeli (CPU için optimize)
+tokenizer = AutoTokenizer.from_pretrained("google/flan-t5-small")  # En küçük model, en hızlı
 model = AutoModelForSeq2SeqLM.from_pretrained("google/flan-t5-small")
 pipe = pipeline(
     "text2text-generation",
     model=model,
     tokenizer=tokenizer,
-    max_length=256,  
-    temperature=0.3, 
-    top_p=0.9
+    max_new_tokens=200,  # max_length yerine max_new_tokens kullan
+    temperature=0.1,  # Daha tutarlı yanıtlar için
+    top_p=0.9,
+    do_sample=True,
+    truncation=True,  # Token length sorununu çöz
+    padding=True
 )
 llm = HuggingFacePipeline(pipeline=pipe)
 
-# Prompt template
+# İngilizce optimized Prompt Template
 prompt = PromptTemplate(
     input_variables=["question", "context"],
-    template = """
-You are a helpful AI assistant for a customer support system. A user has submitted a question. Based on the knowledge documents below, provide a clear, helpful, and friendly answer. DO NOT use vague answers like "Contact support" unless there is no other relevant information.
-
-Make sure your answer is informative and includes actionable steps if applicable. Write in complete sentences. Do not just say "A)." or answer with a single word.
-
-Question:
-{question}
+    template="""You are a helpful customer service assistant. Use the following context to answer the question accurately and helpfully.
 
 Context:
 {context}
 
-Answer:
-"""
+Question: {question}
+
+Instructions:
+- If the context contains relevant information, provide a detailed and helpful answer based on that information
+- If the context doesn't contain relevant information, say "I'm sorry, I couldn't find information about that in our knowledge base"
+- Keep your answer concise but complete
+- Answer in English
+
+Answer:"""
 )
 
-# Retrieval + QA chain
-retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
+# Optimize edilmiş QA Chain
+retriever = vectorstore.as_retriever(
+    search_type="similarity",  # threshold kaldırıldı, daha esnek arama
+    search_kwargs={
+        "k": 5,  # Daha az chunk (token limit için)
+    }
+)
 qa_chain = ConversationalRetrievalChain.from_llm(
     llm=llm,
     retriever=retriever,
@@ -102,7 +107,10 @@ async def upload(file: UploadFile = File(...)):
     except UnicodeDecodeError:
         raise HTTPException(status_code=400, detail="File decoding failed.")
     
-    splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=500,  # Daha küçük chunk (token limit için)
+        chunk_overlap=50  # Daha az overlap
+    )
     chunks = splitter.split_text(text)
 
     if not chunks:
@@ -134,6 +142,39 @@ async def predict(request: PredictRequest):
     result = qa_chain.invoke({"question": request.text, "chat_history": []})
     return PredictResponse(suggestion=result["answer"])
 
+# Debug endpoint - Retrieval test
+class DebugPredictResponse(BaseModel):
+    question: str
+    suggestion: str
+    retrieved_chunks: list
+    chunk_count: int
+
+@app.post("/predict-debug", response_model=DebugPredictResponse)
+async def predict_debug(request: PredictRequest):
+    if not request.text.strip():
+        raise HTTPException(status_code=400, detail="Question text cannot be empty.")
+    
+    # Retrieval test
+    docs = retriever.get_relevant_documents(request.text)
+    retrieved_chunks = []
+    for i, doc in enumerate(docs):
+        retrieved_chunks.append({
+            "chunk_id": i + 1,
+            "content": doc.page_content[:200] + "..." if len(doc.page_content) > 200 else doc.page_content,
+            "metadata": doc.metadata,
+            "full_length": len(doc.page_content)
+        })
+    
+    # QA Chain
+    result = qa_chain.invoke({"question": request.text, "chat_history": []})
+    
+    return DebugPredictResponse(
+        question=request.text,
+        suggestion=result["answer"],
+        retrieved_chunks=retrieved_chunks,
+        chunk_count=len(docs)
+    )
+
 # List Documents
 @app.get("/documents")
 def list_documents():
@@ -160,7 +201,7 @@ def list_documents():
         ]
     }
 
-# Delete Document by File Name
+# Delete Document
 @app.delete("/documents/{file_name}")
 def delete_document_by_file_name(file_name: str):
     with engine.connect() as conn:

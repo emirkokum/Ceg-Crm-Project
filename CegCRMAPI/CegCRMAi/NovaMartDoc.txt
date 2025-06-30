@@ -1,0 +1,389 @@
+# NovaMart Customer Support FAQs
+
+## Order Issues
+
+**Q: I didn’t receive my order yet. What should I do?**
+
+**A:** If your order hasn’t arrived by the expected delivery date (or says *delivered* but you can’t find it), here are steps to take:
+
+1. **Verify your shipping details:** Double-check that your shipping address on the order is correct. Sometimes a typo or old address can cause misdelivery.
+2. **Check for delivery attempts or notifications:** Look for any notice of attempted delivery (a slip on your door or an email). Also review the order status in your account for any updated delivery information.
+3. **Inspect the delivery area:** Look around the usual drop-off locations at your home. Couriers may leave packages in a safe spot (porch, garage, back door) or with building management. Also check your mailbox (for smaller items).
+4. **Ask neighbors or household members:** See if someone else accepted the package on your behalf. It’s common for neighbors or front-desk receptionists to hold onto a package for you.
+5. **Wait 48 hours:** In some cases, packages might be marked as delivered *up to 48 hours* before they actually arrive. Carriers sometimes pre-scan items as delivered. Give it an extra day or two.
+6. **Contact the carrier:** If 48 hours have passed, reach out to the delivery company (postal service or courier) with your tracking number to inquire about the package’s whereabouts. They might be able to provide details or coordinate a redelivery.
+7. **Still no luck? Reach out for help:** If you still cannot locate the package after doing all the above, and especially if the order status shows delivered or long overdue, contact NovaMart Customer Service. We’ll investigate the issue. For orders sold by third-party sellers on NovaMart’s marketplace, you can also contact the seller directly for assistance. In many cases, if a package is confirmed lost, we will arrange a replacement or refund for you.
+
+**Q: How can I track my order status?**
+
+**A:** Tracking your NovaMart order is easy:
+
+- **Via the Website:** Log in to your account and go to **Your Orders**. Find the order you want to track and click **“Track Package”** (or **“Track Order”**) next to it. This will display the latest tracking updates, including the current location of the package and the estimated delivery date.
+- **Via the Mobile App:** Go to the Orders section in the NovaMart app, select the order, and tap on the tracking option.
+- **Tracking Details:** Once you open the tracking page, you’ll see a history of scans (e.g., “Shipped – In Transit – Out for Delivery – Delivered”). Updates may include the carrier name and a tracking number. If your order has multiple items or packages, each may have its own tracking information and delivery date.
+- **No Tracking Available?:** If you don’t see a tracking number, it could be an order from a third-party seller or a digital item. For marketplace orders, the seller might not have provided tracking immediately – give it a bit of time or contact the seller if needed. For any delivery without tracking, you’ll at least see an estimated delivery window in Your Orders.
+- **Notifications:** NovaMart will also send shipment confirmation emails with tracking links. You can opt into push notifications in the app to get real-time updates on your delivery.
+
+**Q: Can I cancel or change my order after it’s been placed?**
+
+**A:** It depends on the order status, but we’ll guide you through the options:
+
+- **Order Cancellation (before shipment):** If your order hasn’t shipped yet, you can cancel it online. Go to **Your Orders**, find the order, and select the option to **Cancel Items**. Choose the items you want to cancel (or the whole order) and confirm. You’ll receive a confirmation email if cancellation is successful. (If you don’t see a cancel option, the order may have already processed for shipment.)
+- **Changing Address or Details (before shipment):** Unfortunately, you *cannot edit* the shipping address or payment method on an order once it’s placed. The only workaround is to cancel the order (if possible) and place a new one with the correct details. This is especially true for marketplace orders from third-party sellers – NovaMart doesn’t support modifying the address after purchase; you would need to request a cancellation and reorder with the correct address.
+- **Too Late to Cancel (already shipped):** If your order is in the shipping process or already shipped out, we cannot cancel or alter it. In this case, you have a couple of options:
+    - Wait for the package to arrive, then **initiate a return** if you don’t want the item. NovaMart’s return policy will allow you to send it back for a refund in most cases.
+    - If it was a marketplace item, you can also message the seller to let them know you’d like to return it once received.
+- **Partial Cancellation:** If you ordered multiple items and only want to cancel one of them, our system allows that as long as that item isn’t shipped yet. Go to Cancel Items and check off just the items you wish to cancel.
+- **Changing an Order (after receipt):** If you want a different size or color, or you missed adding something, you can’t change an existing order that’s already processing. Instead, you can place a new order for the new item and, if needed, return the original item.
+- **Contact Support if Needed:** If you’re unable to cancel online (for example, the item is in a stage where online cancellation is closed), you can reach out to NovaMart support for assistance. We can sometimes help prevent a shipment if it’s extremely soon after ordering, but once it’s in the hands of the carrier, we can’t stop it. So act quickly via the website for the best chance.
+
+## Payment Problems
+
+**Q: I was charged twice for my order. What should I do?**
+
+**A:** Seeing two charges can be concerning, but in most cases there’s an explanation:
+
+- **Split Shipments:** First, check if your order was split into multiple shipments. NovaMart (and our sellers) charge when each item ships. So if one order ships in two parts, you’ll see two separate charges on your card, but the **total** should equal the correct amount for your order. This is normal and not an extra charge. You can verify by matching the amounts to items shipped.
+- **Authorization Hold:** If the duplicate charge is for the exact same amount and on the same day, one of them might be a pending *authorization*. When you place an order, NovaMart requests payment authorization from your bank. If an order is edited or the first attempt had an issue, multiple authorizations can appear. These pending holds **are not final charges** and should disappear from your statement in a few days.
+- **Double Charge Error:** If you’ve confirmed that you have truly been charged twice for the *same* order (and not due to the above scenarios), here’s what to do:
+    - Contact your bank or credit card to ensure one charge isn’t still pending. Sometimes banks can explain if one is just an authorization.
+    - Reach out to NovaMart Customer Service with your order number and proof of the double charge. We will investigate and **refund any duplicate charge** promptly.
+- **Check Order History:** It’s also helpful to log in to NovaMart and view your Transactions or Order History. Make sure there wasn’t a duplicate order placed by mistake. If two identical orders were made, you’d need to cancel one or return it.
+- **Time Frame:** If a duplicate charge (that shouldn’t be there) actually went through, NovaMart will work with you to fix it. Refunds for billing errors are typically processed quickly once confirmed. If you ever notice an unexpected charge, let us know. We want to ensure you only pay for what you purchased, nothing more.
+
+**Q: How do I request a refund for an order?**
+
+**A:** The process for requesting a refund depends on the situation, but here are common scenarios and how to handle them:
+
+- **Order Not Received or Wrong Item:** If you never got your order, or you received something incorrect or defective, you can request a refund through our system. Go to **Your Orders**, locate the order in question, and click **“Problem with Order”**. From the options, select the issue that best describes your case (e.g. “Item not received” or “Item defective”). Then select **“Request Refund”** and submit any comments or details relevant to the claim. This will alert NovaMart (and the seller, if applicable) that you’re seeking a refund.
+- **Order Delivered – Want to Return:** If you did receive the product but want to return it for a refund (for reasons like it’s unwanted, doesn’t fit, etc.), you should initiate a **return** rather than a straight refund request. See the *Returns* section of this FAQ for how to send back an item. Once the return is received, we’ll refund you.
+- **Cancelled Order:** If you cancelled an order before it shipped, you’ll automatically be refunded in full. You can verify the refund by checking the order status (it should say cancelled) and your original payment method statement. Refunds for cancellations usually process within a few business days.
+- **Third-Party Seller Orders:** If your purchase was from a marketplace seller and something went wrong, NovaMart’s system still allows you to request a refund via the **Problem with Order** flow above. The seller is given a chance to respond or resolve the issue. If they don’t resolve it in a timely manner, NovaMart will step in to ensure you get a refund (under our guarantee policy).
+- **Follow-Up:** After requesting a refund, you can monitor its status. Go to Your Orders and click **“View Return/Refund Status”** next to the item[be](https://www.amazon.com.be/-/en/gp/help/customer/display.html?nodeId=G6E3B2E8QPHQ88KF#:~:text=You%20can%20view%20the%20status,Note%3A%20Before%20returning%20items). We’ll also email you updates. Refund approvals can take a couple of days. If we need more information (rarely), customer support will reach out.
+- **Note:** Refunds are typically issued to the original payment method. It may take 5-7 business days for your bank to post the money back once NovaMart processes it. We’ll cover refund timelines in detail in the Returns section.
+
+**Q: How can I get an invoice or receipt for my purchase?**
+
+**A:** Every order you place on NovaMart will have an order confirmation email (which serves as a basic receipt), but you can also get a formal invoice if needed:
+
+- **Print/Download from Account:** Log in to NovaMart and go to **Your Orders**. Find the order you need an invoice for. Under the order details, look for a link or button that says **“Invoice”**, **“Receipt”**, or **“Order Details”**. Click that, and a printable invoice will appear, showing item prices, taxes, shipping, etc. Then use your browser’s print function to print it or save it as PDF. On some devices, it might directly give a PDF download.
+- **Email Invoice:** NovaMart also emails a detailed receipt at the time of shipping. Check your email (and spam folder) for a message with the subject “Your NovaMart Order Invoice” or similar. That often contains a PDF attachment of the invoice.
+- **Business/Tax Invoices:** If you provided a VAT ID or are using NovaMart Business (if applicable), you can find tax invoices in your account’s **Invoices** or **Tax Documents** section. Ensure your account is set to receive invoices.
+- **Couldn’t Find It?** If the invoice link isn’t showing in Your Orders (occasionally with third-party sellers or digital items), you can contact the seller via NovaMart or reach out to our support. We’ll help procure an official invoice.
+- **Invoices for Gift Orders:** If you bought an item as a gift, the recipient’s package won’t include prices. But *you* can still print the invoice from your account if needed for your records. It will be marked as a gift receipt.
+- **Order History Reports:** For many purchases, especially if you need multiple invoices, you can use the **Order History** report tool in your account to download receipts for a range of dates. This is useful for expense tracking.
+
+**Q: My payment was declined. How can I complete my order?**
+
+**A:** If your payment didn’t go through, don’t worry — here’s what you can do:
+
+- **Check the Basics:** First, double-check that you entered your card details correctly. An incorrect card number, expiration date, CVV code, or billing ZIP code can cause declines. Ensure the billing address you provided matches what your bank has on file for that card.
+- **Sufficient Funds/Credit:** Make sure your account has enough funds or credit limit available for the purchase. Sometimes a card is declined if the purchase exceeds your available balance or credit limit.
+- **Contact Your Bank (if needed):** Banks have security measures that might block a transaction if it looks unusual (e.g., a large amount or an online order from a new retailer). If your card details are correct but the payment is still declined, call the customer service number on the back of your card. Ask if there are any holds or blocks on your card. They can often tell you the reason (expired card, suspected fraud, etc.) and help clear the issue. After confirming with your bank, you can try the payment again.
+- **Retry the Payment:** After addressing any potential bank issues, go back to NovaMart and **retry the payment**. If the order is still open in your account (with status “Payment declined” or “Payment to retry”), you should see an option to **update payment method** or **retry**. For example, in **Your Orders** there may be a **“Retry Payment”** button for that order – click it and either re-enter the same card or choose a different payment method.
+- **Alternative Payment Method:** If the issue persists with one card, try using another card or payment method (if you have one available, such as PayPal, if NovaMart supports it, or a different credit/debit card). This can quickly determine if the problem is with the specific card.
+- **During Checkout vs. After:** If the decline happened during checkout and you haven’t placed the order yet, simply start the checkout again and use the corrected or new payment method. If the order is in a pending state in your account awaiting payment, use the instructions above to update the payment.
+- **Keep an Eye on Email:** NovaMart will usually send an email if a payment is declined, with instructions. We typically give a window (e.g. 24-48 hours) to fix the payment issue before the order is automatically cancelled. So don’t delay too long.
+- **Still Having Trouble?** If you’ve tried all the above and your payment still won’t go through, contact NovaMart support. We can help identify if there’s an account issue or a site issue. Occasionally, high security settings on a card require the bank to hear directly from you before approving (especially for international transactions). Once resolved, you can complete your purchase. We’re here to assist so you can successfully place your order.
+
+## Shipping & Delivery
+
+**Q: Do you ship internationally, and how does it work?**
+
+**A:** Yes, NovaMart ships to many countries worldwide! Here’s how international shipping works:
+
+- **Availability:** When you shop on NovaMart, make sure your shipping destination is set to your country. On the product page or at checkout, you’ll see if an item can be shipped internationally to you. NovaMart’s global shipping program covers a wide range of countries (over 100 destinations in many cases).
+- **Shipping Options & Costs:** International orders will present shipping options (e.g., standard or expedited) and the cost for each. Shipping fees and delivery times vary by destination. You’ll see an **estimated delivery timeframe** at checkout. For example, standard international delivery might be quoted as say 10-20 business days depending on your region. We partner with reliable carriers for overseas delivery.
+- **Customs & Import Duties:** The prices on our site do not include your country’s import taxes or customs fees (if any). However, NovaMart may estimate these at checkout. In many cases, you’ll have the option to pay import fees upfront at checkout, which means NovaMart (or our carrier) will handle customs clearance for you. This is often called an “Import Fees Deposit.” If you choose to pay at delivery instead, the carrier (postal service or courier) will collect the required fees before or upon delivering to you. The checkout will clearly indicate which method is used.
+- **Packaging and Documentation:** We’ll provide all necessary customs paperwork with your shipment (declaring the contents and value). You might need to provide identification to your customs office depending on local laws, but generally the process is seamless for you.
+- **Tracking:** International shipments come with tracking. Keep in mind that once the package leaves the origin country, you might also be able to track it via your country’s local postal service or the global carrier’s site using the same tracking number.
+- **Restrictions:** Certain items can’t be shipped internationally due to size, weight, or import restrictions (e.g., hazardous materials, some electronics). If an item is restricted, the site will usually inform you at checkout or prevent adding to cart.
+- **International Returns:** If you need to return an item internationally, note that the process might differ. Some items may not be economical to return across borders. Check our return policy for international orders. Sometimes NovaMart may issue a refund without return for low-cost items rather than having you ship it back, but that’s handled case by case.
+- In summary, we *do* support international shipping. Just be aware of potential extra costs (shipping fee and import duty) which will be shown before you confirm the order. We want our global customers to have a smooth shopping experience! 🌐✈️
+
+**Q: My item arrived damaged. What should I do?**
+
+**A:** We’re sorry to hear your package didn’t arrive in perfect condition. NovaMart will make this right. Please follow these steps:
+
+1. **Document the damage:** As soon as you notice an item is damaged, take clear photos of the damage and the packaging. This is useful for filing a claim either with NovaMart or the shipping carrier.
+2. **Initiate a return/replacement online:** Log in to NovaMart and go to **Your Orders**. Find the order with the damaged item and click **“Return or Replace Items.”** Select the item and choose the reason as “Item arrived damaged” (or similar).
+3. **Choose Refund or Replacement:** You’ll usually be given a choice to **Get a Refund** or **Get a Replacement**. If you still want the item, choose replacement – we’ll ship a new one out to you as soon as possible. If you prefer a refund, select that. NovaMart covers return shipping for damaged items, so you won’t pay return postage.
+4. **Return the item (if required):** In many cases, for a damaged item, we will still ask you to send the original item back, especially if it’s of high value. Print the return label provided (or use the QR code at the drop-off, if that option is given). Send the item back by the specified date. *Tip:* Use the original packaging if possible, and write “DAMAGED” on the box so it’s clear to our warehouse.
+5. **Replacement process:** If you requested a replacement, NovaMart will ship the new item right away (you don’t have to wait for us to get the damaged one first). We’ll use the same shipping speed as the original order. You’ll need to mail back the damaged item by the **Return By Date** given to avoid being charged for it. Essentially, we trust you to send it back. If we don’t receive the original back, we may charge your account for the item.
+6. **Refund process:** If you opted for a refund, once the item is returned (or once we’ve verified the damage through photo evidence for some cases), we’ll process your refund to your original payment method. Refund times can vary but are usually completed within a week of receiving your return.
+7. **No hassle:** If the online return system doesn’t allow you (for instance, if it says the item is not returnable), contact our Customer Support directly. For **damaged or defective items, even if marked non-returnable, NovaMart will provide a solution** – either a refund or replacement.
+8. **Keep all pieces:** Don’t throw anything away. If something like a electronics device arrived broken, keep all accessories and parts – usually we need the whole product back. In some situations, our team might even just ask for proof of destruction instead of return, but wait for confirmation on that.
+    
+    We know receiving a broken item is frustrating. Rest assured, NovaMart’s policy is to take care of it immediately either with a new item or your money back. Your satisfaction is our priority.
+    
+
+**Q: How can I change my delivery address after placing an order?**
+
+**A:** The ability to change a shipping address after an order is placed is very limited, so here’s what you need to know:
+
+- **Immediately After Order:** If you just placed the order (within minutes) and realize the address is wrong, try cancelling the order (see Order Issues section on cancellations) and then reorder with the correct address. This is the safest approach, since our system does *not* allow directly editing the address on an existing order for security reasons.
+- **Before Shipment (with Seller Assistance):** If your order is sold and shipped by NovaMart and it’s still processing, contact NovaMart support as soon as possible. In some cases, we might be able to update the address *before* it ships out, but this is not guaranteed. For third-party seller orders, NovaMart cannot change the address on the seller’s behalf once placed – you would need to ask the seller or, more effectively, cancel and re-purchase the item with the correct address.
+- **After Shipment:** Once an order has left the warehouse, the shipping address cannot be changed. What you *can* do is track the package (get the tracking number from Your Orders) and **contact the carrier** to see if they offer an intercept or reroute service. Some carriers (like UPS, FedEx) allow the recipient to request holding the package at a local facility or rerouting to a new address, but they might charge a fee and it’s not always possible.
+- **Package Delivered to Wrong Address:** If the order was shipped to an old or incorrect address that you don’t have access to, and it gets delivered there, the package might be lost. You could attempt to retrieve it (if it’s a previous residence or a typo that exists in your area). If retrieval fails, you’ll need to contact NovaMart support. We handle these on a case-by-case basis – often we’ll attempt to assist you with a re-order or refund, especially if it was a mistake in entering the address.
+- **Preventative Tip:** Always review your default address in your account before ordering. Remove outdated addresses from your address book to avoid selection mistakes. For each order, on the checkout page double-check the “Ship to” address one more time.
+    
+    In summary, after an order is placed, direct address changes through NovaMart aren’t possible due to fraud protection and logistical reasons. Cancellation and reordering is the recommended solution if the item hasn’t shipped. If it’s already on the way, see if the carrier can help or otherwise reach out to us. We’ll do our best to help secure your purchase for you.
+    
+
+## Account Management
+
+**Q: I forgot my password. How can I reset it?**
+
+**A:** Don’t worry, it happens to all of us. Resetting your NovaMart password is straightforward:
+
+1. **Go to the Login page:** Click on “Sign In” on NovaMart. When the login form appears, click **“Forgot password?”** (It might also say “Need help signing in?” and then “Forgot Password”).
+2. **Verify your identity:** Enter the email address (or phone number, if you use that for your account) associated with your NovaMart account. We’ll send a verification code or link to that email/phone.
+3. **Check your email or phone for the code:** You should receive a one-time code (sometimes called an OTP) or a password reset link. If you don’t see it within a couple of minutes, check your spam/junk folder just in case. For SMS, make sure you have cell reception.
+4. **Enter the code on NovaMart:** If you got a numeric code, return to NovaMart’s site and enter the code in the verification field. If you received a reset link, click the link which will take you to a secure page to create a new password.
+5. **Create a new password:** Choose a strong new password for your account. (We recommend something with a mix of letters, numbers, and symbols, that you don’t use on other sites.) Confirm the new password by typing it twice.
+6. **Success!:** Once you submit, your password will be reset. You can now log in with your new password. You’ll also get a confirmation email that your password was changed (this is a security measure). If *you* didn’t initiate the reset, contact us immediately, but in this scenario you did initiate it.
+    
+    **Tip:** If you don’t receive the reset email after a few minutes, ensure you entered the correct email (maybe you used a different one for NovaMart?) and try again. You can also request another code in case the first one expired (they usually expire in ~10 minutes). Also, for future ease, you can add a phone number to your account and enable SMS-based login for quick access.
+    
+
+**Q: How do I change the email address on my account?**
+
+**A:** If you got a new email or want to use a different address for your NovaMart account, you can update it in your account settings:
+
+- **Navigate to Login & Security:** Log in to NovaMart with your current credentials. Go to **Your Account** page (usually found under your profile menu). Look for an option like **“Login & Security”** or **“Account Settings”** – this is where you can edit sensitive info like your email, name, password, etc.
+- **Edit Email:** In the Login & Security settings, you’ll see your current email address listed. Click the **“Edit”** button next to your email. The system may ask you to re-enter your password for security verification at this point.
+- **Enter New Email:** You’ll be prompted to type in the new email address you want to associate with your account. Make sure you enter it correctly (typos will cause you not to get the verification).
+- **Verify the New Email:** NovaMart will send a verification link or code to the *new* email address to confirm it’s really yours. Go to your new email’s inbox, find the message from NovaMart, and click the verification link (or enter the provided code back on the NovaMart site if instructed). This step is important – it ensures no one can maliciously change your account email without access to that email.
+- **Confirmation:** After verification, your account email will be updated. From now on, you’ll use that new email to log in. You’ll also get future order updates and notifications sent to the new email. We typically send a notification to your *old* email as well, alerting that a change was made (for security purposes).
+- **Troubleshooting:** If the system says that the email is “already in use,” it means there’s another NovaMart account under that email. You’ll need to use a different email, or if you happen to have a second account, you could merge or close it. Also, if you don’t receive the verification email, double-check the spelling of the new address and check spam folders.
+- **Phone Number Update (Related):** In the same Login & Security section, you can also update your phone number or password. It’s a good idea to keep those up to date too.
+    
+    Changing your email will not delete any order history or loyalty points – all your data stays with your account, just under a new login identity. Remember to use the new email next time you log in!
+    
+
+**Q: How can I update my account information (like name, saved addresses, or payment details)?**
+
+**A:** NovaMart gives you control to update most of your account details in the Account Settings. Here’s how to handle common updates:
+
+- **Update Name or Contact Number:** Go to **Your Account** > **Profile (or Personal Details)**. You should see fields for your name, phone number, etc. Click **Edit** next to the information you want to change. For example, to change your display name or the name that appears on shipping labels, edit the Name field, save changes. This will update immediately in our system. For phone number, you might be asked to verify the new number with a code.
+- **Change Email or Password:** As described above, use the **Login & Security** section. There you can hit **Edit** next to Password to set a new password (you’ll need to enter the current password first). And for email, follow the steps from the previous Q&A. Always secure your account with a strong password and keep your email updated.
+- **Saved Shipping Addresses:** To edit your addresses, navigate to **Your Account** > **Address Book** (or **Your Addresses**). Here you can **Add a new address**, **Edit** existing ones, or **Delete** ones you no longer use. When adding or editing, fill out the name, street, city, zip, country, and phone number carefully. After adding a new address, you can set it as the default shipping address if you want. Removing old addresses helps prevent sending orders to the wrong place. *(Note: if you have any pending orders, changing the default address won’t affect those orders – it only affects future orders.)*
+- **Saved Payment Methods:** Go to **Your Account** > **Payment Options** (or **Wallet**). You’ll see your saved credit/debit cards or other payment methods. You can **Add** a new card (enter the card number, expiration, CVV, billing address), or **Edit** an existing card’s details (for example, update the expiration date or billing address if you got a new card). You can also remove cards here. It’s a good practice to remove expired cards. You might have an option to set a default payment method for one-click purchases or faster checkout.
+- **Account Profile Info:** Some users have profile information (like a profile picture or communication preferences). These can usually be adjusted under **Account Settings** > **Profile** or **Communication Preferences**. For example, you can opt in/out of newsletters here.
+- **Verify Changes:** After making changes, NovaMart might send a confirmation email (especially for critical changes like password or email). This is just to alert you in case you didn’t initiate the change. If you see any issue or something didn’t update, try logging out and back in to refresh the account info page.
+- **Need Help?:** If something isn’t updating correctly (say you keep trying to change an address and it doesn’t save), ensure that all required fields are filled and formatted correctly. Rarely, there might be a browser issue – you could try a different browser or device. You can always contact NovaMart support if you’re stuck, but most edits should work instantly on the website.
+    
+    Keeping your account info up to date helps ensure a smooth shopping experience (correct items going to correct addresses, etc.). We recommend reviewing your address book and payment info periodically, especially before major shopping events.
+    
+
+## Product Returns & Exchanges
+
+**Q: How do I return an item I purchased?**
+
+**A:** NovaMart offers a hassle-free return process. If you’re not satisfied with a product or need to send it back, follow these steps:
+
+1. **Start the Return Online:** Log in to your NovaMart account and go to **Your Orders**. Find the order that contains the item you want to return. Click the **“Return or Replace Items”** button for that order. (On the mobile app, it may just show as “Return Item”.)
+2. **Select Items to Return:** Check the box next to the item(s) you wish to return from that order. If you ordered multiple things, you can return one or several, as needed.
+3. **Choose a Reason:** From the dropdown menu provided, pick the reason for your return. Be honest, as this helps us improve. Common reasons include “Product not as described,” “Arrived damaged,” “Too small/doesn’t fit,” “Changed my mind,” etc.. (If an item is damaged or defective, we highly encourage you to choose that option and provide details, so we don’t put it back in stock.)
+4. **Select Refund or Replacement:** Depending on the item and reason, NovaMart might offer you either a **refund** or an **instant replacement**. For example, if it’s sold by NovaMart and in stock, you might see an option “Replace with the same item.” If you want a straight refund, ensure that option is selected.
+5. **Return Shipping Method:** After that, you’ll be prompted to select how to send the item back. NovaMart provides prepaid return labels for most returns. You might see options like drop off at a courier location, schedule a pickup, or return to a NovaMart physical store (if we have any) – choose what’s convenient. The system will generate a return label for you. If a printer is needed, you’ll be able to print the label out. Sometimes we provide a QR code you can take to the shipping store, and they’ll print the label for you.
+6. **Pack the Item:** Pack up the item securely. Ideally use the original packaging, but if it’s not usable, any sturdy box or padded envelope will do. Remove old shipping labels. Place the return label on the package.
+7. **Ship it back:** Drop off the package as instructed (e.g., at the post office or UPS store) or wait for the scheduled pickup. Make sure to do this *before the return deadline* given. NovaMart’s return window is typically 30 days from delivery for most items, unless stated otherwise.
+8. **Track the Return:** You can track the return shipment using the return tracking number (find this in Your Orders next to the return info). NovaMart will also update the return status – you can click **“View Return/Refund Status”** in Your Orders to see if we’ve received the item and if the refund has been issued yet[be](https://www.amazon.com.be/-/en/gp/help/customer/display.html?nodeId=G6E3B2E8QPHQ88KF#:~:text=Return%20Items%20You%20Ordered%20,Note%3A%20Before%20returning%20items).
+9. **Refund Processing:** Once the returned item arrives at our fulfillment center and is checked, we will process your refund. We aim to do this within 2 business days of item receipt. The refund will go back to your original payment method. You’ll get an email confirming the refund. (Remember that your bank may then take a few days to post it to your account.)
+10. **Exceptions & Notes:**
+    - Certain items (like perishable goods, personalized items, or digital downloads) might not be returnable. The website usually flags these before purchase or in your order details.
+    - If an item is marked “non-returnable” but arrived damaged/defective, contact us – we will still make it right.
+    - If you received a gift (item ordered by someone else for you), you can return it for a NovaMart gift credit without the gift giver knowing. Use the **Gift Returns** section on the returns page and enter the order ID.
+    - Return shipping is typically free for you if you use our provided label (the cost may be deducted from your refund in some cases for buyer’s remorse returns, but we’ll let you know during the return steps if that’s the case). Items that are damaged/defective, of course, have free returns.
+        
+        By following these steps, returning an item is usually straightforward and quick. If at any point you run into issues (e.g., can’t print a label, or the system isn’t letting you process a return), reach out to NovaMart Customer Support and we’ll assist you.
+        
+
+**Q: Can I exchange a product for a different size or a different item?**
+
+**A:** NovaMart’s exchange policy allows *like-for-like* exchanges in certain cases, and we’ll explain your options:
+
+- **Same Product, Different Size/Color:** If you need a different **size, color, or variation** of the *same* item, our system usually treats this as a return & replacement. Go to **Your Orders**, choose **“Return or Replace Items”** for the item in question, and see if a **“Replace with different size/color”** option is available. For example, if a shirt is too large and you need a medium, select the reason “Too large” and opt for replacement with size Medium. NovaMart will ship the new size to you at no extra cost. We’ll ask you to send back the original item within a certain timeframe. This is effectively an exchange.
+- **Process for Exchanges:** When you request an exchange, NovaMart will process it like a new order for the replacement item, but free of charge (since you already paid for one). We ship the replacement out with the same shipping speed as the original order, so you get it quickly. Along with that, we’ll provide instructions to return the original item. **Be sure to mail the original item back by the deadline** given (the Return by Date) to avoid being charged for it. If we don’t get the original back, we assume you decided to keep both, and thus would charge you for the second item.
+- **Different Product Exchange:** If you want to exchange for a completely different product (e.g., you bought a toaster but really want a blender), NovaMart doesn’t do a direct swap in one step. In this case, you’d return the unwanted item for a refund and place a new order for the item you want. This two-step process ensures you get the exact item you desire. We don’t currently offer cross-product exchanges because of differences in pricing and stock.
+- **Gift Exchanges:** If you received an item as a gift and want to exchange it, you can return it for a gift card (so the gift giver isn’t refunded) and then use that balance to buy the item you prefer. Contact customer service if you need help with a gift return/exchange.
+- **Conditions:** Items you wish to exchange should be in new condition (if it’s a sizing issue, obviously you likely just tried it on). If an item is heavily used or damaged by you, it may not be eligible for exchange/return.
+- **Exchange Window:** Initiate an exchange within the return period (usually 30 days). If outside that window, exchanges might not be possible, but it’s worth contacting us to see if an exception can be made.
+- **Inventory:** Exchanges depend on the replacement item being in stock. If it’s not available, you might only be offered a refund. For instance, if the smaller size is sold out, we can’t send what we don’t have. In such cases, we’ll notify you to perhaps choose another variant or just refund.
+    
+    In summary, for same-item exchanges (different size/color), use our online return/replacement flow for a seamless exchange. For different items, do a return & re-purchase. We strive to make exchanges as easy as returns so you can get the product that works for you.
+    
+
+**Q: When will I receive my refund after returning an item?**
+
+**A:** We know you’re eager to get your money back. Here’s the typical timeline for refunds after you initiate a return:
+
+- **Item in Transit:** First, the return package has to make its way back to us or the seller. Depending on the return shipping speed/distance, this can take a few days up to a couple of weeks (especially for international returns). You can track this with the return tracking number.
+- **Warehouse Processing:** Once the carrier delivers the return to our facility, NovaMart will process the return. We aim to inspect and restock the item (if applicable) quickly. Generally, **within 2 business days** of the item arriving, we will approve the return and initiate your refund. (During peak times or holidays, this might stretch a bit, but 2 days is a good rule of thumb; many times it’s even sooner.)
+- **Refund Initiation:** After approval, we issue the refund to your original payment method. We’ll send you an email saying “Your refund has been processed” at that point. Now, how fast you *see* the money depends on the payment method:
+    - **Credit/Debit Cards:** It typically takes **3-5 business days** for the refund to appear back on your card after we process it. Some banks are faster, some can be slower, but most fall in that range. So, expect about a week from the day we got the return.
+    - **Bank Account (if used direct debit):** Similar to cards, about 5-7 business days.
+    - **PayPal or other digital wallet:** These are often quicker – sometimes same day we issue it or 1-2 days, because we send the money instantly on our end. PayPal will email you when the refund is in your account.
+    - **Gift Card or Store Credit:** If you paid with a NovaMart gift card or we’re refunding you in store credit, it’s very fast – usually within hours of processing, your NovaMart balance will reflect the refund.
+- **Refund Confirmation:** You can always check the status of your refund by viewing the order details in Your Orders. It might show “Refund issued” with the date. Additionally, if you have online banking, watch your account for a credit. Remember that it might post under an entry like “NovaMart” or the name of the seller, depending on how the payment was processed.
+- **Delayed or Missing Refund:** If it’s been longer than **2 weeks** since you shipped the return and you haven’t gotten confirmation of a refund, do reach out to us. We can investigate if the package was received and ensure the refund gets processed. If we *have* confirmed the refund on our side but you don’t see it in your bank after, say, 5 business days, contact your bank or payment provider; sometimes they can trace it. We can also provide a transaction reference ID in such cases.
+- **Partial Refunds:** Note that in certain cases (e.g., you returned an item that was opened or missing parts), per our policy you might get a partial refund. We would communicate this to you. For instance, “Item returned damaged, refund minus 10% restocking fee.” This is uncommon but just to set expectations.
+- **No Refund Needed:** If we told you “no need to return the item,” (which can happen for very inexpensive items or if there was a shipping error), we’ll directly issue the refund and you’ll bypass the whole return shipment process. Those refunds usually come through within 1-3 business days since we’re not waiting on a product.
+    
+    In summary, most customers see their refund in about **5-7 business days after we receive the return**. We try to be as quick as possible in getting your money back. If you’re ever concerned about a refund status, we’re here to help.
+    
+
+## Technical Issues
+
+**Q: The NovaMart app is not working or keeps crashing. How can I fix it?**
+
+**A:** If you’re having trouble with the NovaMart mobile app (app freezing, crashing, or not loading content), try the following troubleshooting steps in order:
+
+1. **Restart the app:** Completely close the NovaMart app (swipe it away from your recent apps) and reopen it. This can resolve minor software glitches that prevent the app from loading properly.
+2. **Check your internet connection:** Make sure you have a stable internet connection. If you’re on Wi-Fi, ensure you’re connected (maybe try loading a webpage). If you’re on mobile data, check that you have good signal. A weak or dropped connection can make the app misbehave or appear unresponsive.
+3. **Update the app:** Ensure you have the latest version of the NovaMart app installed. Outdated apps can have bugs that are already fixed in newer updates. Go to the App Store (iOS) or Google Play Store (Android), find NovaMart, and see if an **Update** button is present. If yes, update to the newest version and then launch the app again.
+4. **Restart your device:** Sometimes the issue isn’t the app at all but the device. Turn off your phone/tablet completely, then turn it back on. This can clear out any system issues that might interfere with apps.
+5. **Clear app cache/data (Android):** If you’re on Android, you can clear the app’s cache. Go to **Settings > Apps > NovaMart > Storage** and tap “Clear Cache.” For a deeper reset, you can also “Clear Data,” but note that will log you out, and you’ll have to log in again. Clearing cache often fixes issues where the app’s stored files were corrupted. *(On iOS, there’s no direct cache clear option; you’d skip to the next step.)*
+6. **Reinstall the app:** If the above hasn’t helped, uninstall the NovaMart app completely. Then go to the app store and download it fresh. Sometimes app files can get corrupted, and a reinstall ensures you have a clean copy. After reinstalling, log in and see if the issue persists.
+7. **Update your OS:** Ensure your device’s operating system is up to date (the latest iOS or Android version your phone supports). Some apps, including NovaMart, are optimized for recent OS versions, and running an outdated OS can cause compatibility issues. Check in Settings > System Updates.
+8. **Further help:** If none of these steps work, the issue might be on our side (perhaps a temporary service outage) or something specific to your account. You can try using NovaMart via the mobile web browser as a workaround. Also, check if other users are reporting issues (sometimes on social media or app store reviews) – it could be a known outage we are fixing. You can reach out to NovaMart support and describe the problem, including your device model and OS, and any error messages. We’ll help troubleshoot further.
+    
+    Most app issues get resolved by the above steps. Often it’s a simple fix like an update or reconnecting to the internet that does the trick. We want you to enjoy smooth shopping on the go, so we continuously improve the app. Thanks for bearing with us and happy shopping!
+    
+
+**Q: I encountered an error code on the website, or the site isn’t loading properly. What should I do?**
+
+**A:** If the NovaMart website is giving you errors (like a code 500/502, or elements on the page aren’t working such as buttons not responding), try these quick fixes:
+
+- **Refresh or try another browser:** Sometimes a simple page refresh (F5 or the refresh button) can solve a loading hiccup. If that doesn’t work, try opening the site in a different web browser. For instance, if you’re on Chrome, try Firefox or Safari. This helps determine if it’s a browser-specific issue.
+- **Clear your browser cache and cookies:** Your browser might be caching old data that’s conflicting with the site. Clearing the cache can resolve display or loading issues. Go into your browser settings > Privacy > Clear browsing data (make sure to clear cache/images and cookies). After clearing, close the browser completely and reopen it, then try NovaMart again. This often fixes issues where the site was updated but your browser is stuck on an old version of the page.
+- **Disable extensions (temporarily):** If you have ad-blockers or privacy extensions, they might inadvertently block parts of NovaMart. Try disabling them and reload the site. Similarly, VPNs or strict antivirus could affect page loading; disable them briefly to test.
+- **Check your internet connection:** Ensure your internet is working properly for other sites. If not, reset your router or switch to another network. A slow or unstable connection can cause pages to time out.
+- **Check if our site is down:** It’s rare, but NovaMart could be having a temporary outage. You can visit an external site like “DownDetector” to see if others have reported issues, or check NovaMart’s official Twitter for any service status updates. Often if it’s a known problem on our end, we’ll be fixing it ASAP.
+- **Try the mobile app:** If the website isn’t cooperating and you need to get something done, you can use the NovaMart mobile app (if you have it) as a fallback. The app might work if the issue is only with the web interface.
+- **Specific error codes:**
+    - *Error 404 (Page not found):* This usually means the link is broken or the page moved. Double-check the URL or navigate from the homepage’s menu.
+    - *Error 500 (Server error):* That’s on us – something went wrong on the server. Usually resolved quickly; try again in a minute or two.
+    - *Error 502/503 (Bad gateway/Service unavailable):* Also on our end or an internet routing issue. Give it a moment and refresh.
+    - *Security or Certificate Error:* Ensure the date/time on your computer is correct (an incorrect date can cause HTTPS errors). Also try clearing cookies.
+- **Contact support:** If you consistently cannot use a certain part of the site (for example, the Checkout button isn’t working), please let us know. Include details like what browser and version you’re using, and if possible, a screenshot of the error or the circumstances. This can help us pinpoint the issue. Our tech team will work with you to resolve it.
+    
+    Most website issues are temporary. Clearing cache or switching browsers fixes a vast majority of cases where a site isn’t loading or features aren’t working. We appreciate your patience and will do everything we can on our side to keep the site running smoothly.
+    
+
+**Q: I can’t log into my NovaMart account (even with the right password). What can I do?**
+
+**A:** If you’re sure your login credentials are correct but you still can’t sign in, here are a few things to troubleshoot:
+
+- **Clear Login Cookies:** It’s possible there’s a corrupted cookie or token preventing login. Clearing your browser’s cookies for NovaMart can help. In your browser settings, find cookies, and delete the ones for “NovaMart.com”. Then try logging in again. (Or clear all cookies if you don’t mind logging into other sites again) Doing this often resolves login loops or strange redirect issues.
+- **Try a Different Browser or Incognito Mode:** Open an incognito/private browsing window (which has no cookies) and attempt to log in there. Alternatively, use another browser. If it works there, it confirms something was up with your main browser’s cache/cookies — clearing them as above should fix it.
+- **Disable Password Managers/Auto-fill:** Sometimes auto-fill might be inserting an old password or extra spaces. Try typing your email and password manually. Also, check that your Caps Lock isn’t on and no trailing spaces are in the fields.
+- **Two-Factor Authentication Issues:** If you have 2FA enabled on your account (e.g., NovaMart sends a verification code to your phone/email upon login), ensure you are entering that code correctly and within its time limit. If you didn’t receive the code, click “resend code”. For authenticator apps, make sure the app’s time is synced (they usually do this automatically). If you still can’t get a code, there may be an issue with the contact info on file – in which case, you might need to contact us for account recovery.
+- **Account Lockout:** For security, too many failed login attempts can temporarily lock your account (sometimes for a few minutes up to an hour). If you earlier had wrong attempts, wait about 15 minutes and try again. We’ll also send an email if we detected multiple failed logins.
+- **Reset Password:** Even if you believe the password is right, it might be worth doing a password reset (via “Forgot Password”) as described earlier in the FAQ. It’s possible your password was changed and you didn’t realize, or perhaps someone else changed it (in which case resetting it re-secures your account).
+- **Account Issue:** If none of the above works, there could be a specific issue with your account. For example, rarely, accounts can be put on hold for verification (maybe if there was a security concern). If you suspect this or you’ve received any account-related emails from NovaMart (like a request for additional info), follow up on those. Otherwise, reach out to NovaMart Customer Support. We can check the status of your account on the back end and help you regain access. We might ask some verification questions to ensure it’s you.
+- **Device/Network:** If you’re on a work/school network or a shared computer, ensure that network isn’t blocking NovaMart. Likewise, on mobile, if one network isn’t working (Wi-Fi vs cellular), switch and test.
+    
+    In most cases, login issues come down to cookies or needing a password reset. Clearing those and retrying will solve the majority of login problems. If you’re still unable to log in after trying everything, let our support team know – we’re ready to assist further to get you back into your account securely.
+    
+
+## Loyalty Program & Coupons
+
+**Q: How do I apply a promo code or coupon to my order?**
+
+**A:** NovaMart occasionally offers promo codes or you might have a coupon from a promotion. To use it:
+
+- **During Checkout:** After you’ve added your items to the cart and proceed to checkout, look for a field that says **“Promo Code”** or **“Coupon Code.”** On the website’s checkout page, it’s usually on the order summary side (right side of the screen) where it says *“Apply a coupon”*. On the mobile app, you may find **“Enter Promo Code”** on the payment screen or under the order total section.
+- **Enter the Code:** Click that field and type in your promo code exactly as given. Promo codes are often case-sensitive, so use the correct uppercase/lowercase as provided. Also, don’t include any extra spaces. For example, enter **SAVE10** if that’s the code you have.
+- **Apply:** After entering, hit the **“Apply”** button. The page will then validate the code. If it’s valid, you’ll see the discount or offer reflected in your order total immediately (e.g., “Promo code applied: -$10.00”). If on the app, the order summary should update to show the discount line.
+- **One code at a time:** NovaMart typically allows one promo code per order. If you try to enter a second one, it usually replaces the first one. The exception is if we explicitly have a stackable promotion, but that’s rare and would be clearly stated.
+- **If the code isn’t working:** You might see an error message in red if there’s an issue, such as “Invalid code” or “Code expired”. Double-check the following:
+    - **Expiration Date:** Many promo codes have a validity period. Ensure the code is still active.
+    - **Eligibility:** Some codes require a minimum purchase amount (e.g., “$10 off $50+”) or only apply to certain categories or first-time customers. Make sure your order meets the requirements.
+    - **Usage Limit:** A code might be one-time use per customer or overall usage limit. If you’ve used it before on a prior order, that could be why it’s not applying now.
+    - **Account login:** Some coupons require you to be logged in as a member of our loyalty program to use. Make sure you’re signed in if that’s the case.
+- **Troubleshoot the code:** If you believe you meet all the criteria and the code still isn’t accepted, contact NovaMart support. We can check if the code is valid and possibly apply it to your order from our end. In your message, include the code and the items in your cart.
+- **Other discounts:** Note that promo codes are typically for promotional discounts. If you have a **gift card or store credit**, that’s applied in a different area (usually under payment method as “Apply Gift Card”). And **loyalty points** are redeemed separately at checkout (see next questions on loyalty program).
+    
+    Using promo codes is a great way to save extra on NovaMart. Keep an eye on our newsletter or homepage for current promo deals. And remember, if the code was given by a third-party site, ensure it’s legitimate. When in doubt, ask us. Happy saving!
+    
+
+**Q: What is the NovaMart loyalty program and how does it work?**
+
+**A:** NovaMart’s loyalty program (let’s call it **NovaMart Rewards**) is our way of thanking you for shopping with us. Here’s an overview of how it works:
+
+- **Free Enrollment:** There’s no extra cost to join. In fact, if you have a NovaMart account, you’re likely *already enrolled* in the loyalty program automatically. We want every customer to benefit from day one.
+- **Earning Points:** Whenever you make purchases on NovaMart, you earn reward points. Typically, you earn a certain number of points per dollar spent (for example, 1 point per $1, or sometimes promotional rates like 2x points on certain categories). We’ll advertise the exact earning rate on our loyalty program page. Points will usually appear in your account as “pending” until your order ships, and then become available points.
+- **Additional Ways to Earn:** Beyond just purchasing, we occasionally offer bonus point opportunities. This could be: writing a review for a product, referring a friend to NovaMart, or shopping during special events (e.g., “Double Points Weekend”). These help you earn points faster. We might also give you a birthday reward or anniversary points as part of the program. Keep an eye on our emails for such offers.
+- **Redeeming Points:** The points you accumulate can be used to **get discounts on future purchases**. For example, 100 points might equal a $5 discount (just an illustration – see the program details for the conversion rate). When you checkout, you can choose to apply points to reduce your order total (we’ll cover the mechanics in the next Q). It’s straightforward: the more points you have, the more you can deduct from a purchase’s price.
+- **Rewards and Tiers:** NovaMart Rewards may have **tier levels** based on your annual spending or points earned. Commonly, tiers could be Bronze, Silver, Gold, etc., each with its own perks. For instance, Silver members (mid tier) might get free expedited shipping or exclusive coupons, Gold members (top tier) might get a higher points earn rate (e.g., 1.5x points on every order) and maybe early access to sales. The exact benefits will be detailed on our loyalty page. Climbing tiers usually depends on how much you shop in a year. Once you hit a tier, you typically keep that status for the remainder of the year and often the next year.
+- **Checking Your Points:** You can always see your points balance by logging into NovaMart and going to your **Account Dashboard** or **Rewards section**. It will show your current points and possibly how much those points are roughly worth. If we have tiers, it will also show your current tier and how far to the next tier.
+- **Point Expiry:** Points might expire after a certain period of inactivity (for example, if you don’t make any purchase or redemption in 12 months, the points could expire). Don’t worry – we will remind you if you have points approaching expiration via email. Active shoppers won’t have to worry about this as you’ll be continuously earning/using them.
+- **Using Points & Restrictions:** You can use points to pay for products on NovaMart. Typically, points cannot cover shipping fees or gift cards and such – they apply to the product subtotal. There may be a maximum of points you can use per order (some programs cap at, say, no more than 50% of an order can be paid with points, just as an example). We’ll clarify those rules in the program terms.
+- **Member Exclusive:** As a loyalty member, you might get other benefits like early announcements of sales, a dedicated customer service hotline, or surprise free samples in your orders. We like to delight our loyal customers with extras.
+    
+    In short, the more you shop with NovaMart, the more you get rewarded. You earn points on purchases and can redeem those points for **discounts on future purchases**, saving you money. It’s our way of saying thanks! The program is flexible and meant to enhance your shopping experience with both savings and special perks.
+    
+
+**Q: How do I redeem my loyalty points for rewards?**
+
+**A:** Redeeming your NovaMart Rewards points for a discount on a purchase is easy. Here’s how to use your points at checkout:
+
+- **In Your Cart/Checkout:** When you are ready to place an order, proceed to the checkout page. On the checkout screen (either in the payment section or order summary), there will be an option like **“Apply Rewards”**, **“Use Points”**, or a slider showing your points balance. It might say something like “You have 500 points (worth $5). How many would you like to use?”.
+- **Choose the Amount of Points:** You can usually choose to use all your available points or a portion of them. For example, if you have 500 points, you might use all 500 to get $5 off, or if you only want to use 200 points ($2 off) now and save the rest for later, you could do that (assuming the system allows partial use; most do). There may be a simple input box or a slider to select the number of points. Some programs also have set increments (like redeem in blocks of 100 points). NovaMart will indicate how to input the amount.
+- **Apply to Order:** Once you’ve selected the points to use, click **“Apply”**. The order total should update immediately, showing the deduction from your points. For instance, if your order was $50 and you applied $5 worth of points, it will now show $45 due. The checkout page will reflect something like “Rewards Applied: -$5.00”.
+- **Limits:** Ensure your order subtotal exceeds the value of points you’re redeeming. For example, if you have $50 worth of points, you generally can’t apply $50 in points to a $40 order – you’d likely be capped to use $40 in points in that case (the rules prevent a negative or zero subtotal). Also, some promotions or gift card purchases might not allow point redemption (those exceptions would be noted).
+- **Finalize Order:** After applying points, just complete the checkout by selecting your payment method for any remaining balance and place the order. The confirmation page and email will show that you used points and how many are left. The points you spent will be deducted from your loyalty balance immediately. If, for some reason, the order is later cancelled or returned, any points used will typically be refunded back to your loyalty account (along with any monetary refund to your payment method).
+- **Example:** Let’s say you have 1,000 points and NovaMart’s program equates 100 points = $1. You’re buying an item for $25. At checkout you decide to use 500 points (which is $5). You apply 500 points, your new total becomes $20 which you then pay with your credit card. After the purchase, you’ll have 500 points left in your account. Plus, you’ll earn points on that $20 purchase too, adding to your balance for next time.
+- **Using Points vs. Promo Codes:** You can use your points in addition to a promo code on the same order. They are separate; one is a loyalty discount, the other is a promo discount. So feel free to stack a coupon code and your points for maximum savings.
+- **Check Point Redemption History:** In your account, under rewards or order history, you can see how many points you used on each order. This helps you track your benefits.
+- **No Complex Process:** You **do not** need to convert points to a coupon or anything beforehand (some older programs made you redeem points for a coupon code, but NovaMart’s is direct at checkout). It’s seamless: just toggle or enter at checkout.
+    
+    If you run into any issue applying points (say the option isn’t showing up when it should), make sure you’re logged into the correct account that has the points. If problems persist, our customer support can help apply the points manually or figure out what’s wrong. Enjoy using your hard-earned points – you earned them for being a loyal customer!
+    
+
+## Contacting Customer Support
+
+**Q: How can I contact NovaMart customer support?**
+
+**A:** We’re always here to help. You can reach NovaMart Customer Support through any of the following channels:
+
+- **Live Chat:** The fastest way to get help is via our 24/7 live chat. On the NovaMart website, click on the “Help” or chat icon (usually at the bottom-right of the page) to start a live chat with a support agent. In our mobile app, go to the Help section and you’ll find a chat option there as well. Live chat is available **around the clock**, so even if it’s late at night or a holiday, someone should be available to assist you in real time.
+- **Phone Support:** You can call us on our customer service hotline at **1-800-NOVAMART** (1-800-668-2627) – (Hypothetical number for example). Our phones are staffed **24 hours a day, 7 days a week**, so you can talk to a live representative whenever you need. If calling from outside the U.S., you might use +1-XXX-... (an international number will be provided on our Contact Us page). Phone is great for complex issues or if you prefer talking to someone directly.
+- **Email:** If your issue is less urgent, you can always email us at **support@novamart.com**. Please include as much detail as possible (your order number, account email, and a description of the issue). We typically respond to emails within 24 hours, often much sooner. This is a good option for detailed queries or if you need to send attachments (like photos of a damaged item).
+- **Help Center/FAQ:** You’ve already found our FAQ, which is part of our Help Center. It contains answers to many common questions. Using the search bar in the Help section might get you instant answers without needing to wait for a reply. We constantly update it (like this FAQ document) for your convenience.
+- **Social Media:** While not an official support channel for account-specific issues, you can message or reach out via NovaMart’s official Twitter or Facebook for general questions. We do monitor those and will often guide you to the proper support channel. But avoid sharing personal order details publicly; we’ll likely move to DM or email for privacy.
+- **What to Expect:** When you contact us via chat or phone, our agent will verify your identity (for security, we may ask for your email or order number). Then we’ll work to resolve your issue on the spot. Our support team is empowered to handle most things – whether it’s checking on an order status, processing a refund, helping you troubleshoot the app, etc. For email, you’ll get a response that either resolves the issue or asks for more info if needed.
+- **Contact Hours:** As noted, chat and phone are 24/7. So there’s no need to wait for “business hours.” Email is continuously monitored too, though replies might align with business hours for detailed issues. Essentially, **help is always available** whenever you need it.
+- **Language Support:** NovaMart offers support in English. We also have multilingual support for certain languages (depending on agent availability or specific regional support lines). Let us know if you’re more comfortable in another language and we’ll do our best to accommodate.
+    
+    In summary, you can get in touch with NovaMart support anytime via live chat for quick help, phone for direct conversation, or email for detailed inquiries. We pride ourselves on responsive customer service and will do everything we can to resolve any problems or answer any questions you have.
+    
+
+**Q: What info should I provide to customer support to get help faster?**
+
+**A:** Great question! Providing clear information upfront can significantly speed up the support process. Here’s what to include when you reach out:
+
+- **Order Details:** If your question or issue is about a specific order, give the **Order Number** (it usually looks like NM-12345 or a long string in your emails). This lets the support agent pull up the exact order immediately. Also, mention the item name(s) or product ID if relevant, to avoid any confusion if you had multiple orders.
+- **Account Email:** Many issues are account-specific. Providing the email address associated with your NovaMart account (or phone number if that’s how your account is identified) helps us locate your account quickly. If you’re chatting or calling from an email/number that’s different, let us know your registered email.
+- **Issue Description:** Describe the problem **with key details**. For example, instead of saying “my payment didn’t work,” say “I tried to place order #NM-12345, my Visa card ending in 1111 was declined even though it has funds.” Or instead of “can’t login,” say “I get an ‘incorrect password’ error and password reset email never arrives.” The more specific, the better we can assist.
+- **Steps You’ve Already Taken:** Let us know if you’ve already tried certain solutions. e.g., “I already tried resetting my password twice,” or “I went through the troubleshooting steps in the FAQ like clearing cache, and it still didn’t work.” This prevents us from repeating those steps and jump to further investigation.
+- **Screenshots or Error Messages:** If you’re seeing an error code or message, copy-paste it or screenshot it. For instance, “Error code 502 at checkout” or “App says ‘network error’.” If emailing, attach the screenshot image. On chat, sometimes you can upload images too. Visuals are super helpful for technical issues.
+- **Preferred Resolution:** Tell us what outcome you’re expecting if applicable. Are you looking for a refund, a replacement, troubleshooting assistance, etc.? For example: “My package is lost – ideally, I want a replacement sent.” Knowing this helps us aim for the solution you want (if possible).
+- **Environment Details (for technical issues):** If you’re reporting a website/app problem, let us know your setup. e.g., “Using Chrome on Windows 10,” or “Using NovaMart app on iPhone iOS 16.” Also mention your network if relevant (“on home WiFi” vs “cellular data”). These details can help replicate and solve the issue faster.
+- **Timing:** Mention when the issue occurred or how long it has been happening. “The charge showed up twice on Jan 5th,” or “I’ve been trying since yesterday and it still fails.” This context can help if we need to check system logs around a certain time.
+- **Previous Ticket (if any):** If you already contacted us and it’s a follow-up, give the previous case number or recap what was discussed, so the new agent has continuity.
+    
+    Providing the above info up front means we don’t have to ask as many back-and-forth questions and can dive straight into solving your issue. Our support team appreciates it, and it means you get a resolution faster. Of course, if you’re not sure about some details, no problem – we will guide you through what we need. The goal is to get you sorted out as quickly as possible!
+    
+
+**Q: Is customer support available 24/7, even on holidays?**
+
+**A:** Yes! NovaMart customer support is available **24/7, 365 days a year** to assist you. We understand that shopping and issues don’t only happen during regular business hours. Whether it’s a late-night question or a weekend issue, we’ve got you covered. Our live chat and phone lines are open all the time – day or night, weekday or holiday. If you send an email, you’ll also get a response at any time, though complex inquiries might be handled by senior staff during standard hours. But rest assured, there’s **always** an agent monitoring and ready to help.
+
+For example, say you’re shopping on Thanksgiving and something goes wrong with an order – our support team is on duty. Or it’s 2 AM and you’re worried about a suspicious charge – give us a call. We pride ourselves on round-the-clock support because NovaMart has customers across different time zones and with different schedules.
+
+During major holidays, we may have slightly limited phone staffing, so wait times might be a tad longer, but live chat is usually very quick. We also encourage you to use our self-service help (like this FAQ, order cancellation tools, etc.) for instant solutions, but if you need to reach us, we’re here.
+
+In summary: **Yes, you can contact NovaMart support any time – we never close.** We want you to shop with peace of mind knowing help is always one call or message away.
