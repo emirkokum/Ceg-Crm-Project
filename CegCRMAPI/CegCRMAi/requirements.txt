@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+pydantic
+sqlmodel
+psycopg[binary]
+pgvector
+python-dotenv
+transformers
+torch
+sentence-transformers
+langchain
+langchain-community
+accelerate
+python-multipart
+

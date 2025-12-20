@@ -1,0 +1,122 @@
+[
+  {
+    "id": "1",
+    "firstName": "Nazimet",
+    "lastName": "Mansız",
+    "email": "arslanisiman@hotmail.com",
+    "phone": "+90(235)2080677",
+    "address": "798 Demirel Field Suite 149, Sıylıhanhaven, OR 01306",
+    "segment": "Potansiyel",
+    "type": "Business",
+    "createdAt": "2025-04-20",
+    "fullName": "Nazimet Mansız"
+  },
+  {
+    "id": "2",
+    "firstName": "Şendoğan",
+    "lastName": "Akçay",
+    "email": "cbilir@zengin.net",
+    "phone": "0126-341 6565",
+    "address": "051 Akgündüz Landing Apt. 219, North Emaltown, AL 42466",
+    "segment": "VIP",
+    "type": "Business",
+    "createdAt": "2025-04-14",
+    "fullName": "Şendoğan Akçay"
+  },
+  {
+    "id": "3",
+    "firstName": "Şennur",
+    "lastName": "Bilir",
+    "email": "yyaman@seven.com",
+    "phone": "+90(076)8698406",
+    "address": "07586 Aksu Club, Lake Türcanville, MO 14166",
+    "segment": "VIP",
+    "type": "Business",
+    "createdAt": "2025-05-12",
+    "fullName": "Şennur Bilir"
+  },
+  {
+    "id": "4",
+    "firstName": "Ushan",
+    "lastName": "İnönü",
+    "email": "eraslanserma@aselsan.com",
+    "phone": "+90(563)388-6216x1060",
+    "address": "65283 Karadeniz Unions Apt. 063, Çelikkanside, DE 24139",
+    "segment": "Pasif",
+    "type": "Business",
+    "createdAt": "2025-03-21",
+    "fullName": "Ushan İnönü"
+  },
+  {
+    "id": "5",
+    "firstName": "Ertan",
+    "lastName": "Durmuş",
+    "email": "nakdeniz@hotmail.com",
+    "phone": "+90(022)126-8074x0440",
+    "address": "17922 Nevise Ford, Türkbury, WI 69309",
+    "segment": "Potansiyel",
+    "type": "Person",
+    "createdAt": "2025-04-12",
+    "fullName": "Ertan Durmuş"
+  },
+  {
+    "id": "6",
+    "firstName": "Özkutlu",
+    "lastName": "Eraslan",
+    "email": "yamanelifnur@gmail.com",
+    "phone": "+90(722)251-1041x121",
+    "address": "7519 Ergül Neck, Oganermouth, MN 34088",
+    "segment": "VIP",
+    "type": "Business",
+    "createdAt": "2025-05-18",
+    "fullName": "Özkutlu Eraslan"
+  },
+  {
+    "id": "7",
+    "firstName": "Borataş",
+    "lastName": "Yılmaz",
+    "email": "eraycan89@gmail.com",
+    "phone": "024 3 099",
+    "address": "9550 Sezgin Harbors, West Ayşenur, KS 67616",
+    "segment": "Potansiyel",
+    "type": "Person",
+    "createdAt": "2025-05-04",
+    "fullName": "Borataş Yılmaz"
+  },
+  {
+    "id": "8",
+    "firstName": "Ayhan",
+    "lastName": "Kısakürek",
+    "email": "rseven@hotmail.com",
+    "phone": "0133 750 49 04",
+    "address": "98937 Koçkan Turnpike Suite 439, New Vargın, FL 07465",
+    "segment": "VIP",
+    "type": "Person",
+    "createdAt": "2025-05-17",
+    "fullName": "Ayhan Kısakürek"
+  },
+  {
+    "id": "9",
+    "firstName": "Eşref",
+    "lastName": "Duran",
+    "email": "adalarsoy@gmail.com",
+    "phone": "782 8 807",
+    "address": "1863 Şama Trail, Port Ganiyeburgh, HI 03605",
+    "segment": "Pasif",
+    "type": "Person",
+    "createdAt": "2025-01-14",
+    "fullName": "Eşref Duran"
+  },
+  {
+    "id": "10",
+    "firstName": "Karaer",
+    "lastName": "Çetin",
+    "email": "celemalemdar@masomo.com",
+    "phone": "0572-244 5743",
+    "address": "78874 Hakikat Creek Apt. 197, Mansızside, MI 53746",
+    "segment": "VIP",
+    "type": "Person",
+    "createdAt": "2025-03-02",
+    "fullName": "Karaer Çetin"
+  }
+]
